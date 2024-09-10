@@ -108,8 +108,6 @@ export function hasValidCheckDigit(s: string): boolean {
  *
  * @returns
  * Accumulated sum of the weight result for each digit at the digit's position.
- *
- * @throws RangeError
  */
 function priceWeightSum(weightsResults: ReadonlyArray<readonly number[]>, s: string): number {
     if (s.length !== weightsResults.length) {
@@ -184,8 +182,6 @@ const CHECK_CHARACTERS = [
  *
  * @returns
  * Check character pair.
- *
- * @throws RangeError
  */
 export function checkCharacterPair(s: string): string {
     // Weights are applied from right to left.

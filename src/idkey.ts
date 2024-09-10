@@ -519,8 +519,6 @@ export class GTINValidator extends AbstractNumericIdentificationKeyValidator {
      *
      * @returns
      * GTIN-12.
-     *
-     * @throws RangeError
      */
     static zeroExpand(zeroSuppressedGTIN12: string): string {
         NUMERIC_CREATOR.validate(zeroSuppressedGTIN12, GTINValidator.ZERO_SUPPRESSED_GTIN12_VALIDATION);
@@ -563,8 +561,6 @@ export class GTINValidator extends AbstractNumericIdentificationKeyValidator {
      *
      * @param gtinLevel
      * Level at which GTIN is to be validated.
-     *
-     * @throws RangeError
      */
     static validateAny(gtin: string, gtinLevel: GTINLevel = GTINLevel.Any): void {
         // Assume length-validated GTIN is the GTIN (true for all except zero-suppressed GTIN-12).
@@ -638,8 +634,6 @@ export class GTINValidator extends AbstractNumericIdentificationKeyValidator {
      *
      * @param gtin14
      * GTIN-14.
-     *
-     * @throws RangeError
      */
     static validateGTIN14(gtin14: string): void {
         if (gtin14.length !== GTINType.GTIN14 as number) {
@@ -979,8 +973,6 @@ abstract class AbstractIdentificationKeyCreator implements IdentificationKeyCrea
      *
      * @param checkAllowance
      * Number of characters to allow for check digit or check character pair.
-     *
-     * @throws Error
      */
     protected init(prefixManager: PrefixManager, prefix: string, checkAllowance: number): void {
         // Verify that prefix manager has not already been assigned.
@@ -1122,8 +1114,6 @@ abstract class AbstractNumericIdentificationKeyCreator extends AbstractIdentific
      *
      * @param prefix
      * Prefix within prefix manager to use to calculate reference length.
-     *
-     * @throws Error
      */
     protected override init(prefixManager: PrefixManager, prefix: string): void {
         super.init(prefixManager, prefix, 1);
@@ -1389,8 +1379,6 @@ export class GTINCreator extends Mixin(GTINValidator, AbstractNumericIdentificat
      *
      * @returns
      * Zero-suppressed GTIN-12.
-     *
-     * @throws RangeError
      */
     static zeroSuppress(gtin12: string): string {
         GTIN12_VALIDATOR.validate(gtin12);
@@ -1466,8 +1454,6 @@ export class GTINCreator extends Mixin(GTINValidator, AbstractNumericIdentificat
      *
      * @returns
      * Normalized GTIN.
-     *
-     * @throws RangeError
      */
     static normalize(gtin: string): string {
         const gtinLength = gtin.length;
@@ -2124,8 +2110,6 @@ export class PrefixManager {
      *
      * @param positionOffset
      * Position offset within a larger string.
-     *
-     * @throws RangeError
      */
     static validatePrefix(prefixType: PrefixType, allowUPCCompanyPrefix: boolean, allowGS18Prefix: boolean, prefix: string, isFromIdentificationKey = false, isNumericIdentificationKey = false, positionOffset?: number): void {
         let baseValidation: CharacterSetValidation;
@@ -2205,8 +2189,6 @@ export class PrefixManager {
      *
      * @returns
      * Identification key creator.
-     *
-     * @throws RangeError
      */
     private getIdentificationKeyCreator<T extends IdentificationKeyCreator>(identificationKeyType: IdentificationKeyType, constructorCallback: () => T): T {
         let creator = this._identificationKeyCreatorsMap.get(identificationKeyType) as (T | undefined);
