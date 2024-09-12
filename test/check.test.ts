@@ -1,6 +1,6 @@
+import { I18NEnvironment, i18nInit } from "@aidc-toolkit/core";
 import { NUMERIC_CREATOR } from "@aidc-toolkit/utility";
 import { describe, expect, test } from "vitest";
-import { I18NEnvironment, i18nInit } from "../../core/dist/index.js";
 import {
     checkCharacterPair,
     checkDigit,

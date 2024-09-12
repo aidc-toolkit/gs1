@@ -2,7 +2,7 @@ import {
     CharacterSetCreator,
     type CharacterSetValidation,
     type CharacterSetValidator,
-    Exclusion, IterationHelper, type IterationSource, NUMERIC_CREATOR,
+    Exclusion, type IterableOrIterator, NUMERIC_CREATOR,
     RegExpValidator,
     type StringValidation,
     type StringValidator
@@ -1078,7 +1078,7 @@ export interface NumericIdentificationKeyCreator extends NumericIdentificationKe
      * @returns
      * Iterable iterator over created identification keys.
      */
-    createMultiple: (valuesSource: IterationSource<number>, sparse?: boolean) => IterableIterator<string>;
+    createMultiple: (valuesSource: IterableOrIterator<number>, sparse?: boolean) => IterableIterator<string>;
 
     /**
      * Create all identification keys for the prefix from `0` to `capacity - 1`.
@@ -1166,7 +1166,7 @@ abstract class AbstractNumericIdentificationKeyCreator extends AbstractIdentific
         return NUMERIC_CREATOR.createSequence(this.referenceLength, startValue, count, Exclusion.None, sparse ? this.tweak : undefined, reference => this.buildIdentificationKey(reference));
     }
 
-    createMultiple(valuesSource: IterationSource<number>, sparse = false): IterableIterator<string> {
+    createMultiple(valuesSource: IterableOrIterator<number>, sparse = false): IterableIterator<string> {
         return NUMERIC_CREATOR.createMultiple(this.referenceLength, valuesSource, Exclusion.None, sparse ? this.tweak : undefined, reference => this.buildIdentificationKey(reference));
     }
 
@@ -1365,7 +1365,7 @@ export class GTINCreator extends Mixin(GTINValidator, AbstractNumericIdentificat
      * @returns
      * Iterable iterator over created GTIN-14s.
      */
-    createGTIN14Multiple(indicatorDigit: string, valuesSource: IterationSource<number>, sparse = false): IterableIterator<string> {
+    createGTIN14Multiple(indicatorDigit: string, valuesSource: IterableOrIterator<number>, sparse = false): IterableIterator<string> {
         NUMERIC_CREATOR.validate(indicatorDigit, GTINCreator.REQUIRED_INDICATOR_DIGIT_VALIDATION);
 
         return NUMERIC_CREATOR.createMultiple(GTINType.GTIN13 - this.prefixManager.gs1CompanyPrefix.length - 1, valuesSource, Exclusion.None, sparse ? this.tweak : undefined, reference => this.buildGTIN14(indicatorDigit, reference));
@@ -1619,8 +1619,8 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
      * @returns
      * Serialized identification keys.
      */
-    private concatenateValidatedMultiple(baseIdentificationKey: string, serialComponentsSource: IterationSource<string>): IterableIterator<string> {
-        return IterationHelper.from(serialComponentsSource).map(serialComponent => this.concatenateValidated(baseIdentificationKey, serialComponent));
+    private concatenateValidatedMultiple(baseIdentificationKey: string, serialComponentsSource: IterableOrIterator<string>): IterableIterator<string> {
+        return Iterator.from(serialComponentsSource).map(serialComponent => this.concatenateValidated(baseIdentificationKey, serialComponent));
     }
 
     /**
@@ -1659,7 +1659,7 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
      * @returns
      * Serialized identification keys.
      */
-    createMultipleSerialized(value: number, serialComponentsSource: IterationSource<string>, sparse = false): IterableIterator<string> {
+    createMultipleSerialized(value: number, serialComponentsSource: IterableOrIterator<string>, sparse = false): IterableIterator<string> {
         return this.concatenateValidatedMultiple(this.create(value, sparse), serialComponentsSource);
     }
 
@@ -1693,7 +1693,7 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
      * @returns
      * Serialized identification keys.
      */
-    concatenateMultiple(baseIdentificationKey: string, serialComponentsSource: IterationSource<string>): IterableIterator<string> {
+    concatenateMultiple(baseIdentificationKey: string, serialComponentsSource: IterableOrIterator<string>): IterableIterator<string> {
         this.validate(baseIdentificationKey);
 
         return this.concatenateValidatedMultiple(baseIdentificationKey, serialComponentsSource);
@@ -1769,8 +1769,8 @@ export class NonNumericIdentificationKeyCreator extends Mixin(NonNumericIdentifi
      * @returns
      * Identification keys.
      */
-    createMultiple(referencesSource: IterationSource<string>): IterableIterator<string> {
-        return IterationHelper.from(referencesSource).map(reference => this.create(reference));
+    createMultiple(referencesSource: IterableOrIterator<string>): IterableIterator<string> {
+        return Iterator.from(referencesSource).map(reference => this.create(reference));
     }
 }
 

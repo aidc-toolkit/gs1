@@ -1,5 +1,5 @@
 import { I18NEnvironment, i18nInit } from "@aidc-toolkit/core";
-import { CharacterSetCreator, Exclusion, IterationHelper, NUMERIC_CREATOR } from "@aidc-toolkit/utility";
+import { CharacterSetCreator, Exclusion, NUMERIC_CREATOR } from "@aidc-toolkit/utility";
 import { describe, expect, test } from "vitest";
 import {
     AI39_CREATOR,
@@ -425,7 +425,7 @@ function testNumericIdentificationKeyCreator(creator: NumericIdentificationKeyCr
 
             let allCount = 0;
 
-            IterationHelper.from(creator.createAll()).forEach((identificationKey, index) => {
+            Iterator.from(creator.createAll()).forEach((identificationKey, index) => {
                 validate(identificationKey, index, false);
 
                 expect(Number((hasExtensionDigit ? identificationKey.charAt(0) : "") + identificationKey.substring(referenceSubstringStart, referenceSubstringEnd))).toBe(index);
@@ -460,7 +460,7 @@ function testNumericIdentificationKeyCreator(creator: NumericIdentificationKeyCr
 
             let sequenceCount = 0;
 
-            IterationHelper.from(creator.createSequence(0, sparseReferenceCount, true)).forEach((identificationKey, index) => {
+            Iterator.from(creator.createSequence(0, sparseReferenceCount, true)).forEach((identificationKey, index) => {
                 validate(identificationKey, index, true);
 
                 sequential = sequential && Number((hasExtensionDigit ? identificationKey.charAt(0) : "") + identificationKey.substring(referenceSubstringStart, referenceSubstringEnd)) === index;
@@ -555,7 +555,7 @@ function testGTINCreator(creator: GTINCreator): void {
         test("GTIN-14 straight", () => {
             let sequenceCount = 0;
 
-            IterationHelper.from(creator.createGTIN14Sequence("5", 0, referenceCount)).forEach((gtin, index) => {
+            Iterator.from(creator.createGTIN14Sequence("5", 0, referenceCount)).forEach((gtin, index) => {
                 expect(Number(gtin.substring(referenceSubstringStart, referenceSubstringEnd))).toBe(index);
 
                 validate(gtin, index, false);
@@ -588,7 +588,7 @@ function testGTINCreator(creator: GTINCreator): void {
 
             let sequenceCount = 0;
 
-            IterationHelper.from(creator.createGTIN14Sequence("5", 0, sparseReferenceCount, true)).forEach((gtin, index) => {
+            Iterator.from(creator.createGTIN14Sequence("5", 0, sparseReferenceCount, true)).forEach((gtin, index) => {
                 sequential = sequential && Number(gtin.substring(referenceSubstringStart, referenceSubstringEnd)) === index;
 
                 validate(gtin, index, true);
@@ -937,7 +937,7 @@ function testNonNumericIdentificationKeyCreator<T extends NonNumericIdentificati
 
             let sequenceCount = 0;
 
-            IterationHelper.from(creator.createMultiple(creator.referenceCreator.createSequence(TEST_REFERENCE_LENGTH, 0, referenceCount))).forEach((identificationKey, index) => {
+            Iterator.from(creator.createMultiple(creator.referenceCreator.createSequence(TEST_REFERENCE_LENGTH, 0, referenceCount))).forEach((identificationKey, index) => {
                 expect(() => {
                     creator.validate(identificationKey);
                 }).not.toThrow(RangeError);
@@ -961,7 +961,7 @@ function testNonNumericIdentificationKeyCreator<T extends NonNumericIdentificati
 
             let sequenceCount = 0;
 
-            IterationHelper.from(creator.createMultiple(creator.referenceCreator.createSequence(TEST_REFERENCE_LENGTH, 0, referenceCount, Exclusion.None, 123456n))).forEach((identificationKey, index) => {
+            Iterator.from(creator.createMultiple(creator.referenceCreator.createSequence(TEST_REFERENCE_LENGTH, 0, referenceCount, Exclusion.None, 123456n))).forEach((identificationKey, index) => {
                 expect(() => {
                     creator.validate(identificationKey);
                 }).not.toThrow(RangeError);
