@@ -139,7 +139,7 @@ export interface IdentificationKeyValidation extends StringValidation {
  * Identification key validator. Validates an identification key against its definition in section 3 of the {@link
  * https://www.gs1.org/genspecs | GS1 General Specifications}.
  */
-export interface IdentificationKeyValidator extends StringValidator {
+export interface IdentificationKeyValidator<V extends IdentificationKeyValidation = IdentificationKeyValidation> extends StringValidator<V> {
     /**
      * Get the identification key type. Per the GS1 General Specifications, the identification key type determines
      * the remaining properties.
@@ -177,13 +177,13 @@ export interface IdentificationKeyValidator extends StringValidator {
      * @param validation
      * Identification key validation parameters.
      */
-    validate: (identificationKey: string, validation?: IdentificationKeyValidation) => void;
+    validate: (identificationKey: string, validation?: V) => void;
 }
 
 /**
  * Abstract identification key validator. Implements common functionality for an identification key validator.
  */
-abstract class AbstractIdentificationKeyValidator implements IdentificationKeyValidator {
+abstract class AbstractIdentificationKeyValidator<V extends IdentificationKeyValidation = IdentificationKeyValidation> implements IdentificationKeyValidator<V> {
     /**
      * Identification key type.
      */
@@ -313,7 +313,7 @@ abstract class AbstractIdentificationKeyValidator implements IdentificationKeyVa
         PrefixManager.validatePrefix(this.prefixType, true, false, partialIdentificationKey, true, this.referenceCharacterSet === CharacterSet.Numeric, positionOffset);
     }
 
-    abstract validate(identificationKey: string, validation?: IdentificationKeyValidation): void;
+    abstract validate(identificationKey: string, validation?: V): void;
 }
 
 /**
@@ -771,7 +771,7 @@ export interface NonNumericIdentificationKeyValidation extends IdentificationKey
 /**
  * Non-numeric identification key validator.
  */
-export class NonNumericIdentificationKeyValidator extends AbstractIdentificationKeyValidator {
+export class NonNumericIdentificationKeyValidator extends AbstractIdentificationKeyValidator<NonNumericIdentificationKeyValidation> {
     /**
      * Validator to ensure that an identification key (minus check character pair) is not all numeric.
      */
