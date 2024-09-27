@@ -6,5 +6,6 @@
   "name": "GS1",
   "entryPoints": [
     "src/index.ts"
-  ]
+  ],
+  "gitRevision": "main"
 }
