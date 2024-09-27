@@ -2,7 +2,8 @@ import {
     CharacterSetCreator,
     type CharacterSetValidation,
     type CharacterSetValidator,
-    Exclusion, type IterableOrIterator, NUMERIC_CREATOR,
+    Exclusion,
+    NUMERIC_CREATOR,
     RegExpValidator,
     type StringValidation,
     type StringValidator
@@ -261,22 +262,37 @@ abstract class AbstractIdentificationKeyValidator<V extends IdentificationKeyVal
         this._referenceValidator = AbstractIdentificationKeyValidator.validatorFor(referenceCharacterSet);
     }
 
+    /**
+     * @inheritDoc
+     */
     get identificationKeyType(): IdentificationKeyType {
         return this._identificationKeyType;
     }
 
+    /**
+     * @inheritDoc
+     */
     get prefixType(): PrefixType {
         return this._prefixType;
     }
 
+    /**
+     * @inheritDoc
+     */
     get length(): number {
         return this._length;
     }
 
+    /**
+     * @inheritDoc
+     */
     get referenceCharacterSet(): CharacterSet {
         return this._referenceCharacterSet;
     }
 
+    /**
+     * @inheritDoc
+     */
     get referenceValidator(): CharacterSetValidator {
         return this._referenceValidator;
     }
@@ -383,10 +399,16 @@ abstract class AbstractNumericIdentificationKeyValidator extends AbstractIdentif
         this._prefixPosition = Number(this.leaderType === LeaderType.ExtensionDigit);
     }
 
+    /**
+     * @inheritDoc
+     */
     get leaderType(): LeaderType {
         return this._leaderType;
     }
 
+    /**
+     * @inheritDoc
+     */
     validate(identificationKey: string, validation?: IdentificationKeyValidation): void {
         // Validate the prefix, with care taken for its position within the identification key.
         if (this._prefixPosition === 0) {
@@ -501,11 +523,17 @@ export class GTINValidator extends AbstractNumericIdentificationKeyValidator {
         super(IdentificationKeyType.GTIN, prefixType, gtinType, LeaderType.IndicatorDigit);
     }
 
+    /**
+     * @inheritDoc
+     */
     get gtinType(): GTINType {
         // Length maps to GTIN type enumeration.
-        return this.length as GTINType;
+        return this.length satisfies GTINType;
     }
 
+    /**
+     * @inheritDoc
+     */
     protected override validatePrefix(partialIdentificationKey: string, positionOffset?: number): void {
         // Delegate to prefix manager requiring exact match for prefix type.
         PrefixManager.validatePrefix(this.prefixType, false, false, partialIdentificationKey, true, true, positionOffset);
@@ -636,7 +664,7 @@ export class GTINValidator extends AbstractNumericIdentificationKeyValidator {
      * GTIN-14.
      */
     static validateGTIN14(gtin14: string): void {
-        if (gtin14.length !== GTINType.GTIN14 as number) {
+        if (gtin14.length as GTINType !== GTINType.GTIN14) {
             throw new RangeError(i18next.t("IdentificationKey.invalidGTIN14Length", {
                 ns: gs1NS
             }));
@@ -752,6 +780,9 @@ export class SerializableNumericIdentificationKeyValidator extends NonGTINNumeri
         return this._serialComponentValidator;
     }
 
+    /**
+     * @inheritDoc
+     */
     override validate(identificationKey: string, validation?: IdentificationKeyValidation): void {
         super.validate(identificationKey.substring(0, this.length), validation);
 
@@ -765,6 +796,10 @@ export class SerializableNumericIdentificationKeyValidator extends NonGTINNumeri
  * Non-numeric identification key validation parameters.
  */
 export interface NonNumericIdentificationKeyValidation extends IdentificationKeyValidation {
+    /**
+     * Exclusion support for reference. Prevents non-numeric identification key from being mistaken for numeric
+     * identification key.
+     */
     exclusion?: Exclusion.None | Exclusion.AllNumeric | undefined;
 }
 
@@ -776,6 +811,9 @@ export class NonNumericIdentificationKeyValidator extends AbstractIdentification
      * Validator to ensure that an identification key (minus check character pair) is not all numeric.
      */
     private static readonly NOT_ALL_NUMERIC_VALIDATOR = new class extends RegExpValidator {
+        /**
+         * @inheritDoc
+         */
         protected override createErrorMessage(_s: string): string {
             return i18next.t("IdentificationKey.referenceCantBeAllNumeric", {
                 ns: gs1NS
@@ -816,6 +854,15 @@ export class NonNumericIdentificationKeyValidator extends AbstractIdentification
         return this._requiresCheckCharacterPair;
     }
 
+    /**
+     * Validate a non-numeric identification key and throw an exception if validation fails.
+     *
+     * @param identificationKey
+     * Identification key.
+     *
+     * @param validation
+     * Validation parameters.
+     */
     validate(identificationKey: string, validation?: NonNumericIdentificationKeyValidation): void {
         const partialIdentificationKey = this.requiresCheckCharacterPair ? identificationKey.substring(0, identificationKey.length - 2) : identificationKey;
 
@@ -997,19 +1044,32 @@ abstract class AbstractIdentificationKeyCreator implements IdentificationKeyCrea
 
     abstract get referenceValidator(): CharacterSetValidator;
 
+    /**
+     * @inheritDoc
+     */
     get referenceCreator(): CharacterSetCreator {
         return this.referenceValidator as CharacterSetCreator;
     }
 
+    /**
+     * @inheritDoc
+     */
     get prefixManager(): PrefixManager {
+        // Prefix manager is expected to have been initialized by this point.
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return this._prefixManager!;
     }
 
+    /**
+     * @inheritDoc
+     */
     get prefix(): string {
         return this.prefixManager.gs1CompanyPrefix;
     }
 
+    /**
+     * @inheritDoc
+     */
     get referenceLength(): number {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return this._referenceLength!;
@@ -1027,58 +1087,37 @@ export interface NumericIdentificationKeyCreator extends NumericIdentificationKe
      */
     get capacity(): number;
 
-    /**
-     * Create an identification key with a reference based on a numeric value. The value is converted to a reference of
-     * the appropriate length using {@linkcode NUMERIC_CREATOR}.
-     *
-     * @param value
-     * Numeric value.
-     *
-     * @param sparse
-     * If true, the value is mapped to a sparse sequence resistant to discovery. Default is false.
-     *
-     * @returns
-     * Identification key.
-     */
-    create: (value: number, sparse?: boolean) => string;
+    create: {
+        /**
+         * Create an identification key with a reference based on a numeric value. The value is converted to a reference of
+         * the appropriate length using {@linkcode NUMERIC_CREATOR}.
+         *
+         * @param value
+         * Numeric value.
+         *
+         * @param sparse
+         * If true, the value is mapped to a sparse sequence resistant to discovery. Default is false.
+         *
+         * @returns
+         * Identification key.
+         */
+        (value: number | bigint, sparse?: boolean): string;
 
-    /**
-     * Create a sequence of identification keys with references based on a sequence of numeric values. The values are
-     * converted to references of the appropriate length using {@linkcode NUMERIC_CREATOR}. References are created with
-     * values from `startValue` to `startValue + count - 1`.
-     *
-     * The implementation uses {@link CharacterSetCreator.createSequence}, so the values are created only as needed.
-     *
-     * @param startValue
-     * Start numeric value.
-     *
-     * @param count
-     * Count of identification keys to create.
-     *
-     * @param sparse
-     * If true, the values are mapped to a sparse sequence resistant to discovery. Default is false.
-     *
-     * @returns
-     * Iterable iterator over created identification keys.
-     */
-    createSequence: (startValue: number, count: number, sparse?: boolean) => IterableIterator<string>;
-
-    /**
-     * Create multiple identification keys with references based on numeric values. The values are converted to
-     * references of the appropriate length using {@linkcode NUMERIC_CREATOR}.
-     *
-     * The implementation uses {@link CharacterSetCreator.createMultiple}, so the values are created only as needed.
-     *
-     * @param valuesSource
-     * Source of values.
-     *
-     * @param sparse
-     * If true, the values are mapped to a sparse sequence resistant to discovery. Default is false.
-     *
-     * @returns
-     * Iterable iterator over created identification keys.
-     */
-    createMultiple: (valuesSource: IterableOrIterator<number>, sparse?: boolean) => IterableIterator<string>;
+        /**
+         * Create identification keys with references based on numeric values. The values are converted to references of
+         * the appropriate length using {@linkcode NUMERIC_CREATOR}.
+         *
+         * @param values
+         * Numeric values.
+         *
+         * @param sparse
+         * If true, the values are mapped to a sparse sequence resistant to discovery. Default is false.
+         *
+         * @returns
+         * Identification keys.
+         */
+        (values: Iterable<number | bigint>, sparse?: boolean): IterableIterator<string>;
+    };
 
     /**
      * Create all identification keys for the prefix from `0` to `capacity - 1`.
@@ -1124,6 +1163,9 @@ abstract class AbstractNumericIdentificationKeyCreator extends AbstractIdentific
 
     abstract get leaderType(): LeaderType;
 
+    /**
+     * @inheritDoc
+     */
     get capacity(): number {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return this._capacity!;
@@ -1158,16 +1200,19 @@ abstract class AbstractNumericIdentificationKeyCreator extends AbstractIdentific
         return partialIdentificationKey + checkDigit(partialIdentificationKey);
     }
 
-    create(value: number, sparse = false): string {
-        return NUMERIC_CREATOR.create(this.referenceLength, value, Exclusion.None, sparse ? this.tweak : undefined, reference => this.buildIdentificationKey(reference));
-    }
+    /**
+     * @inheritDoc
+     */
+    create(value: number | bigint, sparse?: boolean): string;
 
-    createSequence(startValue: number, count: number, sparse = false): IterableIterator<string> {
-        return NUMERIC_CREATOR.createSequence(this.referenceLength, startValue, count, Exclusion.None, sparse ? this.tweak : undefined, reference => this.buildIdentificationKey(reference));
-    }
+    /**
+     * @inheritDoc
+     */
+    create(values: Iterable<number | bigint>, sparse?: boolean): IterableIterator<string>;
 
-    createMultiple(valuesSource: IterableOrIterator<number>, sparse = false): IterableIterator<string> {
-        return NUMERIC_CREATOR.createMultiple(this.referenceLength, valuesSource, Exclusion.None, sparse ? this.tweak : undefined, reference => this.buildIdentificationKey(reference));
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    create(valueOrValues: number | bigint | Iterable<number | bigint>, sparse = false): string | IterableIterator<string> {
+        return NUMERIC_CREATOR.create(this.referenceLength, valueOrValues, Exclusion.None, sparse ? this.tweak : undefined, reference => this.buildIdentificationKey(reference));
     }
 
     /**
@@ -1222,6 +1267,9 @@ abstract class AbstractNumericIdentificationKeyCreator extends AbstractIdentific
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     createAll(): IterableIterator<string> {
         const hasExtensionDigit = this.leaderType === LeaderType.ExtensionDigit;
         const prefix = this.prefix;
@@ -1275,26 +1323,11 @@ export class GTINCreator extends Mixin(GTINValidator, AbstractNumericIdentificat
         this.init(prefixManager, prefixManager.prefix);
     }
 
+    /**
+     * @inheritDoc
+     */
     override get prefix(): string {
         return this.prefixManager.prefix;
-    }
-
-    /**
-     * Build a GTIN-14 from an indicator digit, the prefix, and a reference.
-     *
-     * @param indicatorDigit
-     * Indicator digit.
-     *
-     * @param reference
-     * Reference.
-     *
-     * @returns
-     * GTIN-14.
-     */
-    private buildGTIN14(indicatorDigit: string, reference: string): string {
-        const partialIdentificationKey = indicatorDigit + this.prefixManager.gs1CompanyPrefix + reference;
-
-        return partialIdentificationKey + checkDigit(partialIdentificationKey);
     }
 
     /**
@@ -1305,7 +1338,7 @@ export class GTINCreator extends Mixin(GTINValidator, AbstractNumericIdentificat
      * Indicator digit.
      *
      * @param value
-     * Numeric value.
+     * Numeric value of the reference.
      *
      * @param sparse
      * If true, the value is mapped to a sparse sequence resistant to discovery. Default is false.
@@ -1313,51 +1346,19 @@ export class GTINCreator extends Mixin(GTINValidator, AbstractNumericIdentificat
      * @returns
      * GTIN-14.
      */
-    createGTIN14(indicatorDigit: string, value: number, sparse = false): string {
-        NUMERIC_CREATOR.validate(indicatorDigit, GTINCreator.REQUIRED_INDICATOR_DIGIT_VALIDATION);
-
-        return NUMERIC_CREATOR.create(GTINType.GTIN13 - this.prefixManager.gs1CompanyPrefix.length - 1, value, Exclusion.None, sparse ? this.tweak : undefined, reference => this.buildGTIN14(indicatorDigit, reference));
-    }
-
-    /**
-     * Create a sequence of GTIN-14s with an indicator digit and references based on a sequence of numeric values.
-     * The values are converted to references of the appropriate length using {@linkcode NUMERIC_CREATOR}. References
-     * are created with values from `startValue` to `startValue + count - 1`.
-     *
-     * The implementation uses {@link CharacterSetCreator.createSequence}, so the values are created only as needed.
-     *
-     * @param indicatorDigit
-     * Indicator digit.
-     *
-     * @param startValue
-     * Start numeric value.
-     *
-     * @param count
-     * Count of identification keys to create.
-     *
-     * @param sparse
-     * If true, the values are mapped to a sparse sequence resistant to discovery. Default is false.
-     *
-     * @returns
-     * Iterable iterator over created GTIN-14s.
-     */
-    createGTIN14Sequence(indicatorDigit: string, startValue: number, count: number, sparse = false): IterableIterator<string> {
-        NUMERIC_CREATOR.validate(indicatorDigit, GTINCreator.REQUIRED_INDICATOR_DIGIT_VALIDATION);
-
-        return NUMERIC_CREATOR.createSequence(GTINType.GTIN13 - this.prefixManager.gs1CompanyPrefix.length - 1, startValue, count, Exclusion.None, sparse ? this.tweak : undefined, reference => this.buildGTIN14(indicatorDigit, reference));
-    }
+    createGTIN14(indicatorDigit: string, value: number | bigint, sparse?: boolean): string;
 
     /**
      * Create multiple GTIN-14s with an indicator digit and references based on numeric values. The values are converted
      * to references of the appropriate length using {@linkcode NUMERIC_CREATOR}.
      *
-     * The implementation uses {@link CharacterSetCreator.createMultiple}, so the values are created only as needed.
+     * The implementation uses {@link CharacterSetCreator.create}, so the values are created only as needed.
      *
      * @param indicatorDigit
      * Indicator digit.
      *
-     * @param valuesSource
-     * Source of values.
+     * @param values
+     * Values.
      *
      * @param sparse
      * If true, the values are mapped to a sparse sequence resistant to discovery. Default is false.
@@ -1365,10 +1366,17 @@ export class GTINCreator extends Mixin(GTINValidator, AbstractNumericIdentificat
      * @returns
      * Iterable iterator over created GTIN-14s.
      */
-    createGTIN14Multiple(indicatorDigit: string, valuesSource: IterableOrIterator<number>, sparse = false): IterableIterator<string> {
+    createGTIN14(indicatorDigit: string, values: Iterable<number | bigint>, sparse?: boolean): IterableIterator<string>;
+
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    createGTIN14(indicatorDigit: string, valueOrValues: number | bigint | Iterable<number | bigint>, sparse = false): string | IterableIterator<string> {
         NUMERIC_CREATOR.validate(indicatorDigit, GTINCreator.REQUIRED_INDICATOR_DIGIT_VALIDATION);
 
-        return NUMERIC_CREATOR.createMultiple(GTINType.GTIN13 - this.prefixManager.gs1CompanyPrefix.length - 1, valuesSource, Exclusion.None, sparse ? this.tweak : undefined, reference => this.buildGTIN14(indicatorDigit, reference));
+        return NUMERIC_CREATOR.create(GTINType.GTIN13 - this.prefixManager.gs1CompanyPrefix.length - 1, valueOrValues, Exclusion.None, sparse ? this.tweak : undefined, (reference) => {
+            const partialIdentificationKey = indicatorDigit + this.prefixManager.gs1CompanyPrefix + reference;
+
+            return partialIdentificationKey + checkDigit(partialIdentificationKey);
+        });
     }
 
     /**
@@ -1601,11 +1609,7 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
      * @returns
      * Serialized identification key.
      */
-    private concatenateValidated(baseIdentificationKey: string, serialComponent: string): string {
-        this.serialComponentCreator.validate(serialComponent, this.serialComponentValidation);
-
-        return baseIdentificationKey + serialComponent;
-    }
+    private concatenateValidated(baseIdentificationKey: string, serialComponent: string): string;
 
     /**
      * Concatenate a validated base identification key with multiple serial components.
@@ -1613,14 +1617,27 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
      * @param baseIdentificationKey
      * Base identification key.
      *
-     * @param serialComponentsSource
-     * Source of serial components.
+     * @param serialComponents
+     * Serial components.
      *
      * @returns
      * Serialized identification keys.
      */
-    private concatenateValidatedMultiple(baseIdentificationKey: string, serialComponentsSource: IterableOrIterator<string>): IterableIterator<string> {
-        return Iterator.from(serialComponentsSource).map(serialComponent => this.concatenateValidated(baseIdentificationKey, serialComponent));
+    private concatenateValidated(baseIdentificationKey: string, serialComponents: Iterable<string>): IterableIterator<string>;
+
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    private concatenateValidated(baseIdentificationKey: string, serialComponent: string | Iterable<string>): string | IterableIterator<string> {
+        let result: string | IterableIterator<string>;
+
+        if (typeof serialComponent === "string") {
+            this.serialComponentCreator.validate(serialComponent, this.serialComponentValidation);
+
+            result = baseIdentificationKey + serialComponent;
+        } else {
+            result = Iterator.from(serialComponent).map(serialComponent => this.concatenateValidated(baseIdentificationKey, serialComponent));
+        }
+
+        return result;
     }
 
     /**
@@ -1628,7 +1645,7 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
      * value is converted to a reference of the appropriate length using {@linkcode NUMERIC_CREATOR}.
      *
      * @param value
-     * Numeric value.
+     * Numeric value of the references.
      *
      * @param serialComponent
      * Serial component.
@@ -1639,9 +1656,7 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
      * @returns
      * Serialized identification key.
      */
-    createSerialized(value: number, serialComponent: string, sparse = false): string {
-        return this.concatenateValidated(this.create(value, sparse), serialComponent);
-    }
+    createSerialized(value: number, serialComponent: string, sparse?: boolean): string;
 
     /**
      * Create multiple serialized identification keys with a reference based on a numeric value and multiple serial
@@ -1650,8 +1665,8 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
      * @param value
      * Numeric value.
      *
-     * @param serialComponentsSource
-     * Source of serial components.
+     * @param serialComponents
+     * Serial components.
      *
      * @param sparse
      * If true, the value is mapped to a sparse sequence resistant to discovery. Default is false.
@@ -1659,8 +1674,11 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
      * @returns
      * Serialized identification keys.
      */
-    createMultipleSerialized(value: number, serialComponentsSource: IterableOrIterator<string>, sparse = false): IterableIterator<string> {
-        return this.concatenateValidatedMultiple(this.create(value, sparse), serialComponentsSource);
+    createSerialized(value: number, serialComponents: Iterable<string>, sparse?: boolean): IterableIterator<string>;
+
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    createSerialized(value: number, serialComponent: string | Iterable<string>, sparse = false): string | IterableIterator<string> {
+        return this.concatenateValidated(this.create(value, sparse), serialComponent);
     }
 
     /**
@@ -1675,11 +1693,7 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
      * @returns
      * Serialized identification key.
      */
-    concatenate(baseIdentificationKey: string, serialComponent: string): string {
-        this.validate(baseIdentificationKey);
-
-        return this.concatenateValidated(baseIdentificationKey, serialComponent);
-    }
+    concatenate(baseIdentificationKey: string, serialComponent: string): string;
 
     /**
      * Concatenate a base identification key with multiple serial components.
@@ -1687,16 +1701,19 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
      * @param baseIdentificationKey
      * Base identification key.
      *
-     * @param serialComponentsSource
-     * Source of serial components.
+     * @param serialComponents
+     * Serial components.
      *
      * @returns
      * Serialized identification keys.
      */
-    concatenateMultiple(baseIdentificationKey: string, serialComponentsSource: IterableOrIterator<string>): IterableIterator<string> {
+    concatenate(baseIdentificationKey: string, serialComponents: Iterable<string>): IterableIterator<string>;
+
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    concatenate(baseIdentificationKey: string, serialComponent: string | Iterable<string>): string | IterableIterator<string> {
         this.validate(baseIdentificationKey);
 
-        return this.concatenateValidatedMultiple(baseIdentificationKey, serialComponentsSource);
+        return this.concatenateValidated(baseIdentificationKey, serialComponent);
     }
 }
 
@@ -1752,25 +1769,34 @@ export class NonNumericIdentificationKeyCreator extends Mixin(NonNumericIdentifi
      * @returns
      * Identification key.
      */
-    create(reference: string): string {
-        this.referenceValidator.validate(reference, this._referenceValidation);
-
-        const partialIdentificationKey = this.prefix + reference;
-
-        return this.requiresCheckCharacterPair ? partialIdentificationKey + checkCharacterPair(partialIdentificationKey) : partialIdentificationKey;
-    }
+    create(reference: string): string;
 
     /**
      * Create multiple identification keys with references.
      *
-     * @param referencesSource
-     * Source of references.
+     * @param references
+     * References.
      *
      * @returns
      * Identification keys.
      */
-    createMultiple(referencesSource: IterableOrIterator<string>): IterableIterator<string> {
-        return Iterator.from(referencesSource).map(reference => this.create(reference));
+    create(references: Iterable<string>): IterableIterator<string>;
+
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    create(referenceOrReferences: string | Iterable<string>): string | IterableIterator<string> {
+        let result: string | IterableIterator<string>;
+
+        if (typeof referenceOrReferences === "string") {
+            this.referenceValidator.validate(referenceOrReferences, this._referenceValidation);
+
+            const partialIdentificationKey = this.prefix + referenceOrReferences;
+
+            result = this.requiresCheckCharacterPair ? partialIdentificationKey + checkCharacterPair(partialIdentificationKey) : partialIdentificationKey;
+        } else {
+            result = Iterator.from(referenceOrReferences).map(reference => this.create(reference));
+        }
+
+        return result;
     }
 }
 

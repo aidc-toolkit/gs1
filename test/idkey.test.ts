@@ -1,5 +1,5 @@
 import { I18NEnvironment, i18nInit } from "@aidc-toolkit/core";
-import { CharacterSetCreator, Exclusion, NUMERIC_CREATOR } from "@aidc-toolkit/utility";
+import { CharacterSetCreator, Exclusion, NUMERIC_CREATOR, Sequencer } from "@aidc-toolkit/utility";
 import { describe, expect, test } from "vitest";
 import {
     AI39_CREATOR,
@@ -373,8 +373,8 @@ describe("Sparse creation", () => {
 
     prefixManager.tweakFactor = 0;
 
-    const sparseGTINs = Array.from(prefixManager.gtinCreator.createSequence(0, 10, true));
-    const straightGTINs = Array.from(prefixManager.gtinCreator.createSequence(0, 10));
+    const sparseGTINs = Array.from(prefixManager.gtinCreator.create(new Sequencer(0, 10), true));
+    const straightGTINs = Array.from(prefixManager.gtinCreator.create(new Sequencer(0, 10)));
 
     test("Tweak factor 0", () => {
         expect(sparseGTINs).toStrictEqual(straightGTINs);
@@ -421,7 +421,7 @@ function testNumericIdentificationKeyCreator(creator: NumericIdentificationKeyCr
             expect(creator.referenceLength).toBe(referenceLength);
             expect(creator.capacity).toBe(Number(CharacterSetCreator.powerOf10(referenceLength)));
 
-            const sequenceIterator = creator.createSequence(0, referenceCount)[Symbol.iterator]();
+            const sequenceIterator = Iterator.from(creator.create(new Sequencer(0, referenceCount)));
 
             let allCount = 0;
 
@@ -447,7 +447,7 @@ function testNumericIdentificationKeyCreator(creator: NumericIdentificationKeyCr
                 identificationKeys.push(creator.create(randomValue));
             }
 
-            expect(Array.from(creator.createMultiple(randomValues))).toStrictEqual(identificationKeys);
+            expect(Array.from(creator.create(randomValues))).toStrictEqual(identificationKeys);
         });
 
         test("Sparse", () => {
@@ -460,7 +460,7 @@ function testNumericIdentificationKeyCreator(creator: NumericIdentificationKeyCr
 
             let sequenceCount = 0;
 
-            Iterator.from(creator.createSequence(0, sparseReferenceCount, true)).forEach((identificationKey, index) => {
+            Iterator.from(creator.create(new Sequencer(0, sparseReferenceCount), true)).forEach((identificationKey, index) => {
                 validate(identificationKey, index, true);
 
                 sequential = sequential && Number((hasExtensionDigit ? identificationKey.charAt(0) : "") + identificationKey.substring(referenceSubstringStart, referenceSubstringEnd)) === index;
@@ -484,7 +484,7 @@ function testNumericIdentificationKeyCreator(creator: NumericIdentificationKeyCr
                 identificationKeys.push(creator.create(randomValue, true));
             }
 
-            expect(Array.from(creator.createMultiple(randomValues, true))).toStrictEqual(identificationKeys);
+            expect(Array.from(creator.create(randomValues, true))).toStrictEqual(identificationKeys);
         });
 
         test("Validation position", () => {
@@ -555,7 +555,7 @@ function testGTINCreator(creator: GTINCreator): void {
         test("GTIN-14 straight", () => {
             let sequenceCount = 0;
 
-            Iterator.from(creator.createGTIN14Sequence("5", 0, referenceCount)).forEach((gtin, index) => {
+            Iterator.from(creator.createGTIN14("5", new Sequencer(0, referenceCount))).forEach((gtin, index) => {
                 expect(Number(gtin.substring(referenceSubstringStart, referenceSubstringEnd))).toBe(index);
 
                 validate(gtin, index, false);
@@ -575,7 +575,7 @@ function testGTINCreator(creator: GTINCreator): void {
                 identificationKeys.push(creator.createGTIN14("5", randomValue));
             }
 
-            expect(Array.from(creator.createGTIN14Multiple("5", randomValues))).toStrictEqual(identificationKeys);
+            expect(Array.from(creator.createGTIN14("5", randomValues))).toStrictEqual(identificationKeys);
         });
 
         test("GTIN-14 sparse", () => {
@@ -588,7 +588,7 @@ function testGTINCreator(creator: GTINCreator): void {
 
             let sequenceCount = 0;
 
-            Iterator.from(creator.createGTIN14Sequence("5", 0, sparseReferenceCount, true)).forEach((gtin, index) => {
+            Iterator.from(creator.createGTIN14("5", new Sequencer(0, sparseReferenceCount), true)).forEach((gtin, index) => {
                 sequential = sequential && Number(gtin.substring(referenceSubstringStart, referenceSubstringEnd)) === index;
 
                 validate(gtin, index, true);
@@ -612,7 +612,7 @@ function testGTINCreator(creator: GTINCreator): void {
                 identificationKeys.push(creator.createGTIN14("5", randomValue, true));
             }
 
-            expect(Array.from(creator.createGTIN14Multiple("5", randomValues, true))).toStrictEqual(identificationKeys);
+            expect(Array.from(creator.createGTIN14("5", randomValues, true))).toStrictEqual(identificationKeys);
         });
 
         if (creator.gtinType === GTINType.GTIN12) {
@@ -878,8 +878,8 @@ function testSerializableNumericIdentificationKeyCreator(creator: SerializableNu
 
             expect(creator.createSerialized(0, serial, true)).toBe(serializedIdentificationKey);
             expect(creator.concatenate(identificationKey, serial)).toBe(serializedIdentificationKey);
-            expect(Array.from(creator.createMultipleSerialized(0, serials, true))).toStrictEqual(serializedIdentificationKeys);
-            expect(Array.from(creator.concatenateMultiple(identificationKey, serials))).toStrictEqual(serializedIdentificationKeys);
+            expect(Array.from(creator.createSerialized(0, serials, true))).toStrictEqual(serializedIdentificationKeys);
+            expect(Array.from(creator.concatenate(identificationKey, serials))).toStrictEqual(serializedIdentificationKeys);
 
             const fullLengthSerial = "0".repeat(creator.serialComponentLength);
             const fullLengthPlusOneSerial = fullLengthSerial + "0";
@@ -887,12 +887,12 @@ function testSerializableNumericIdentificationKeyCreator(creator: SerializableNu
 
             expect(() => creator.createSerialized(0, fullLengthSerial, true)).not.toThrow(RangeError);
             expect(() => creator.concatenate(identificationKey, fullLengthSerial)).not.toThrow(RangeError);
-            expect(() => Array.from(creator.createMultipleSerialized(0, [...serials, fullLengthSerial], true))).not.toThrow(RangeError);
-            expect(() => Array.from(creator.concatenateMultiple(identificationKey, [...serials, fullLengthSerial]))).not.toThrow(RangeError);
+            expect(() => Array.from(creator.createSerialized(0, [...serials, fullLengthSerial], true))).not.toThrow(RangeError);
+            expect(() => Array.from(creator.concatenate(identificationKey, [...serials, fullLengthSerial]))).not.toThrow(RangeError);
             expect(() => creator.createSerialized(0, fullLengthPlusOneSerial, true)).toThrow(fullLengthPlusOneSerialErrorMessage);
             expect(() => creator.concatenate(identificationKey, fullLengthPlusOneSerial)).toThrow(fullLengthPlusOneSerialErrorMessage);
-            expect(() => Array.from(creator.createMultipleSerialized(0, [...serials, fullLengthPlusOneSerial], true))).toThrow(fullLengthPlusOneSerialErrorMessage);
-            expect(() => Array.from(creator.concatenateMultiple(identificationKey, [...serials, fullLengthPlusOneSerial]))).toThrow(fullLengthPlusOneSerialErrorMessage);
+            expect(() => Array.from(creator.createSerialized(0, [...serials, fullLengthPlusOneSerial], true))).toThrow(fullLengthPlusOneSerialErrorMessage);
+            expect(() => Array.from(creator.concatenate(identificationKey, [...serials, fullLengthPlusOneSerial]))).toThrow(fullLengthPlusOneSerialErrorMessage);
 
             let invalidSerial: string;
 
@@ -914,8 +914,8 @@ function testSerializableNumericIdentificationKeyCreator(creator: SerializableNu
 
             expect(() => creator.createSerialized(0, invalidSerial, true)).toThrow(invalidSerialErrorMessage);
             expect(() => creator.concatenate(identificationKey, invalidSerial)).toThrow(invalidSerialErrorMessage);
-            expect(() => Array.from(creator.createMultipleSerialized(0, [...serials, invalidSerial], true))).toThrow(invalidSerialErrorMessage);
-            expect(() => Array.from(creator.concatenateMultiple(identificationKey, [...serials, invalidSerial]))).toThrow(invalidSerialErrorMessage);
+            expect(() => Array.from(creator.createSerialized(0, [...serials, invalidSerial], true))).toThrow(invalidSerialErrorMessage);
+            expect(() => Array.from(creator.concatenate(identificationKey, [...serials, invalidSerial]))).toThrow(invalidSerialErrorMessage);
         });
     });
 }
@@ -937,12 +937,12 @@ function testNonNumericIdentificationKeyCreator<T extends NonNumericIdentificati
 
             let sequenceCount = 0;
 
-            Iterator.from(creator.createMultiple(creator.referenceCreator.createSequence(TEST_REFERENCE_LENGTH, 0, referenceCount))).forEach((identificationKey, index) => {
+            Iterator.from(creator.create(creator.referenceCreator.create(TEST_REFERENCE_LENGTH, new Sequencer(0, referenceCount)))).forEach((identificationKey, index) => {
                 expect(() => {
                     creator.validate(identificationKey);
                 }).not.toThrow(RangeError);
 
-                expect(Number(creator.referenceCreator.value(identificationKey.substring(referenceSubstringStart, referenceSubstringEnd)))).toBe(index);
+                expect(Number(creator.referenceCreator.valueFor(identificationKey.substring(referenceSubstringStart, referenceSubstringEnd)))).toBe(index);
 
                 expect(identificationKey.length).toBeLessThanOrEqual(creator.length);
                 expect(identificationKey.substring(0, prefixLength)).toBe(prefix);
@@ -961,14 +961,14 @@ function testNonNumericIdentificationKeyCreator<T extends NonNumericIdentificati
 
             let sequenceCount = 0;
 
-            Iterator.from(creator.createMultiple(creator.referenceCreator.createSequence(TEST_REFERENCE_LENGTH, 0, referenceCount, Exclusion.None, 123456n))).forEach((identificationKey, index) => {
+            Iterator.from(creator.create(creator.referenceCreator.create(TEST_REFERENCE_LENGTH, new Sequencer(0, referenceCount), Exclusion.None, 123456n))).forEach((identificationKey, index) => {
                 expect(() => {
                     creator.validate(identificationKey);
                 }).not.toThrow(RangeError);
 
-                expect(Number(creator.referenceCreator.value(identificationKey.substring(referenceSubstringStart, referenceSubstringEnd), Exclusion.None, 123456n))).toBe(index);
+                expect(Number(creator.referenceCreator.valueFor(identificationKey.substring(referenceSubstringStart, referenceSubstringEnd), Exclusion.None, 123456n))).toBe(index);
 
-                sequential = sequential && Number(creator.referenceCreator.value(identificationKey.substring(referenceSubstringStart, referenceSubstringEnd))) === index;
+                sequential = sequential && Number(creator.referenceCreator.valueFor(identificationKey.substring(referenceSubstringStart, referenceSubstringEnd))) === index;
 
                 expect(identificationKey.length).toBeLessThanOrEqual(creator.length);
                 expect(identificationKey.substring(0, prefixLength)).toBe(prefix);
