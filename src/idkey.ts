@@ -131,7 +131,7 @@ export enum CharacterSet {
 export interface IdentificationKeyValidation extends StringValidation {
     /**
      * Position offset within a larger string. Strings are sometimes composed of multiple substrings; this parameter
-     * ensures that the exception notes the proper position in the string.
+     * ensures that the error notes the proper position in the string.
      */
     positionOffset?: number | undefined;
 }
@@ -170,7 +170,7 @@ export interface IdentificationKeyValidator<V extends IdentificationKeyValidatio
     get referenceValidator(): CharacterSetValidator;
 
     /**
-     * Validate an identification key and throw an exception if validation fails.
+     * Validate an identification key and throw an error if validation fails.
      *
      * @param identificationKey
      * Identification key.
@@ -185,6 +185,10 @@ export interface IdentificationKeyValidator<V extends IdentificationKeyValidatio
  * Abstract identification key validator. Implements common functionality for an identification key validator.
  */
 abstract class AbstractIdentificationKeyValidator<V extends IdentificationKeyValidation = IdentificationKeyValidation> implements IdentificationKeyValidator<V> {
+    private static readonly CHARACTER_SET_CREATORS = [
+        NUMERIC_CREATOR, AI82_CREATOR, AI39_CREATOR
+    ];
+
     /**
      * Identification key type.
      */
@@ -206,7 +210,7 @@ abstract class AbstractIdentificationKeyValidator<V extends IdentificationKeyVal
     private readonly _referenceCharacterSet: CharacterSet;
 
     /**
-     * Character set validator.
+     * Reference validator.
      */
     private readonly _referenceValidator: CharacterSetValidator;
 
@@ -220,23 +224,7 @@ abstract class AbstractIdentificationKeyValidator<V extends IdentificationKeyVal
      * Character set validator.
      */
     protected static validatorFor(characterSet: CharacterSet): CharacterSetValidator {
-        let characterSetValidator: CharacterSetValidator;
-
-        switch (characterSet) {
-            case CharacterSet.Numeric:
-                characterSetValidator = NUMERIC_CREATOR;
-                break;
-
-            case CharacterSet.AI82:
-                characterSetValidator = AI82_CREATOR;
-                break;
-
-            case CharacterSet.AI39:
-                characterSetValidator = AI39_CREATOR;
-                break;
-        }
-
-        return characterSetValidator;
+        return AbstractIdentificationKeyValidator.CHARACTER_SET_CREATORS[characterSet];
     }
 
     /**
@@ -711,7 +699,7 @@ export class SerializableNumericIdentificationKeyValidator extends NonGTINNumeri
     private readonly _serialComponentCharacterSet: CharacterSet;
 
     /**
-     * Serial component character set validation parameters.
+     * Serial component validation parameters.
      */
     private readonly _serialComponentValidation: CharacterSetValidation;
 
@@ -855,7 +843,7 @@ export class NonNumericIdentificationKeyValidator extends AbstractIdentification
     }
 
     /**
-     * Validate a non-numeric identification key and throw an exception if validation fails.
+     * Validate a non-numeric identification key and throw an error if validation fails.
      *
      * @param identificationKey
      * Identification key.
@@ -1722,7 +1710,7 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
  */
 export class NonNumericIdentificationKeyCreator extends Mixin(NonNumericIdentificationKeyValidator, AbstractIdentificationKeyCreator) {
     /**
-     * Reference character set validation parameters.
+     * Reference validation parameters.
      */
     private readonly _referenceValidation: CharacterSetValidation;
 
