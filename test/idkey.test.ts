@@ -505,6 +505,14 @@ function testNumericIdentificationKeyCreator(creator: NumericIdentificationKeyCr
             }).toThrow("Invalid character 'O' at position 3");
         });
 
+        test("Position offset", () => {
+            expect(() => {
+                creator.validate(creator.create(0), {
+                    positionOffset: 4
+                });
+            }).not.toThrow(RangeError);
+        });
+
         testIdentificationKeyCreatorCallback(postTestCallback);
     });
 }
@@ -981,6 +989,14 @@ function testNonNumericIdentificationKeyCreator<T extends NonNumericIdentificati
 
             expect(sequential).toBe(false);
             expect(sequenceCount).toBe(referenceCount);
+        });
+
+        test("Position offset", () => {
+            expect(() => {
+                creator.validate(creator.create("ABC123"), {
+                    positionOffset: 4
+                });
+            }).not.toThrow(RangeError);
         });
 
         test("Not all numeric", () => {

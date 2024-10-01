@@ -286,7 +286,7 @@ abstract class AbstractIdentificationKeyValidator<V extends IdentificationKeyVal
     }
 
     /**
-     * Pad an identification key on the left with zeroes for validation purposes. This is done to align an
+     * Pad an identification key on the left with zero-value character for validation purposes. This is done to align an
      * identification key with a position offset for any error message that may be thrown by the reference validator.
      *
      * @param identificationKey
@@ -298,9 +298,9 @@ abstract class AbstractIdentificationKeyValidator<V extends IdentificationKeyVal
      * @returns
      * Padded identification key.
      */
-    protected static padIdentificationKey(identificationKey: string, validation: IdentificationKeyValidation | undefined): string {
+    protected padIdentificationKey(identificationKey: string, validation: IdentificationKeyValidation | undefined): string {
         // Identification key is returned as is if position offset is undefined.
-        return validation?.positionOffset === undefined ? identificationKey : "0".repeat(validation.positionOffset).concat(identificationKey);
+        return validation?.positionOffset === undefined ? identificationKey : this.referenceValidator.character(0).repeat(validation.positionOffset).concat(identificationKey);
     }
 
     /**
@@ -415,7 +415,7 @@ abstract class AbstractNumericIdentificationKeyValidator extends AbstractIdentif
         }
 
         // Validating the check digit will also validate the characters.
-        if (!hasValidCheckDigit(AbstractIdentificationKeyValidator.padIdentificationKey(identificationKey, validation))) {
+        if (!hasValidCheckDigit(this.padIdentificationKey(identificationKey, validation))) {
             throw new RangeError(i18next.t("IdentificationKey.invalidCheckDigit", {
                 ns: gs1NS
             }));
@@ -862,7 +862,7 @@ export class NonNumericIdentificationKeyValidator extends AbstractIdentification
                 positionOffset: validation?.positionOffset
             });
         // Validating the check character pair will also validate the characters.
-        } else if (!hasValidCheckCharacterPair(AbstractIdentificationKeyValidator.padIdentificationKey(identificationKey, validation))) {
+        } else if (!hasValidCheckCharacterPair(this.padIdentificationKey(identificationKey, validation))) {
             throw new RangeError(i18next.t("IdentificationKey.invalidCheckCharacterPair", {
                 ns: gs1NS
             }));
