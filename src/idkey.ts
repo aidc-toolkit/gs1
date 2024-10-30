@@ -1480,7 +1480,7 @@ export class GTINCreator extends Mixin(GTINValidator, AbstractNumericIdentificat
                 break;
 
             case GTINType.GTIN8 as number:
-                if (gtin.charAt(0) !== "0") {
+                if (!gtin.startsWith("0")) {
                     // GTIN is GTIN-8.
                     normalizedGTIN = gtin;
                 } else {
