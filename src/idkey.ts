@@ -2046,9 +2046,9 @@ export class PrefixManager {
         if (this._tweakFactor !== tweakFactor) {
             this._tweakFactor = tweakFactor;
 
-            this._identificationKeyCreatorsMap.forEach((creator) => {
+            for (const creator of this._identificationKeyCreatorsMap.values()) {
                 this.setCreatorTweak(creator);
-            });
+            }
         }
     }
 
