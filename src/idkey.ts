@@ -1043,8 +1043,7 @@ abstract class AbstractIdentificationKeyCreator implements IdentificationKeyCrea
      * @inheritDoc
      */
     get prefixManager(): PrefixManager {
-        // Prefix manager is expected to have been initialized by this point.
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Prefix manager is expected to have been initialized by this point.
         return this._prefixManager!;
     }
 
@@ -1059,7 +1058,7 @@ abstract class AbstractIdentificationKeyCreator implements IdentificationKeyCrea
      * @inheritDoc
      */
     get referenceLength(): number {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Reference length is expected to have been initialized by this point.
         return this._referenceLength!;
     }
 
@@ -1155,7 +1154,7 @@ abstract class AbstractNumericIdentificationKeyCreator extends AbstractIdentific
      * @inheritDoc
      */
     get capacity(): number {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Capacity is expected to have been initialized by this point.
         return this._capacity!;
     }
 
@@ -1198,7 +1197,7 @@ abstract class AbstractNumericIdentificationKeyCreator extends AbstractIdentific
      */
     create(values: Iterable<number | bigint>, sparse?: boolean): IterableIterator<string>;
 
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    // eslint-disable-next-line jsdoc/require-jsdoc -- Implementation of overloaded signatures.
     create(valueOrValues: number | bigint | Iterable<number | bigint>, sparse = false): string | IterableIterator<string> {
         return NUMERIC_CREATOR.create(this.referenceLength, valueOrValues, Exclusion.None, sparse ? this.tweak : undefined, reference => this.buildIdentificationKey(reference));
     }
@@ -1356,7 +1355,7 @@ export class GTINCreator extends Mixin(GTINValidator, AbstractNumericIdentificat
      */
     createGTIN14(indicatorDigit: string, values: Iterable<number | bigint>, sparse?: boolean): IterableIterator<string>;
 
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    // eslint-disable-next-line jsdoc/require-jsdoc -- Implementation of overloaded signatures.
     createGTIN14(indicatorDigit: string, valueOrValues: number | bigint | Iterable<number | bigint>, sparse = false): string | IterableIterator<string> {
         NUMERIC_CREATOR.validate(indicatorDigit, GTINCreator.REQUIRED_INDICATOR_DIGIT_VALIDATION);
 
@@ -1613,7 +1612,7 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
      */
     private concatenateValidated(baseIdentificationKey: string, serialComponents: Iterable<string>): IterableIterator<string>;
 
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    // eslint-disable-next-line jsdoc/require-jsdoc -- Implementation of overloaded signatures.
     private concatenateValidated(baseIdentificationKey: string, serialComponent: string | Iterable<string>): string | IterableIterator<string> {
         let result: string | IterableIterator<string>;
 
@@ -1664,7 +1663,7 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
      */
     createSerialized(value: number, serialComponents: Iterable<string>, sparse?: boolean): IterableIterator<string>;
 
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    // eslint-disable-next-line jsdoc/require-jsdoc -- Implementation of overloaded signatures.
     createSerialized(value: number, serialComponent: string | Iterable<string>, sparse = false): string | IterableIterator<string> {
         return this.concatenateValidated(this.create(value, sparse), serialComponent);
     }
@@ -1697,7 +1696,7 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
      */
     concatenate(baseIdentificationKey: string, serialComponents: Iterable<string>): IterableIterator<string>;
 
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    // eslint-disable-next-line jsdoc/require-jsdoc -- Implementation of overloaded signatures.
     concatenate(baseIdentificationKey: string, serialComponent: string | Iterable<string>): string | IterableIterator<string> {
         this.validate(baseIdentificationKey);
 
@@ -1770,7 +1769,7 @@ export class NonNumericIdentificationKeyCreator extends Mixin(NonNumericIdentifi
      */
     create(references: Iterable<string>): IterableIterator<string>;
 
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    // eslint-disable-next-line jsdoc/require-jsdoc -- Implementation of overloaded signatures.
     create(referenceOrReferences: string | Iterable<string>): string | IterableIterator<string> {
         let result: string | IterableIterator<string>;
 
@@ -1786,6 +1785,26 @@ export class NonNumericIdentificationKeyCreator extends Mixin(NonNumericIdentifi
 
         return result;
     }
+}
+
+/**
+ * Prefix validation parameters.
+ */
+interface PrefixValidation extends CharacterSetValidation {
+    /**
+     * Minimum length.
+     */
+    minimumLength: number;
+
+    /**
+     * Maximum length.
+     */
+    maximumLength: number;
+
+    /**
+     * Callback to localized prefix type name.
+     */
+    component: () => string;
 }
 
 /**
@@ -1848,7 +1867,7 @@ export class PrefixManager {
     /**
      * Validation parameters for GS1 Company Prefix.
      */
-    private static readonly GS1_COMPANY_PREFIX_VALIDATION: CharacterSetValidation = {
+    private static readonly GS1_COMPANY_PREFIX_VALIDATION: PrefixValidation = {
         minimumLength: PrefixManager.GS1_COMPANY_PREFIX_MINIMUM_LENGTH,
         maximumLength: PrefixManager.GS1_COMPANY_PREFIX_MAXIMUM_LENGTH,
         component: () => i18next.t("Prefix.gs1CompanyPrefix", {
@@ -1859,7 +1878,7 @@ export class PrefixManager {
     /**
      * Validation parameters for U.P.C. Company Prefix expressed as GS1 Company Prefix.
      */
-    private static readonly UPC_COMPANY_PREFIX_AS_GS1_COMPANY_PREFIX_VALIDATION: CharacterSetValidation = {
+    private static readonly UPC_COMPANY_PREFIX_AS_GS1_COMPANY_PREFIX_VALIDATION: PrefixValidation = {
         minimumLength: PrefixManager.UPC_COMPANY_PREFIX_MINIMUM_LENGTH + 1,
         maximumLength: PrefixManager.UPC_COMPANY_PREFIX_MAXIMUM_LENGTH + 1,
         component: () => i18next.t("Prefix.gs1CompanyPrefix", {
@@ -1870,7 +1889,7 @@ export class PrefixManager {
     /**
      * Validation parameters for GS1-8 Prefix expressed as GS1 Company Prefix.
      */
-    private static readonly GS1_8_PREFIX_AS_GS1_COMPANY_PREFIX_VALIDATION: CharacterSetValidation = {
+    private static readonly GS1_8_PREFIX_AS_GS1_COMPANY_PREFIX_VALIDATION: PrefixValidation = {
         minimumLength: PrefixManager.GS1_8_PREFIX_MINIMUM_LENGTH + 5,
         maximumLength: PrefixManager.GS1_8_PREFIX_MAXIMUM_LENGTH + 5,
         component: () => i18next.t("Prefix.gs1CompanyPrefix", {
@@ -1881,7 +1900,7 @@ export class PrefixManager {
     /**
      * Validation parameters for U.P.C. Company Prefix.
      */
-    private static readonly UPC_COMPANY_PREFIX_VALIDATION: CharacterSetValidation = {
+    private static readonly UPC_COMPANY_PREFIX_VALIDATION: PrefixValidation = {
         minimumLength: PrefixManager.UPC_COMPANY_PREFIX_MINIMUM_LENGTH,
         maximumLength: PrefixManager.UPC_COMPANY_PREFIX_MAXIMUM_LENGTH,
         component: () => i18next.t("Prefix.upcCompanyPrefix", {
@@ -1892,7 +1911,7 @@ export class PrefixManager {
     /**
      * Validation parameters for GS1-8 Prefix.
      */
-    private static readonly GS1_8_PREFIX_VALIDATION: CharacterSetValidation = {
+    private static readonly GS1_8_PREFIX_VALIDATION: PrefixValidation = {
         minimumLength: PrefixManager.GS1_8_PREFIX_MINIMUM_LENGTH,
         maximumLength: PrefixManager.GS1_8_PREFIX_MAXIMUM_LENGTH,
         component: () => i18next.t("Prefix.gs18Prefix", {
@@ -2126,7 +2145,7 @@ export class PrefixManager {
      * Position offset within a larger string.
      */
     static validatePrefix(prefixType: PrefixType, allowUPCCompanyPrefix: boolean, allowGS18Prefix: boolean, prefix: string, isFromIdentificationKey = false, isNumericIdentificationKey = false, positionOffset?: number): void {
-        let baseValidation: CharacterSetValidation;
+        let baseValidation: PrefixValidation;
 
         // Validate the prefix type and determine the prefix validation parameters.
         switch (prefixType) {
@@ -2177,7 +2196,7 @@ export class PrefixManager {
                 break;
         }
 
-        const mergedValidation: CharacterSetValidation = {
+        const mergedValidation: PrefixValidation = {
             ...baseValidation,
             positionOffset
         };
@@ -2187,8 +2206,7 @@ export class PrefixManager {
             NUMERIC_CREATOR.validate(prefix, mergedValidation);
         } else if (!isNumericIdentificationKey) {
             // Validate only the minimum length, allowing at least one character for the (possibly non-numeric) reference.
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            NUMERIC_CREATOR.validate(prefix.substring(0, Math.min(mergedValidation.minimumLength!, prefix.length - 1)), mergedValidation);
+            NUMERIC_CREATOR.validate(prefix.substring(0, Math.min(mergedValidation.minimumLength, prefix.length - 1)), mergedValidation);
         }
     }
 

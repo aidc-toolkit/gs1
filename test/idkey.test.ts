@@ -42,7 +42,7 @@ import {
 
 await i18nInit(I18NEnvironment.CLI, true);
 
-// eslint-disable-next-line jsdoc/require-jsdoc
+// eslint-disable-next-line jsdoc/require-jsdoc -- No JSDoc in test files.
 function creatorFor(characterSet: CharacterSet): CharacterSetCreator {
     let creator: CharacterSetCreator;
 
@@ -63,14 +63,14 @@ function creatorFor(characterSet: CharacterSet): CharacterSetCreator {
     return creator;
 }
 
-// eslint-disable-next-line jsdoc/require-jsdoc
+// eslint-disable-next-line jsdoc/require-jsdoc -- No JSDoc in test files.
 function validateIdentificationKeyValidator(creator: IdentificationKeyValidator, identificationKeyType: IdentificationKeyType, prefixType: PrefixType, length: number): void {
     expect(creator.identificationKeyType).toBe(identificationKeyType);
     expect(creator.prefixType).toBe(prefixType);
     expect(creator.length).toBe(length);
 }
 
-// eslint-disable-next-line jsdoc/require-jsdoc
+// eslint-disable-next-line jsdoc/require-jsdoc -- No JSDoc in test files.
 function validateNumericIdentificationKeyValidator(validator: NumericIdentificationKeyValidator, isCreator: boolean, identificationKeyType: IdentificationKeyType, prefixType: PrefixType, length: number, leaderType: LeaderType): void {
     validateIdentificationKeyValidator(validator, identificationKeyType, prefixType, length);
 
@@ -83,7 +83,7 @@ function validateNumericIdentificationKeyValidator(validator: NumericIdentificat
     }
 }
 
-// eslint-disable-next-line jsdoc/require-jsdoc
+// eslint-disable-next-line jsdoc/require-jsdoc -- No JSDoc in test files.
 function validateGTINValidator(validator: GTINValidator, isCreator: boolean, gtinType: GTINType): void {
     let prefixType: PrefixType;
 
@@ -109,12 +109,12 @@ function validateGTINValidator(validator: GTINValidator, isCreator: boolean, gti
     expect(validator.gtinType).toBe(gtinType);
 }
 
-// eslint-disable-next-line jsdoc/require-jsdoc
+// eslint-disable-next-line jsdoc/require-jsdoc -- No JSDoc in test files.
 function validateNonGTINNumericIdentificationKeyValidator<T extends NonGTINNumericIdentificationKeyValidator>(validator: T, isCreator: boolean, identificationKeyType: IdentificationKeyType, length: number, leaderType: LeaderType): void {
     validateNumericIdentificationKeyValidator(validator, isCreator, identificationKeyType, PrefixType.GS1CompanyPrefix, length, leaderType);
 }
 
-// eslint-disable-next-line jsdoc/require-jsdoc
+// eslint-disable-next-line jsdoc/require-jsdoc -- No JSDoc in test files.
 function validateSerializableNumericIdentificationKeyValidator(validator: SerializableNumericIdentificationKeyValidator, isCreator: boolean, identificationKeyType: IdentificationKeyType, length: number, leaderType: LeaderType, serialLength: number, serialCharacterSet: CharacterSet): void {
     validateNonGTINNumericIdentificationKeyValidator(validator, isCreator, identificationKeyType, length, leaderType);
 
@@ -129,7 +129,7 @@ function validateSerializableNumericIdentificationKeyValidator(validator: Serial
     }
 }
 
-// eslint-disable-next-line jsdoc/require-jsdoc
+// eslint-disable-next-line jsdoc/require-jsdoc -- No JSDoc in test files.
 function validateNonNumericIdentificationKeyValidator(validator: NonNumericIdentificationKeyValidator, isCreator: boolean, identificationKeyType: IdentificationKeyType, length: number, referenceCharacterSet: CharacterSet, requiresCheckCharacterPair: boolean): void {
     validateIdentificationKeyValidator(validator, identificationKeyType, PrefixType.GS1CompanyPrefix, length);
 
@@ -169,7 +169,7 @@ describe("Validators", () => {
     });
 });
 
-// eslint-disable-next-line jsdoc/require-jsdoc
+// eslint-disable-next-line jsdoc/require-jsdoc -- No JSDoc in test files.
 function validateIdentificationKeyCreators(prefixManager: PrefixManager): void {
     let gtinType: GTINType;
 
@@ -222,7 +222,7 @@ function validateIdentificationKeyCreators(prefixManager: PrefixManager): void {
 describe("Prefix manager", () => {
     let prefixManager: PrefixManager;
 
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    // eslint-disable-next-line jsdoc/require-jsdoc -- No JSDoc in test files.
     function validateGTINStartsWithPrefix(length: number): void {
         expect(prefixManager.gtinCreator.length).toBe(length);
 
@@ -237,7 +237,7 @@ describe("Prefix manager", () => {
         expect(gtin14.length).toBe(14);
     }
 
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    // eslint-disable-next-line jsdoc/require-jsdoc -- No JSDoc in test files.
     function validateNonGTINStartsWithGS1CompanyPrefix(): void {
         const gln = prefixManager.glnCreator.create(0);
 
@@ -383,14 +383,14 @@ describe("Sparse creation", () => {
     prefixManager.resetTweakFactor();
 });
 
-// eslint-disable-next-line jsdoc/require-jsdoc
+// eslint-disable-next-line jsdoc/require-jsdoc -- No JSDoc in test files.
 function testIdentificationKeyCreatorCallback(callback?: () => void): void {
     if (callback !== undefined) {
         callback();
     }
 }
 
-// eslint-disable-next-line jsdoc/require-jsdoc
+// eslint-disable-next-line jsdoc/require-jsdoc -- No JSDoc in test files.
 function testNumericIdentificationKeyCreator(creator: NumericIdentificationKeyCreator, preTestCallback?: () => void, postTestCallback?: () => void): void {
     describe(creator.identificationKeyType === IdentificationKeyType.GTIN ? `${creator.identificationKeyType}-${creator.length}` : creator.identificationKeyType, () => {
         testIdentificationKeyCreatorCallback(preTestCallback);
@@ -405,7 +405,7 @@ function testNumericIdentificationKeyCreator(creator: NumericIdentificationKeyCr
         const referenceSubstringStart = prefixSubstringEnd;
         const referenceSubstringEnd = referenceSubstringStart + referenceLength - prefixSubstringStart;
 
-        // eslint-disable-next-line jsdoc/require-jsdoc
+        // eslint-disable-next-line jsdoc/require-jsdoc -- No JSDoc in test files.
         function validate(identificationKey: string, index: number, sparse: boolean): void {
             expect(() => {
                 creator.validate(identificationKey);
@@ -517,7 +517,7 @@ function testNumericIdentificationKeyCreator(creator: NumericIdentificationKeyCr
     });
 }
 
-// eslint-disable-next-line jsdoc/require-jsdoc
+// eslint-disable-next-line jsdoc/require-jsdoc -- No JSDoc in test files.
 function testGTINCreator(creator: GTINCreator): void {
     testNumericIdentificationKeyCreator(creator, () => {
         test("Length", () => {
@@ -546,7 +546,7 @@ function testGTINCreator(creator: GTINCreator): void {
         const referenceSubstringStart = prefixSubstringEnd;
         const referenceSubstringEnd = referenceSubstringStart + referenceLength;
 
-        // eslint-disable-next-line jsdoc/require-jsdoc
+        // eslint-disable-next-line jsdoc/require-jsdoc -- No JSDoc in test files.
         function validate(gtin: string, index: number, sparse: boolean): void {
             expect(() => {
                 GTINCreator.validateGTIN14(gtin);
@@ -754,7 +754,7 @@ function testGTINCreator(creator: GTINCreator): void {
     });
 }
 
-// eslint-disable-next-line jsdoc/require-jsdoc
+// eslint-disable-next-line jsdoc/require-jsdoc -- No JSDoc in test files.
 function testGTINValidationAndNormalization(): void {
     describe("GTIN validation and normalization", () => {
         test("Validation", () => {
@@ -869,12 +869,12 @@ function testGTINValidationAndNormalization(): void {
     });
 }
 
-// eslint-disable-next-line jsdoc/require-jsdoc
+// eslint-disable-next-line jsdoc/require-jsdoc -- No JSDoc in test files.
 function testNonGTINNumericIdentificationKeyCreator(creator: NonGTINNumericIdentificationKeyCreator, preTestCallback?: () => void, postTestCallback?: () => void): void {
     testNumericIdentificationKeyCreator(creator, preTestCallback, postTestCallback);
 }
 
-// eslint-disable-next-line jsdoc/require-jsdoc
+// eslint-disable-next-line jsdoc/require-jsdoc -- No JSDoc in test files.
 function testSerializableNumericIdentificationKeyCreator(creator: SerializableNumericIdentificationKeyCreator): void {
     testNonGTINNumericIdentificationKeyCreator(creator, undefined, () => {
         test("Serialization", () => {
@@ -930,7 +930,7 @@ function testSerializableNumericIdentificationKeyCreator(creator: SerializableNu
 
 const TEST_REFERENCE_LENGTH = 2;
 
-// eslint-disable-next-line jsdoc/require-jsdoc
+// eslint-disable-next-line jsdoc/require-jsdoc -- No JSDoc in test files.
 function testNonNumericIdentificationKeyCreator<T extends NonNumericIdentificationKeyCreator>(creator: T): void {
     describe(creator.identificationKeyType, () => {
         const prefix = creator.prefix;

@@ -55,17 +55,15 @@ export function checkDigitSum(exchangeWeights: boolean, s: string): number {
     let weight3 = (s.length + Number(exchangeWeights)) % 2 === 0;
 
     // Calculate sum of each character value multiplied by the weight at its position.
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return NUMERIC_CREATOR.characterIndexes(s).reduce((accumulator, characterIndex, index) => {
+    return NUMERIC_CREATOR.characterIndexes(s).reduce<number>((accumulator, characterIndex, index) => {
         if (characterIndex === undefined) {
             throw new RangeError(`Invalid character '${s.charAt(index)}' at position ${index + 1}`);
         }
 
         weight3 = !weight3;
 
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        return accumulator! + (weight3 ? THREE_WEIGHT_RESULTS[characterIndex] : characterIndex);
-    }, 0)!;
+        return accumulator + (weight3 ? THREE_WEIGHT_RESULTS[characterIndex] : characterIndex);
+    }, 0);
 }
 
 /**
@@ -118,16 +116,14 @@ function priceWeightSum(weightsResults: ReadonlyArray<readonly number[]>, s: str
     const characterIndexes = NUMERIC_CREATOR.characterIndexes(s);
 
     // Calculate sum of each weight result for each digit at its position.
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return characterIndexes.reduce((accumulator, characterIndex, index) => {
+    return characterIndexes.reduce<number>((accumulator, characterIndex, index) => {
         if (characterIndex === undefined) {
             throw new RangeError(`Invalid character '${s.charAt(index)}' at position ${index + 1}`);
         }
 
         // Add the weight result of the character index to the accumulator.
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        return accumulator! + weightsResults[index][characterIndex];
-    }, 0)!;
+        return accumulator + weightsResults[index][characterIndex];
+    }, 0);
 }
 
 /**
@@ -196,15 +192,13 @@ export function checkCharacterPair(s: string): string {
     }
 
     // Calculate sum of each character value multiplied by the weight at its position, mod 1021.
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const checkCharacterPairSum = AI82_CREATOR.characterIndexes(s).reduce((accumulator, characterIndex, index) => {
+    const checkCharacterPairSum = AI82_CREATOR.characterIndexes(s).reduce<number>((accumulator, characterIndex, index) => {
         if (characterIndex === undefined) {
             throw new RangeError(`Invalid character '${s.charAt(index)}' at position ${index + 1}`);
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        return accumulator! + characterIndex * CHECK_CHARACTER_WEIGHTS[weightIndexStart + index];
-    }, 0)! % 1021;
+        return accumulator + characterIndex * CHECK_CHARACTER_WEIGHTS[weightIndexStart + index];
+    }, 0) % 1021;
 
     const checkCharacterPairSumMod32 = checkCharacterPairSum % 32;
 
