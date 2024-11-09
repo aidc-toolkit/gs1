@@ -990,12 +990,12 @@ abstract class AbstractIdentificationKeyCreator implements IdentificationKeyCrea
     /**
      * Prefix manager.
      */
-    private _prefixManager?: PrefixManager;
+    private _prefixManager!: PrefixManager;
 
     /**
      * Reference length.
      */
-    private _referenceLength?: number;
+    private _referenceLength!: number;
 
     /**
      * Initialize the prefix manager. This method is in lieu of a constructor due to the mixin architecture.
@@ -1010,12 +1010,6 @@ abstract class AbstractIdentificationKeyCreator implements IdentificationKeyCrea
      * Number of characters to allow for check digit or check character pair.
      */
     protected init(prefixManager: PrefixManager, prefix: string, checkAllowance: number): void {
-        // Verify that prefix manager has not already been assigned.
-        if (this._prefixManager !== undefined) {
-            // Should never get here.
-            throw new Error("Not supported");
-        }
-
         this._prefixManager = prefixManager;
 
         // Reference length allows for prefix and optionally check digit or check character pair.
@@ -1043,8 +1037,7 @@ abstract class AbstractIdentificationKeyCreator implements IdentificationKeyCrea
      * @inheritDoc
      */
     get prefixManager(): PrefixManager {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Prefix manager is expected to have been initialized by this point.
-        return this._prefixManager!;
+        return this._prefixManager;
     }
 
     /**
@@ -1058,8 +1051,7 @@ abstract class AbstractIdentificationKeyCreator implements IdentificationKeyCrea
      * @inheritDoc
      */
     get referenceLength(): number {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Reference length is expected to have been initialized by this point.
-        return this._referenceLength!;
+        return this._referenceLength;
     }
 
     abstract validate(identificationKey: string, validation?: IdentificationKeyValidation): void;
@@ -1125,7 +1117,7 @@ abstract class AbstractNumericIdentificationKeyCreator extends AbstractIdentific
     /**
      * Capacity.
      */
-    private _capacity?: number;
+    private _capacity!: number;
 
     /**
      * Tweak for sparse creation.
@@ -1154,8 +1146,7 @@ abstract class AbstractNumericIdentificationKeyCreator extends AbstractIdentific
      * @inheritDoc
      */
     get capacity(): number {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Capacity is expected to have been initialized by this point.
-        return this._capacity!;
+        return this._capacity;
     }
 
     /**

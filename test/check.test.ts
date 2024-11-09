@@ -40,33 +40,28 @@ describe("Check digit", () => {
 });
 
 describe("Price/weight check digit", () => {
-    // eslint-disable-next-line jsdoc/require-jsdoc -- No JSDoc in test files.
     function weight2Minus(characterIndex: number): number {
         const product = characterIndex * 2;
 
         return (product - Math.trunc(product / 10)) % 10;
     }
 
-    // eslint-disable-next-line jsdoc/require-jsdoc -- No JSDoc in test files.
     function weight3(characterIndex: number): number {
         return characterIndex * 3 % 10;
     }
 
-    // eslint-disable-next-line jsdoc/require-jsdoc -- No JSDoc in test files.
     function weight5Plus(characterIndex: number): number {
         const product = characterIndex * 5;
 
         return (product + Math.trunc(product / 10)) % 10;
     }
 
-    // eslint-disable-next-line jsdoc/require-jsdoc -- No JSDoc in test files.
     function weight5Minus(characterIndex: number): number {
         const product = characterIndex * 5;
 
         return (product - Math.trunc(product / 10)) % 10;
     }
 
-    // eslint-disable-next-line jsdoc/require-jsdoc -- No JSDoc in test files.
     function testFourDigitPriceWeightCheckDigit(s: string): void {
         // All character indexes are known to be defined.
         const characterIndexes = NUMERIC_CREATOR.characterIndexes(s) as number[];
@@ -76,7 +71,6 @@ describe("Price/weight check digit", () => {
         expect(fourDigitPriceWeightCheckDigit(s)).toBe(NUMERIC_CREATOR.character(sum * 3 % 10));
     }
 
-    // eslint-disable-next-line jsdoc/require-jsdoc -- No JSDoc in test files.
     function testFiveDigitPriceWeightCheckDigit(s: string): void {
         // All character indexes are known to be defined.
         const characterIndexes = NUMERIC_CREATOR.characterIndexes(s) as number[];
