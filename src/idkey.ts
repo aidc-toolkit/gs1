@@ -1914,7 +1914,7 @@ export class PrefixManager {
      * Creator tweak factors. Different numeric identification key types have different tweak factors so that sparse
      * creation generates different sequences for each.
      */
-    private static readonly CREATOR_TWEAK_FACTORS_MAP = new Map<IdentificationKeyType, bigint>([
+    private static readonly CREATOR_TWEAK_FACTORS_MAP: ReadonlyMap<IdentificationKeyType, bigint> = new Map([
         [IdentificationKeyType.GTIN, 1987n],
         [IdentificationKeyType.GLN, 4241n],
         [IdentificationKeyType.SSCC, 8087n],
