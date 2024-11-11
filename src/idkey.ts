@@ -2227,6 +2227,8 @@ export class PrefixManager {
             creator = constructorCallback();
 
             this.setCreatorTweak(creator);
+
+            this._identificationKeyCreatorsMap.set(identificationKeyType, creator);
         }
 
         return creator;

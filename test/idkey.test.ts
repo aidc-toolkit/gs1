@@ -182,9 +182,23 @@ function validateIdentificationKeyCreators(prefixManager: PrefixManager): void {
             break;
     }
 
+    expect(prefixManager.gtinCreator).toBe(prefixManager.gtinCreator);
+
     validateGTINValidator(prefixManager.gtinCreator, true, gtinType);
 
     if (prefixManager.prefixType !== PrefixType.GS18Prefix) {
+        expect(prefixManager.glnCreator).toBe(prefixManager.glnCreator);
+        expect(prefixManager.ssccCreator).toBe(prefixManager.ssccCreator);
+        expect(prefixManager.graiCreator).toBe(prefixManager.graiCreator);
+        expect(prefixManager.giaiCreator).toBe(prefixManager.giaiCreator);
+        expect(prefixManager.gsrnCreator).toBe(prefixManager.gsrnCreator);
+        expect(prefixManager.gdtiCreator).toBe(prefixManager.gdtiCreator);
+        expect(prefixManager.gincCreator).toBe(prefixManager.gincCreator);
+        expect(prefixManager.gsinCreator).toBe(prefixManager.gsinCreator);
+        expect(prefixManager.gcnCreator).toBe(prefixManager.gcnCreator);
+        expect(prefixManager.cpidCreator).toBe(prefixManager.cpidCreator);
+        expect(prefixManager.gmnCreator).toBe(prefixManager.gmnCreator);
+
         validateNonGTINNumericIdentificationKeyValidator(prefixManager.glnCreator, true, IdentificationKeyType.GLN, 13, LeaderType.None);
         validateNonGTINNumericIdentificationKeyValidator(prefixManager.ssccCreator, true, IdentificationKeyType.SSCC, 18, LeaderType.ExtensionDigit);
         validateSerializableNumericIdentificationKeyValidator(prefixManager.graiCreator, true, IdentificationKeyType.GRAI, 13, LeaderType.None, 16, CharacterSet.AI82);
