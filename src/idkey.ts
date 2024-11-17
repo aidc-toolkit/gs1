@@ -2,7 +2,7 @@ import {
     CharacterSetCreator,
     type CharacterSetValidation,
     type CharacterSetValidator,
-    Exclusion,
+    Exclusion, IteratorProxy,
     NUMERIC_CREATOR,
     RegExpValidator,
     type StringValidation,
@@ -1612,7 +1612,7 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
 
             result = baseIdentificationKey + serialComponent;
         } else {
-            result = Iterator.from(serialComponent).map(serialComponent => this.concatenateValidated(baseIdentificationKey, serialComponent));
+            result = IteratorProxy.from(serialComponent).map(serialComponent => this.concatenateValidated(baseIdentificationKey, serialComponent));
         }
 
         return result;
@@ -1771,7 +1771,7 @@ export class NonNumericIdentificationKeyCreator extends Mixin(NonNumericIdentifi
 
             result = this.requiresCheckCharacterPair ? partialIdentificationKey + checkCharacterPair(partialIdentificationKey) : partialIdentificationKey;
         } else {
-            result = Iterator.from(referenceOrReferences).map(reference => this.create(reference));
+            result = IteratorProxy.from(referenceOrReferences).map(reference => this.create(reference));
         }
 
         return result;
