@@ -74,7 +74,7 @@ function validateNumericIdentificationKeyValidator(validator: NumericIdentificat
 
     expect(validator.leaderType).toBe(leaderType);
     expect(validator.referenceCharacterSet).toBe(CharacterSet.Numeric);
-    expect(validator.referenceValidator).toBe(NUMERIC_CREATOR);
+    expect(validator.referenceCreator).toBe(NUMERIC_CREATOR);
 
     if (isCreator) {
         expect((validator as NumericIdentificationKeyCreator).referenceCreator).toBe(NUMERIC_CREATOR);
@@ -117,7 +117,7 @@ function validateSerializableNumericIdentificationKeyValidator(validator: Serial
 
     expect(validator.serialComponentLength).toBe(serialLength);
     expect(validator.serialComponentCharacterSet).toBe(serialCharacterSet);
-    expect(validator.serialComponentValidator).toBe(serialCreator);
+    expect(validator.serialComponentCreator).toBe(serialCreator);
 
     if (isCreator) {
         expect((validator as SerializableNumericIdentificationKeyCreator).serialComponentCreator).toBe(serialCreator);
@@ -130,7 +130,7 @@ function validateNonNumericIdentificationKeyValidator(validator: NonNumericIdent
     const referenceCreator = creatorFor(referenceCharacterSet);
 
     expect(validator.referenceCharacterSet).toBe(referenceCharacterSet);
-    expect(validator.referenceValidator).toBe(referenceCreator);
+    expect(validator.referenceCreator).toBe(referenceCreator);
     expect(validator.requiresCheckCharacterPair).toBe(requiresCheckCharacterPair);
 
     if (isCreator) {

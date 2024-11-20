@@ -1,7 +1,6 @@
 import {
     CharacterSetCreator,
     type CharacterSetValidation,
-    type CharacterSetValidator,
     Exclusion, IteratorProxy,
     NUMERIC_CREATOR,
     RegExpValidator,
@@ -167,7 +166,7 @@ export interface IdentificationKeyValidator<V extends IdentificationKeyValidatio
     /**
      * Get the reference validator.
      */
-    get referenceValidator(): CharacterSetValidator;
+    get referenceCreator(): CharacterSetCreator;
 
     /**
      * Validate an identification key and throw an error if validation fails.
@@ -210,20 +209,20 @@ abstract class AbstractIdentificationKeyValidator<V extends IdentificationKeyVal
     private readonly _referenceCharacterSet: CharacterSet;
 
     /**
-     * Reference validator.
+     * Reference creator.
      */
-    private readonly _referenceValidator: CharacterSetValidator;
+    private readonly _referenceCreator: CharacterSetCreator;
 
     /**
-     * Get the character set validator for a character set.
+     * Get the character set creator for a character set.
      *
      * @param characterSet
      * Character set.
      *
      * @returns
-     * Character set validator.
+     * Character set creator.
      */
-    protected static validatorFor(characterSet: CharacterSet): CharacterSetValidator {
+    protected static creatorFor(characterSet: CharacterSet): CharacterSetCreator {
         return AbstractIdentificationKeyValidator.CHARACTER_SET_CREATORS[characterSet];
     }
 
@@ -247,7 +246,7 @@ abstract class AbstractIdentificationKeyValidator<V extends IdentificationKeyVal
         this._prefixType = prefixType;
         this._length = length;
         this._referenceCharacterSet = referenceCharacterSet;
-        this._referenceValidator = AbstractIdentificationKeyValidator.validatorFor(referenceCharacterSet);
+        this._referenceCreator = AbstractIdentificationKeyValidator.creatorFor(referenceCharacterSet);
     }
 
     /**
@@ -281,8 +280,8 @@ abstract class AbstractIdentificationKeyValidator<V extends IdentificationKeyVal
     /**
      * @inheritDoc
      */
-    get referenceValidator(): CharacterSetValidator {
-        return this._referenceValidator;
+    get referenceCreator(): CharacterSetCreator {
+        return this._referenceCreator;
     }
 
     /**
@@ -300,7 +299,7 @@ abstract class AbstractIdentificationKeyValidator<V extends IdentificationKeyVal
      */
     protected padIdentificationKey(identificationKey: string, validation: IdentificationKeyValidation | undefined): string {
         // Identification key is returned as is if position offset is undefined.
-        return validation?.positionOffset === undefined ? identificationKey : this.referenceValidator.character(0).repeat(validation.positionOffset).concat(identificationKey);
+        return validation?.positionOffset === undefined ? identificationKey : this.referenceCreator.character(0).repeat(validation.positionOffset).concat(identificationKey);
     }
 
     /**
@@ -704,9 +703,9 @@ export class SerializableNumericIdentificationKeyValidator extends NonGTINNumeri
     private readonly _serialComponentValidation: CharacterSetValidation;
 
     /**
-     * Serial component validator.
+     * Serial component creator.
      */
-    private readonly _serialComponentValidator: CharacterSetValidator;
+    private readonly _serialComponentCreator: CharacterSetCreator;
 
     /**
      * Constructor.
@@ -737,7 +736,7 @@ export class SerializableNumericIdentificationKeyValidator extends NonGTINNumeri
             })
         };
 
-        this._serialComponentValidator = SerializableNumericIdentificationKeyValidator.validatorFor(serialComponentCharacterSet);
+        this._serialComponentCreator = SerializableNumericIdentificationKeyValidator.creatorFor(serialComponentCharacterSet);
     }
 
     /**
@@ -762,10 +761,10 @@ export class SerializableNumericIdentificationKeyValidator extends NonGTINNumeri
     }
 
     /**
-     * Get the serial component validator.
+     * Get the serial component creator.
      */
-    get serialComponentValidator(): CharacterSetValidator {
-        return this._serialComponentValidator;
+    get serialComponentCreator(): CharacterSetCreator {
+        return this._serialComponentCreator;
     }
 
     /**
@@ -775,7 +774,7 @@ export class SerializableNumericIdentificationKeyValidator extends NonGTINNumeri
         super.validate(identificationKey.substring(0, this.length), validation);
 
         if (identificationKey.length > this.length) {
-            this.serialComponentValidator.validate(identificationKey.substring(this.length), this._serialComponentValidation);
+            this.serialComponentCreator.validate(identificationKey.substring(this.length), this._serialComponentValidation);
         }
     }
 }
@@ -857,7 +856,7 @@ export class NonNumericIdentificationKeyValidator extends AbstractIdentification
         super.validatePrefix(partialIdentificationKey, validation?.positionOffset);
 
         if (!this.requiresCheckCharacterPair) {
-            this.referenceValidator.validate(identificationKey, {
+            this.referenceCreator.validate(identificationKey, {
                 maximumLength: this.length,
                 positionOffset: validation?.positionOffset
             });
@@ -960,11 +959,6 @@ export const GMN_VALIDATOR = new NonNumericIdentificationKeyValidator(Identifica
  */
 export interface IdentificationKeyCreator extends IdentificationKeyValidator {
     /**
-     * Get the reference creator.
-     */
-    get referenceCreator(): CharacterSetCreator;
-
-    /**
      * Get the prefix manager to which this identification key creator is bound.
      */
     get prefixManager(): PrefixManager;
@@ -1024,14 +1018,7 @@ abstract class AbstractIdentificationKeyCreator implements IdentificationKeyCrea
 
     abstract get referenceCharacterSet(): CharacterSet;
 
-    abstract get referenceValidator(): CharacterSetValidator;
-
-    /**
-     * @inheritDoc
-     */
-    get referenceCreator(): CharacterSetCreator {
-        return this.referenceValidator as CharacterSetCreator;
-    }
+    abstract get referenceCreator(): CharacterSetCreator;
 
     /**
      * @inheritDoc
@@ -1569,13 +1556,6 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
     }
 
     /**
-     * Get the serial component creator.
-     */
-    get serialComponentCreator(): CharacterSetCreator {
-        return this.serialComponentValidator as CharacterSetCreator;
-    }
-
-    /**
      * Concatenate a validated base identification key with a serial component.
      *
      * @param baseIdentificationKey
@@ -1765,7 +1745,7 @@ export class NonNumericIdentificationKeyCreator extends Mixin(NonNumericIdentifi
         let result: string | IterableIterator<string>;
 
         if (typeof referenceOrReferences === "string") {
-            this.referenceValidator.validate(referenceOrReferences, this._referenceValidation);
+            this.referenceCreator.validate(referenceOrReferences, this._referenceValidation);
 
             const partialIdentificationKey = this.prefix + referenceOrReferences;
 
@@ -2032,7 +2012,7 @@ export class PrefixManager {
 
         // Creator tweak factor is defined for numeric identification keys only.
         if (creatorTweakFactor !== undefined) {
-            // Explicit cast without testing is necessary as "instanceof" doesn't work for mixin types.
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Explicit cast without testing is necessary as "instanceof" doesn't work for mixin types.
             (creator as AbstractNumericIdentificationKeyCreator).tweak = this.tweakFactor * creatorTweakFactor;
         }
     }
