@@ -1,0 +1,23 @@
+name: Build and publish
+
+on:
+  release:
+    types:
+      - published
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Build and publish gs1
+        uses: aidc-toolkit/dev/.github/actions/build-publish@main
+        with:
+          project: gs1
+          node_version: ${{ vars.NODE_VERSION }}
+          node_auth_token: ${{ secrets.NODE_AUTH_TOKEN }}
+          terminal_pre_build: ${{ vars.TERMINAL_PRE_BUILD }}
+          terminal_post_build: ${{ vars.TERMINAL_POST_BUILD }}
