@@ -35,7 +35,7 @@
   "dependencies": {
     "@aidc-toolkit/core": "^0.9.4",
     "@aidc-toolkit/utility": "^0.9.4",
-    "i18next": "^23.16.5",
+    "i18next": "^23.16.8",
     "ts-mixer": "^6.0.4"
   }
 }
