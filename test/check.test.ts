@@ -11,7 +11,7 @@ import {
     hasValidCheckDigit
 } from "../src/index.js";
 
-await i18nInit(I18NEnvironment.CLI, true);
+await i18nInit(I18NEnvironment.CLI);
 
 describe("Check digit", () => {
     const testNumericString = "1234567890";

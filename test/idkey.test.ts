@@ -41,7 +41,7 @@ import {
     SSCC_VALIDATOR
 } from "../src/index.js";
 
-await i18nInit(I18NEnvironment.CLI, true);
+await i18nInit(I18NEnvironment.CLI);
 
 function creatorFor(characterSet: CharacterSet): CharacterSetCreator {
     let creator: CharacterSetCreator;
