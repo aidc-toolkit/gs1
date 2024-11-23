@@ -29,13 +29,12 @@
     "eslint": "^9.15.0",
     "ts-node": "^10.9.2",
     "tsup": "^8.3.5",
-    "typescript": "^5.6.3",
+    "typescript": "^5.7.2",
     "vitest": "^2.1.5"
   },
   "dependencies": {
     "@aidc-toolkit/core": "^0.9.5",
     "@aidc-toolkit/utility": "^0.9.5",
-    "i18next": "^23.16.8",
     "ts-mixer": "^6.0.4"
   }
 }
