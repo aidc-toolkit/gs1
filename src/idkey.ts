@@ -1,11 +1,14 @@
 import {
     CharacterSetCreator,
     type CharacterSetValidation,
-    Exclusion, IteratorProxy,
+    Exclusion,
+    IteratorProxy,
     NUMERIC_CREATOR,
     RegExpValidator,
     type StringValidation,
-    type StringValidator
+    type StringValidator,
+    type TransformerInput,
+    type TransformerOutput
 } from "@aidc-toolkit/utility";
 import { Mixin } from "ts-mixer";
 import { AI39_CREATOR, AI82_CREATOR } from "./character_set.js";
@@ -1053,37 +1056,20 @@ export interface NumericIdentificationKeyCreator extends NumericIdentificationKe
      */
     get capacity(): number;
 
-    create: {
-        /**
-         * Create an identification key with a reference based on a numeric value. The value is converted to a reference of
-         * the appropriate length using {@linkcode NUMERIC_CREATOR}.
-         *
-         * @param value
-         * Numeric value.
-         *
-         * @param sparse
-         * If true, the value is mapped to a sparse sequence resistant to discovery. Default is false.
-         *
-         * @returns
-         * Identification key.
-         */
-        (value: number | bigint, sparse?: boolean): string;
-
-        /**
-         * Create identification keys with references based on numeric values. The values are converted to references of
-         * the appropriate length using {@linkcode NUMERIC_CREATOR}.
-         *
-         * @param values
-         * Numeric values.
-         *
-         * @param sparse
-         * If true, the values are mapped to a sparse sequence resistant to discovery. Default is false.
-         *
-         * @returns
-         * Identification keys.
-         */
-        (values: Iterable<number | bigint>, sparse?: boolean): IterableIterator<string>;
-    };
+    /**
+     * Create identification key(s) with reference(s) based on numeric value(s). The value(s) is/are converted to
+     * references of the appropriate length using {@linkcode NUMERIC_CREATOR}.
+     *
+     * @param valueOrValues
+     * Numeric value(s).
+     *
+     * @param sparse
+     * If true, the value(s) are mapped to a sparse sequence resistant to discovery. Default is false.
+     *
+     * @returns
+     * Identification key(s).
+     */
+    create: <T extends TransformerInput<number | bigint>>(valueOrValues: T, sparse?: boolean) => TransformerOutput<T, string>;
 
     /**
      * Create all identification keys for the prefix from `0` to `capacity - 1`.
@@ -1168,15 +1154,7 @@ abstract class AbstractNumericIdentificationKeyCreator extends AbstractIdentific
     /**
      * @inheritDoc
      */
-    create(value: number | bigint, sparse?: boolean): string;
-
-    /**
-     * @inheritDoc
-     */
-    create(values: Iterable<number | bigint>, sparse?: boolean): IterableIterator<string>;
-
-    // eslint-disable-next-line jsdoc/require-jsdoc -- Implementation of overloaded signatures.
-    create(valueOrValues: number | bigint | Iterable<number | bigint>, sparse = false): string | IterableIterator<string> {
+    create<T extends TransformerInput<number | bigint>>(valueOrValues: T, sparse = false): TransformerOutput<T, string> {
         return NUMERIC_CREATOR.create(this.referenceLength, valueOrValues, Exclusion.None, sparse ? this.tweak : undefined, reference => this.buildIdentificationKey(reference));
     }
 
@@ -1296,45 +1274,22 @@ export class GTINCreator extends Mixin(GTINValidator, AbstractNumericIdentificat
     }
 
     /**
-     * Create a GTIN-14 with an indicator digit and a reference based on a numeric value. The value is converted to a
-     * reference of the appropriate length using {@linkcode NUMERIC_CREATOR}.
+     * Create GTIN-14(s) with an indicator digit and reference(s) based on numeric value(s). The value(s) is/are
+     * converted to reference(s) of the appropriate length using {@linkcode NUMERIC_CREATOR}.
      *
      * @param indicatorDigit
      * Indicator digit.
      *
-     * @param value
-     * Numeric value of the reference.
+     * @param valueOrValues
+     * Numeric value(s).
      *
      * @param sparse
-     * If true, the value is mapped to a sparse sequence resistant to discovery. Default is false.
+     * If true, the value(s) is/are mapped to a sparse sequence resistant to discovery. Default is false.
      *
      * @returns
-     * GTIN-14.
+     * GTIN-14(s).
      */
-    createGTIN14(indicatorDigit: string, value: number | bigint, sparse?: boolean): string;
-
-    /**
-     * Create multiple GTIN-14s with an indicator digit and references based on numeric values. The values are converted
-     * to references of the appropriate length using {@linkcode NUMERIC_CREATOR}.
-     *
-     * The implementation uses {@link CharacterSetCreator.create}, so the values are created only as needed.
-     *
-     * @param indicatorDigit
-     * Indicator digit.
-     *
-     * @param values
-     * Values.
-     *
-     * @param sparse
-     * If true, the values are mapped to a sparse sequence resistant to discovery. Default is false.
-     *
-     * @returns
-     * Iterable iterator over created GTIN-14s.
-     */
-    createGTIN14(indicatorDigit: string, values: Iterable<number | bigint>, sparse?: boolean): IterableIterator<string>;
-
-    // eslint-disable-next-line jsdoc/require-jsdoc -- Implementation of overloaded signatures.
-    createGTIN14(indicatorDigit: string, valueOrValues: number | bigint | Iterable<number | bigint>, sparse = false): string | IterableIterator<string> {
+    createGTIN14<T extends TransformerInput<number | bigint>>(indicatorDigit: string, valueOrValues: T, sparse = false): TransformerOutput<T, string> {
         NUMERIC_CREATOR.validate(indicatorDigit, GTINCreator.REQUIRED_INDICATOR_DIGIT_VALIDATION);
 
         return NUMERIC_CREATOR.create(GTINType.GTIN13 - this.prefixManager.gs1CompanyPrefix.length - 1, valueOrValues, Exclusion.None, sparse ? this.tweak : undefined, (reference) => {
@@ -1556,75 +1511,57 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
     }
 
     /**
-     * Concatenate a validated base identification key with a serial component.
+     * Concatenate a validated base identification key with serial component(s).
      *
      * @param baseIdentificationKey
      * Base identification key.
      *
-     * @param serialComponent
-     * Serial component.
+     * @param serialComponentOrComponents
+     * Serial component(s).
      *
      * @returns
-     * Serialized identification key.
+     * Serialized identification key(s).
      */
-    private concatenateValidated(baseIdentificationKey: string, serialComponent: string): string;
-
-    /**
-     * Concatenate a validated base identification key with multiple serial components.
-     *
-     * @param baseIdentificationKey
-     * Base identification key.
-     *
-     * @param serialComponents
-     * Serial components.
-     *
-     * @returns
-     * Serialized identification keys.
-     */
-    private concatenateValidated(baseIdentificationKey: string, serialComponents: Iterable<string>): IterableIterator<string>;
-
-    // eslint-disable-next-line jsdoc/require-jsdoc -- Implementation of overloaded signatures.
-    private concatenateValidated(baseIdentificationKey: string, serialComponent: string | Iterable<string>): string | IterableIterator<string> {
+    private concatenateValidated<T extends TransformerInput<string>>(baseIdentificationKey: string, serialComponentOrComponents: T): TransformerOutput<T, string> {
+        // TODO Refactor type when https://github.com/microsoft/TypeScript/pull/56941 released.
         let result: string | IterableIterator<string>;
 
-        if (typeof serialComponent === "string") {
-            this.serialComponentCreator.validate(serialComponent, this.serialComponentValidation);
+        const serialComponentCreator = this.serialComponentCreator;
+        const serialComponentValidation = this.serialComponentValidation;
 
-            result = baseIdentificationKey + serialComponent;
-        } else {
-            result = IteratorProxy.from(serialComponent).map(serialComponent => this.concatenateValidated(baseIdentificationKey, serialComponent));
+        /**
+         * Validate a serial component and concatenate it to the base identification key.
+         *
+         * @param serialComponent
+         * Serial component.
+         *
+         * @returns
+         * Serialized identification key.
+         */
+        function validateAndConcatenate(serialComponent: string): string {
+            serialComponentCreator.validate(serialComponent, serialComponentValidation);
+
+            return baseIdentificationKey + serialComponent;
         }
 
-        return result;
+        if (typeof serialComponentOrComponents !== "object") {
+            result = validateAndConcatenate(serialComponentOrComponents);
+        } else {
+            result = IteratorProxy.from(serialComponentOrComponents).map(validateAndConcatenate);
+        }
+
+        return result as TransformerOutput<T, string>;
     }
 
     /**
-     * Create a serialized identification key with a reference based on a numeric value and a serial component. The
-     * value is converted to a reference of the appropriate length using {@linkcode NUMERIC_CREATOR}.
+     * Create serialized identification key(s) with a reference based on a numeric value concatenated with serial
+     * component(s). The value is converted to a reference of the appropriate length using {@linkcode NUMERIC_CREATOR}.
      *
      * @param value
-     * Numeric value of the references.
+     * Numeric value of the reference.
      *
-     * @param serialComponent
-     * Serial component.
-     *
-     * @param sparse
-     * If true, the value is mapped to a sparse sequence resistant to discovery. Default is false.
-     *
-     * @returns
-     * Serialized identification key.
-     */
-    createSerialized(value: number, serialComponent: string, sparse?: boolean): string;
-
-    /**
-     * Create multiple serialized identification keys with a reference based on a numeric value and multiple serial
-     * components. The value is converted to a reference of the appropriate length using {@linkcode NUMERIC_CREATOR}.
-     *
-     * @param value
-     * Numeric value.
-     *
-     * @param serialComponents
-     * Serial components.
+     * @param serialComponentOrComponents
+     * Serial component(s).
      *
      * @param sparse
      * If true, the value is mapped to a sparse sequence resistant to discovery. Default is false.
@@ -1632,46 +1569,26 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
      * @returns
      * Serialized identification keys.
      */
-    createSerialized(value: number, serialComponents: Iterable<string>, sparse?: boolean): IterableIterator<string>;
-
-    // eslint-disable-next-line jsdoc/require-jsdoc -- Implementation of overloaded signatures.
-    createSerialized(value: number, serialComponent: string | Iterable<string>, sparse = false): string | IterableIterator<string> {
-        return this.concatenateValidated(this.create(value, sparse), serialComponent);
+    createSerialized<T extends TransformerInput<string>>(value: number, serialComponentOrComponents: T, sparse?: boolean): TransformerOutput<T, string> {
+        return this.concatenateValidated(this.create(value, sparse), serialComponentOrComponents);
     }
 
     /**
-     * Concatenate a base identification key with a serial component.
+     * Concatenate a base identification key with serial component(s).
      *
      * @param baseIdentificationKey
      * Base identification key.
      *
-     * @param serialComponent
-     * Serial component.
+     * @param serialComponentOrComponents
+     * Serial component(s).
      *
      * @returns
-     * Serialized identification key.
+     * Serialized identification key(s).
      */
-    concatenate(baseIdentificationKey: string, serialComponent: string): string;
-
-    /**
-     * Concatenate a base identification key with multiple serial components.
-     *
-     * @param baseIdentificationKey
-     * Base identification key.
-     *
-     * @param serialComponents
-     * Serial components.
-     *
-     * @returns
-     * Serialized identification keys.
-     */
-    concatenate(baseIdentificationKey: string, serialComponents: Iterable<string>): IterableIterator<string>;
-
-    // eslint-disable-next-line jsdoc/require-jsdoc -- Implementation of overloaded signatures.
-    concatenate(baseIdentificationKey: string, serialComponent: string | Iterable<string>): string | IterableIterator<string> {
+    concatenate<T extends TransformerInput<string>>(baseIdentificationKey: string, serialComponentOrComponents: T): TransformerOutput<T, string> {
         this.validate(baseIdentificationKey);
 
-        return this.concatenateValidated(baseIdentificationKey, serialComponent);
+        return this.concatenateValidated(baseIdentificationKey, serialComponentOrComponents);
     }
 }
 
@@ -1719,42 +1636,54 @@ export class NonNumericIdentificationKeyCreator extends Mixin(NonNumericIdentifi
     }
 
     /**
-     * Create an identification key with a reference.
-     *
-     * @param reference
-     * Reference.
-     *
-     * @returns
-     * Identification key.
+     * Get the reference validation parameters.
      */
-    create(reference: string): string;
+    protected get referenceValidation(): CharacterSetValidation {
+        return this._referenceValidation;
+    }
 
     /**
-     * Create multiple identification keys with references.
+     * Create identification key(s) with reference(s).
      *
-     * @param references
-     * References.
+     * @param referenceOrReferences
+     * Reference(s).
      *
      * @returns
-     * Identification keys.
+     * Identification key(s).
      */
-    create(references: Iterable<string>): IterableIterator<string>;
-
-    // eslint-disable-next-line jsdoc/require-jsdoc -- Implementation of overloaded signatures.
-    create(referenceOrReferences: string | Iterable<string>): string | IterableIterator<string> {
+    create<T extends TransformerInput<string>>(referenceOrReferences: T): TransformerOutput<T, string> {
+        // TODO Refactor type when https://github.com/microsoft/TypeScript/pull/56941 released.
         let result: string | IterableIterator<string>;
 
-        if (typeof referenceOrReferences === "string") {
-            this.referenceCreator.validate(referenceOrReferences, this._referenceValidation);
+        const referenceCreator = this.referenceCreator;
+        const referenceValidation = this.referenceValidation;
+        const prefix = this.prefix;
+        const requiresCheckCharacterPair = this.requiresCheckCharacterPair;
 
-            const partialIdentificationKey = this.prefix + referenceOrReferences;
+        /**
+         * Validate a reference and create an identification key.
+         *
+         * @param reference
+         * Reference.
+         *
+         * @returns
+         * Identification key.
+         */
+        function validateAndCreate(reference: string): string {
+            referenceCreator.validate(reference, referenceValidation);
 
-            result = this.requiresCheckCharacterPair ? partialIdentificationKey + checkCharacterPair(partialIdentificationKey) : partialIdentificationKey;
-        } else {
-            result = IteratorProxy.from(referenceOrReferences).map(reference => this.create(reference));
+            const partialIdentificationKey = prefix + reference;
+
+            return requiresCheckCharacterPair ? partialIdentificationKey + checkCharacterPair(partialIdentificationKey) : partialIdentificationKey;
         }
 
-        return result;
+        if (typeof referenceOrReferences !== "object") {
+            result = validateAndCreate(referenceOrReferences);
+        } else {
+            result = IteratorProxy.from(referenceOrReferences).map(validateAndCreate);
+        }
+
+        return result as TransformerOutput<T, string>;
     }
 }
 
