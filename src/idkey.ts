@@ -110,7 +110,7 @@ export enum PrefixType {
  * Character set supported by the reference portion of an identification key or the serial component of a numeric
  * identification key.
  */
-export enum CharacterSet {
+export enum ContentCharacterSet {
     /**
      * Numeric.
      */
@@ -164,7 +164,7 @@ export interface IdentificationKeyValidator<V extends IdentificationKeyValidatio
     /**
      * Get the reference character set.
      */
-    get referenceCharacterSet(): CharacterSet;
+    get referenceCharacterSet(): ContentCharacterSet;
 
     /**
      * Get the reference validator.
@@ -209,7 +209,7 @@ abstract class AbstractIdentificationKeyValidator<V extends IdentificationKeyVal
     /**
      * Reference character set.
      */
-    private readonly _referenceCharacterSet: CharacterSet;
+    private readonly _referenceCharacterSet: ContentCharacterSet;
 
     /**
      * Reference creator.
@@ -225,7 +225,7 @@ abstract class AbstractIdentificationKeyValidator<V extends IdentificationKeyVal
      * @returns
      * Character set creator.
      */
-    protected static creatorFor(characterSet: CharacterSet): CharacterSetCreator {
+    protected static creatorFor(characterSet: ContentCharacterSet): CharacterSetCreator {
         return AbstractIdentificationKeyValidator.CHARACTER_SET_CREATORS[characterSet];
     }
 
@@ -244,7 +244,7 @@ abstract class AbstractIdentificationKeyValidator<V extends IdentificationKeyVal
      * @param referenceCharacterSet
      * Reference character set.
      */
-    protected constructor(identificationKeyType: IdentificationKeyType, prefixType: PrefixType, length: number, referenceCharacterSet: CharacterSet) {
+    protected constructor(identificationKeyType: IdentificationKeyType, prefixType: PrefixType, length: number, referenceCharacterSet: ContentCharacterSet) {
         this._identificationKeyType = identificationKeyType;
         this._prefixType = prefixType;
         this._length = length;
@@ -276,7 +276,7 @@ abstract class AbstractIdentificationKeyValidator<V extends IdentificationKeyVal
     /**
      * @inheritDoc
      */
-    get referenceCharacterSet(): CharacterSet {
+    get referenceCharacterSet(): ContentCharacterSet {
         return this._referenceCharacterSet;
     }
 
@@ -316,7 +316,7 @@ abstract class AbstractIdentificationKeyValidator<V extends IdentificationKeyVal
      */
     protected validatePrefix(partialIdentificationKey: string, positionOffset?: number): void {
         // Delegate to prefix manager with support for U.P.C. Company Prefix but not GS1-8 Prefix.
-        PrefixManager.validatePrefix(this.prefixType, true, false, partialIdentificationKey, true, this.referenceCharacterSet === CharacterSet.Numeric, positionOffset);
+        PrefixManager.validatePrefix(this.prefixType, true, false, partialIdentificationKey, true, this.referenceCharacterSet === ContentCharacterSet.Numeric, positionOffset);
     }
 
     abstract validate(identificationKey: string, validation?: V): void;
@@ -383,7 +383,7 @@ abstract class AbstractNumericIdentificationKeyValidator extends AbstractIdentif
      * Leader type.
      */
     protected constructor(identificationKeyType: IdentificationKeyType, prefixType: PrefixType, length: number, leaderType: LeaderType) {
-        super(identificationKeyType, prefixType, length, CharacterSet.Numeric);
+        super(identificationKeyType, prefixType, length, ContentCharacterSet.Numeric);
 
         this._leaderType = leaderType;
         this._prefixPosition = Number(this.leaderType === LeaderType.ExtensionDigit);
@@ -698,7 +698,7 @@ export class SerializableNumericIdentificationKeyValidator extends NonGTINNumeri
     /**
      * Serial component character set.
      */
-    private readonly _serialComponentCharacterSet: CharacterSet;
+    private readonly _serialComponentCharacterSet: ContentCharacterSet;
 
     /**
      * Serial component validation parameters.
@@ -725,7 +725,7 @@ export class SerializableNumericIdentificationKeyValidator extends NonGTINNumeri
      * @param serialComponentCharacterSet
      * Serial component character set.
      */
-    constructor(identificationKeyType: IdentificationKeyType, length: number, serialComponentLength: number, serialComponentCharacterSet: CharacterSet) {
+    constructor(identificationKeyType: IdentificationKeyType, length: number, serialComponentLength: number, serialComponentCharacterSet: ContentCharacterSet) {
         super(identificationKeyType, length, LeaderType.None);
 
         this._serialComponentLength = serialComponentLength;
@@ -752,7 +752,7 @@ export class SerializableNumericIdentificationKeyValidator extends NonGTINNumeri
     /**
      * Get the serial component character set.
      */
-    get serialComponentCharacterSet(): CharacterSet {
+    get serialComponentCharacterSet(): ContentCharacterSet {
         return this._serialComponentCharacterSet;
     }
 
@@ -831,7 +831,7 @@ export class NonNumericIdentificationKeyValidator extends AbstractIdentification
      * @param requiresCheckCharacterPair
      * True if the identification key requires a check character pair.
      */
-    constructor(identificationKeyType: IdentificationKeyType, length: number, referenceCharacterSet: CharacterSet, requiresCheckCharacterPair = false) {
+    constructor(identificationKeyType: IdentificationKeyType, length: number, referenceCharacterSet: ContentCharacterSet, requiresCheckCharacterPair = false) {
         super(identificationKeyType, PrefixType.GS1CompanyPrefix, length, referenceCharacterSet);
 
         this._requiresCheckCharacterPair = requiresCheckCharacterPair;
@@ -912,12 +912,12 @@ export const SSCC_VALIDATOR = new NonGTINNumericIdentificationKeyValidator(Ident
 /**
  * GRAI validator.
  */
-export const GRAI_VALIDATOR = new SerializableNumericIdentificationKeyValidator(IdentificationKeyType.GRAI, 13, 16, CharacterSet.AI82);
+export const GRAI_VALIDATOR = new SerializableNumericIdentificationKeyValidator(IdentificationKeyType.GRAI, 13, 16, ContentCharacterSet.AI82);
 
 /**
  * GIAI validator.
  */
-export const GIAI_VALIDATOR = new NonNumericIdentificationKeyValidator(IdentificationKeyType.GIAI, 30, CharacterSet.AI82);
+export const GIAI_VALIDATOR = new NonNumericIdentificationKeyValidator(IdentificationKeyType.GIAI, 30, ContentCharacterSet.AI82);
 
 /**
  * GSRN validator.
@@ -927,12 +927,12 @@ export const GSRN_VALIDATOR = new NonGTINNumericIdentificationKeyValidator(Ident
 /**
  * GDTI validator.
  */
-export const GDTI_VALIDATOR = new SerializableNumericIdentificationKeyValidator(IdentificationKeyType.GDTI, 13, 17, CharacterSet.AI82);
+export const GDTI_VALIDATOR = new SerializableNumericIdentificationKeyValidator(IdentificationKeyType.GDTI, 13, 17, ContentCharacterSet.AI82);
 
 /**
  * GINC validator.
  */
-export const GINC_VALIDATOR = new NonNumericIdentificationKeyValidator(IdentificationKeyType.GINC, 30, CharacterSet.AI82);
+export const GINC_VALIDATOR = new NonNumericIdentificationKeyValidator(IdentificationKeyType.GINC, 30, ContentCharacterSet.AI82);
 
 /**
  * GSIN validator.
@@ -942,17 +942,17 @@ export const GSIN_VALIDATOR = new NonGTINNumericIdentificationKeyValidator(Ident
 /**
  * GCN validator.
  */
-export const GCN_VALIDATOR = new SerializableNumericIdentificationKeyValidator(IdentificationKeyType.GCN, 13, 12, CharacterSet.Numeric);
+export const GCN_VALIDATOR = new SerializableNumericIdentificationKeyValidator(IdentificationKeyType.GCN, 13, 12, ContentCharacterSet.Numeric);
 
 /**
  * CPID validator.
  */
-export const CPID_VALIDATOR = new NonNumericIdentificationKeyValidator(IdentificationKeyType.CPID, 30, CharacterSet.AI39);
+export const CPID_VALIDATOR = new NonNumericIdentificationKeyValidator(IdentificationKeyType.CPID, 30, ContentCharacterSet.AI39);
 
 /**
  * GMN validator.
  */
-export const GMN_VALIDATOR = new NonNumericIdentificationKeyValidator(IdentificationKeyType.GMN, 25, CharacterSet.AI82, true);
+export const GMN_VALIDATOR = new NonNumericIdentificationKeyValidator(IdentificationKeyType.GMN, 25, ContentCharacterSet.AI82, true);
 
 /**
  * Identification key creator. Creates an identification key based on its definition in section 3 of the {@link
@@ -1019,7 +1019,7 @@ abstract class AbstractIdentificationKeyCreator implements IdentificationKeyCrea
 
     abstract get length(): number;
 
-    abstract get referenceCharacterSet(): CharacterSet;
+    abstract get referenceCharacterSet(): ContentCharacterSet;
 
     abstract get referenceCreator(): CharacterSetCreator;
 
@@ -1504,7 +1504,7 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
      * @param serialComponentCharacterSet
      * Serial component character set.
      */
-    constructor(prefixManager: PrefixManager, identificationKeyType: IdentificationKeyType, length: number, serialComponentLength: number, serialComponentCharacterSet: CharacterSet) {
+    constructor(prefixManager: PrefixManager, identificationKeyType: IdentificationKeyType, length: number, serialComponentLength: number, serialComponentCharacterSet: ContentCharacterSet) {
         super(identificationKeyType, length, serialComponentLength, serialComponentCharacterSet);
 
         this.init(prefixManager, prefixManager.gs1CompanyPrefix);
@@ -1620,7 +1620,7 @@ export class NonNumericIdentificationKeyCreator extends Mixin(NonNumericIdentifi
      * @param requiresCheckCharacterPair
      * True if the identification key requires a check character pair.
      */
-    constructor(prefixManager: PrefixManager, identificationKeyType: IdentificationKeyType, length: number, referenceCharacterSet: CharacterSet, requiresCheckCharacterPair = false) {
+    constructor(prefixManager: PrefixManager, identificationKeyType: IdentificationKeyType, length: number, referenceCharacterSet: ContentCharacterSet, requiresCheckCharacterPair = false) {
         super(identificationKeyType, length, referenceCharacterSet, requiresCheckCharacterPair);
 
         this.init(prefixManager, prefixManager.gs1CompanyPrefix, 2 * Number(requiresCheckCharacterPair));

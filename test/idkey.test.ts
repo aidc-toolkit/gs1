@@ -4,7 +4,7 @@ import { describe, expect, test } from "vitest";
 import {
     AI39_CREATOR,
     AI82_CREATOR,
-    CharacterSet,
+    ContentCharacterSet,
     CPID_VALIDATOR,
     GCN_VALIDATOR,
     GDTI_VALIDATOR,
@@ -43,19 +43,19 @@ import {
 
 await i18nInit(I18NEnvironment.CLI);
 
-function creatorFor(characterSet: CharacterSet): CharacterSetCreator {
+function creatorFor(characterSet: ContentCharacterSet): CharacterSetCreator {
     let creator: CharacterSetCreator;
 
     switch (characterSet) {
-        case CharacterSet.Numeric:
+        case ContentCharacterSet.Numeric:
             creator = NUMERIC_CREATOR;
             break;
 
-        case CharacterSet.AI82:
+        case ContentCharacterSet.AI82:
             creator = AI82_CREATOR;
             break;
 
-        case CharacterSet.AI39:
+        case ContentCharacterSet.AI39:
             creator = AI39_CREATOR;
             break;
     }
@@ -73,7 +73,7 @@ function validateNumericIdentificationKeyValidator(validator: NumericIdentificat
     validateIdentificationKeyValidator(validator, identificationKeyType, prefixType, length);
 
     expect(validator.leaderType).toBe(leaderType);
-    expect(validator.referenceCharacterSet).toBe(CharacterSet.Numeric);
+    expect(validator.referenceCharacterSet).toBe(ContentCharacterSet.Numeric);
     expect(validator.referenceCreator).toBe(NUMERIC_CREATOR);
 
     if (isCreator) {
@@ -110,7 +110,7 @@ function validateNonGTINNumericIdentificationKeyValidator<T extends NonGTINNumer
     validateNumericIdentificationKeyValidator(validator, isCreator, identificationKeyType, PrefixType.GS1CompanyPrefix, length, leaderType);
 }
 
-function validateSerializableNumericIdentificationKeyValidator(validator: SerializableNumericIdentificationKeyValidator, isCreator: boolean, identificationKeyType: IdentificationKeyType, length: number, leaderType: LeaderType, serialLength: number, serialCharacterSet: CharacterSet): void {
+function validateSerializableNumericIdentificationKeyValidator(validator: SerializableNumericIdentificationKeyValidator, isCreator: boolean, identificationKeyType: IdentificationKeyType, length: number, leaderType: LeaderType, serialLength: number, serialCharacterSet: ContentCharacterSet): void {
     validateNonGTINNumericIdentificationKeyValidator(validator, isCreator, identificationKeyType, length, leaderType);
 
     const serialCreator = creatorFor(serialCharacterSet);
@@ -124,7 +124,7 @@ function validateSerializableNumericIdentificationKeyValidator(validator: Serial
     }
 }
 
-function validateNonNumericIdentificationKeyValidator(validator: NonNumericIdentificationKeyValidator, isCreator: boolean, identificationKeyType: IdentificationKeyType, length: number, referenceCharacterSet: CharacterSet, requiresCheckCharacterPair: boolean): void {
+function validateNonNumericIdentificationKeyValidator(validator: NonNumericIdentificationKeyValidator, isCreator: boolean, identificationKeyType: IdentificationKeyType, length: number, referenceCharacterSet: ContentCharacterSet, requiresCheckCharacterPair: boolean): void {
     validateIdentificationKeyValidator(validator, identificationKeyType, PrefixType.GS1CompanyPrefix, length);
 
     const referenceCreator = creatorFor(referenceCharacterSet);
@@ -151,15 +151,15 @@ describe("Validators", () => {
         validateGTINValidator(GTIN8_VALIDATOR, false, GTINType.GTIN8);
         validateNonGTINNumericIdentificationKeyValidator(GLN_VALIDATOR, false, IdentificationKeyType.GLN, 13, LeaderType.None);
         validateNonGTINNumericIdentificationKeyValidator(SSCC_VALIDATOR, false, IdentificationKeyType.SSCC, 18, LeaderType.ExtensionDigit);
-        validateSerializableNumericIdentificationKeyValidator(GRAI_VALIDATOR, false, IdentificationKeyType.GRAI, 13, LeaderType.None, 16, CharacterSet.AI82);
-        validateNonNumericIdentificationKeyValidator(GIAI_VALIDATOR, false, IdentificationKeyType.GIAI, 30, CharacterSet.AI82, false);
+        validateSerializableNumericIdentificationKeyValidator(GRAI_VALIDATOR, false, IdentificationKeyType.GRAI, 13, LeaderType.None, 16, ContentCharacterSet.AI82);
+        validateNonNumericIdentificationKeyValidator(GIAI_VALIDATOR, false, IdentificationKeyType.GIAI, 30, ContentCharacterSet.AI82, false);
         validateNonGTINNumericIdentificationKeyValidator(GSRN_VALIDATOR, false, IdentificationKeyType.GSRN, 18, LeaderType.None);
-        validateSerializableNumericIdentificationKeyValidator(GDTI_VALIDATOR, false, IdentificationKeyType.GDTI, 13, LeaderType.None, 17, CharacterSet.AI82);
-        validateNonNumericIdentificationKeyValidator(GINC_VALIDATOR, false, IdentificationKeyType.GINC, 30, CharacterSet.AI82, false);
+        validateSerializableNumericIdentificationKeyValidator(GDTI_VALIDATOR, false, IdentificationKeyType.GDTI, 13, LeaderType.None, 17, ContentCharacterSet.AI82);
+        validateNonNumericIdentificationKeyValidator(GINC_VALIDATOR, false, IdentificationKeyType.GINC, 30, ContentCharacterSet.AI82, false);
         validateNonGTINNumericIdentificationKeyValidator(GSIN_VALIDATOR, false, IdentificationKeyType.GSIN, 17, LeaderType.None);
-        validateSerializableNumericIdentificationKeyValidator(GCN_VALIDATOR, false, IdentificationKeyType.GCN, 13, LeaderType.None, 12, CharacterSet.Numeric);
-        validateNonNumericIdentificationKeyValidator(CPID_VALIDATOR, false, IdentificationKeyType.CPID, 30, CharacterSet.AI39, false);
-        validateNonNumericIdentificationKeyValidator(GMN_VALIDATOR, false, IdentificationKeyType.GMN, 25, CharacterSet.AI82, true);
+        validateSerializableNumericIdentificationKeyValidator(GCN_VALIDATOR, false, IdentificationKeyType.GCN, 13, LeaderType.None, 12, ContentCharacterSet.Numeric);
+        validateNonNumericIdentificationKeyValidator(CPID_VALIDATOR, false, IdentificationKeyType.CPID, 30, ContentCharacterSet.AI39, false);
+        validateNonNumericIdentificationKeyValidator(GMN_VALIDATOR, false, IdentificationKeyType.GMN, 25, ContentCharacterSet.AI82, true);
     });
 });
 
@@ -202,15 +202,15 @@ function validateIdentificationKeyCreators(prefixManager: PrefixManager): void {
 
         validateNonGTINNumericIdentificationKeyValidator(prefixManager.glnCreator, true, IdentificationKeyType.GLN, 13, LeaderType.None);
         validateNonGTINNumericIdentificationKeyValidator(prefixManager.ssccCreator, true, IdentificationKeyType.SSCC, 18, LeaderType.ExtensionDigit);
-        validateSerializableNumericIdentificationKeyValidator(prefixManager.graiCreator, true, IdentificationKeyType.GRAI, 13, LeaderType.None, 16, CharacterSet.AI82);
-        validateNonNumericIdentificationKeyValidator(prefixManager.giaiCreator, true, IdentificationKeyType.GIAI, 30, CharacterSet.AI82, false);
+        validateSerializableNumericIdentificationKeyValidator(prefixManager.graiCreator, true, IdentificationKeyType.GRAI, 13, LeaderType.None, 16, ContentCharacterSet.AI82);
+        validateNonNumericIdentificationKeyValidator(prefixManager.giaiCreator, true, IdentificationKeyType.GIAI, 30, ContentCharacterSet.AI82, false);
         validateNonGTINNumericIdentificationKeyValidator(prefixManager.gsrnCreator, true, IdentificationKeyType.GSRN, 18, LeaderType.None);
-        validateSerializableNumericIdentificationKeyValidator(prefixManager.gdtiCreator, true, IdentificationKeyType.GDTI, 13, LeaderType.None, 17, CharacterSet.AI82);
-        validateNonNumericIdentificationKeyValidator(prefixManager.gincCreator, true, IdentificationKeyType.GINC, 30, CharacterSet.AI82, false);
+        validateSerializableNumericIdentificationKeyValidator(prefixManager.gdtiCreator, true, IdentificationKeyType.GDTI, 13, LeaderType.None, 17, ContentCharacterSet.AI82);
+        validateNonNumericIdentificationKeyValidator(prefixManager.gincCreator, true, IdentificationKeyType.GINC, 30, ContentCharacterSet.AI82, false);
         validateNonGTINNumericIdentificationKeyValidator(prefixManager.gsinCreator, true, IdentificationKeyType.GSIN, 17, LeaderType.None);
-        validateSerializableNumericIdentificationKeyValidator(prefixManager.gcnCreator, true, IdentificationKeyType.GCN, 13, LeaderType.None, 12, CharacterSet.Numeric);
-        validateNonNumericIdentificationKeyValidator(prefixManager.cpidCreator, true, IdentificationKeyType.CPID, 30, CharacterSet.AI39, false);
-        validateNonNumericIdentificationKeyValidator(prefixManager.gmnCreator, true, IdentificationKeyType.GMN, 25, CharacterSet.AI82, true);
+        validateSerializableNumericIdentificationKeyValidator(prefixManager.gcnCreator, true, IdentificationKeyType.GCN, 13, LeaderType.None, 12, ContentCharacterSet.Numeric);
+        validateNonNumericIdentificationKeyValidator(prefixManager.cpidCreator, true, IdentificationKeyType.CPID, 30, ContentCharacterSet.AI39, false);
+        validateNonNumericIdentificationKeyValidator(prefixManager.gmnCreator, true, IdentificationKeyType.GMN, 25, ContentCharacterSet.AI82, true);
     } else {
         expect(() => prefixManager.glnCreator).toThrow("GLN not supported by GS1-8 Prefix");
         expect(() => prefixManager.ssccCreator).toThrow("SSCC not supported by GS1-8 Prefix");
@@ -902,15 +902,15 @@ function testSerializableNumericIdentificationKeyCreator(creator: SerializableNu
             let invalidSerial: string;
 
             switch (creator.serialComponentCharacterSet) {
-                case CharacterSet.Numeric:
+                case ContentCharacterSet.Numeric:
                     invalidSerial = "1234A5678";
                     break;
 
-                case CharacterSet.AI82:
+                case ContentCharacterSet.AI82:
                     invalidSerial = "ABCD~1234";
                     break;
 
-                case CharacterSet.AI39:
+                case ContentCharacterSet.AI39:
                     invalidSerial = "ABCD%1234";
                     break;
             }
