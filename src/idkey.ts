@@ -2,13 +2,13 @@ import {
     CharacterSetCreator,
     type CharacterSetValidation,
     Exclusion,
-    IteratorProxy,
     NUMERIC_CREATOR,
     RegExpValidator,
     type StringValidation,
     type StringValidator,
     type TransformerInput,
-    type TransformerOutput
+    type TransformerOutput,
+    transformIterable
 } from "@aidc-toolkit/utility";
 import { Mixin } from "ts-mixer";
 import { AI39_CREATOR, AI82_CREATOR } from "./character_set.js";
@@ -1074,13 +1074,14 @@ export interface NumericIdentificationKeyCreator extends NumericIdentificationKe
     /**
      * Create all identification keys for the prefix from `0` to `capacity - 1`.
      *
-     * The implementation creates the strings as needed using an internal generator function, so the values are created
-     * only as needed.
+     * The implementation creates the strings only as needed using an internal generator function. Although the result
+     * is equivalent to calling `creator.create(new Sequencer(0, creator.capacity - 1))`, this method is significantly
+     * faster.
      *
      * @returns
-     * Iterable iterator over created identification keys.
+     * All identification keys for the prefix.
      */
-    createAll: () => IterableIterator<string>;
+    createAll: () => Iterable<string>;
 }
 
 /**
@@ -1213,15 +1214,21 @@ abstract class AbstractNumericIdentificationKeyCreator extends AbstractIdentific
     /**
      * @inheritDoc
      */
-    createAll(): IterableIterator<string> {
+    createAll(): Iterable<string> {
         const hasExtensionDigit = this.leaderType === LeaderType.ExtensionDigit;
         const prefix = this.prefix;
+        const length = this.length;
         const referenceLength = this.referenceLength;
 
         // Start weight is for reference excluding extension digit, which has its weight calculated separately.
         const startWeight = 3 - 2 * ((referenceLength + 1 - Number(hasExtensionDigit)) % 2);
 
-        return AbstractNumericIdentificationKeyCreator.createAllPartial(prefix, referenceLength, hasExtensionDigit ? 3 - 2 * this.length % 2 : 0, startWeight, checkDigitSum(startWeight === 3, prefix));
+        // Returning separate Iterable object makes iteration repeatable.
+        return {
+            [Symbol.iterator]() {
+                return AbstractNumericIdentificationKeyCreator.createAllPartial(prefix, referenceLength, hasExtensionDigit ? 3 - 2 * length % 2 : 0, startWeight, checkDigitSum(startWeight === 3, prefix));
+            }
+        };
     }
 }
 
@@ -1524,7 +1531,7 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
      */
     private concatenateValidated<T extends TransformerInput<string>>(baseIdentificationKey: string, serialComponentOrComponents: T): TransformerOutput<T, string> {
         // TODO Refactor type when https://github.com/microsoft/TypeScript/pull/56941 released.
-        let result: string | IterableIterator<string>;
+        let result: string | Iterable<string>;
 
         const serialComponentCreator = this.serialComponentCreator;
         const serialComponentValidation = this.serialComponentValidation;
@@ -1547,7 +1554,7 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
         if (typeof serialComponentOrComponents !== "object") {
             result = validateAndConcatenate(serialComponentOrComponents);
         } else {
-            result = IteratorProxy.from(serialComponentOrComponents).map(validateAndConcatenate);
+            result = transformIterable(serialComponentOrComponents, validateAndConcatenate);
         }
 
         return result as TransformerOutput<T, string>;
@@ -1653,7 +1660,7 @@ export class NonNumericIdentificationKeyCreator extends Mixin(NonNumericIdentifi
      */
     create<T extends TransformerInput<string>>(referenceOrReferences: T): TransformerOutput<T, string> {
         // TODO Refactor type when https://github.com/microsoft/TypeScript/pull/56941 released.
-        let result: string | IterableIterator<string>;
+        let result: string | Iterable<string>;
 
         const referenceCreator = this.referenceCreator;
         const referenceValidation = this.referenceValidation;
@@ -1680,7 +1687,7 @@ export class NonNumericIdentificationKeyCreator extends Mixin(NonNumericIdentifi
         if (typeof referenceOrReferences !== "object") {
             result = validateAndCreate(referenceOrReferences);
         } else {
-            result = IteratorProxy.from(referenceOrReferences).map(validateAndCreate);
+            result = transformIterable(referenceOrReferences, validateAndCreate);
         }
 
         return result as TransformerOutput<T, string>;
