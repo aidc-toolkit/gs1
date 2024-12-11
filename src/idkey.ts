@@ -11,7 +11,7 @@ import {
     transformIterable
 } from "@aidc-toolkit/utility";
 import { Mixin } from "ts-mixer";
-import { AI39_CREATOR, AI82_CREATOR } from "./character_set.js";
+import { AI39_CREATOR, AI82_CREATOR } from "./character-set.js";
 import {
     checkCharacterPair,
     checkDigit,

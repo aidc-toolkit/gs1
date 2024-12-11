@@ -1,5 +1,5 @@
 import { NUMERIC_CREATOR } from "@aidc-toolkit/utility";
-import { AI82_CREATOR } from "./character_set.js";
+import { AI82_CREATOR } from "./character-set.js";
 import i18next, { gs1NS } from "./locale/i18n.js";
 
 /**
