@@ -106,7 +106,7 @@ function validateGTINValidator(validator: GTINValidator, isCreator: boolean, gti
     expect(validator.gtinType).toBe(gtinType);
 }
 
-function validateNonGTINNumericIdentificationKeyValidator<T extends NonGTINNumericIdentificationKeyValidator>(validator: T, isCreator: boolean, identificationKeyType: IdentificationKeyType, length: number, leaderType: LeaderType): void {
+function validateNonGTINNumericIdentificationKeyValidator(validator: NonGTINNumericIdentificationKeyValidator, isCreator: boolean, identificationKeyType: IdentificationKeyType, length: number, leaderType: LeaderType): void {
     validateNumericIdentificationKeyValidator(validator, isCreator, identificationKeyType, PrefixType.GS1CompanyPrefix, length, leaderType);
 }
 
@@ -927,7 +927,7 @@ function testSerializableNumericIdentificationKeyCreator(creator: SerializableNu
 
 const TEST_REFERENCE_LENGTH = 2;
 
-function testNonNumericIdentificationKeyCreator<T extends NonNumericIdentificationKeyCreator>(creator: T): void {
+function testNonNumericIdentificationKeyCreator(creator: NonNumericIdentificationKeyCreator): void {
     describe(creator.identificationKeyType, () => {
         const prefix = creator.prefix;
         const prefixLength = prefix.length;
