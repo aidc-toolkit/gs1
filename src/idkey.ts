@@ -19,7 +19,7 @@ import {
     hasValidCheckCharacterPair,
     hasValidCheckDigit
 } from "./check.js";
-import i18next, { gs1NS } from "./locale/i18n.js";
+import { i18nextGS1 } from "./locale/i18n.js";
 
 /**
  * Identification key type.
@@ -409,8 +409,7 @@ abstract class AbstractNumericIdentificationKeyValidator extends AbstractIdentif
 
         // Validate the length.
         if (identificationKey.length !== this.length) {
-            throw new RangeError(i18next.t("IdentificationKey.identificationKeyTypeLength", {
-                ns: gs1NS,
+            throw new RangeError(i18nextGS1.t("IdentificationKey.identificationKeyTypeLength", {
                 identificationKeyType: this.identificationKeyType,
                 length: this.length
             }));
@@ -418,9 +417,7 @@ abstract class AbstractNumericIdentificationKeyValidator extends AbstractIdentif
 
         // Validating the check digit will also validate the characters.
         if (!hasValidCheckDigit(this.padIdentificationKey(identificationKey, validation))) {
-            throw new RangeError(i18next.t("IdentificationKey.invalidCheckDigit", {
-                ns: gs1NS
-            }));
+            throw new RangeError(i18nextGS1.t("IdentificationKey.invalidCheckDigit"));
         }
     }
 }
@@ -560,9 +557,7 @@ export class GTINValidator extends AbstractNumericIdentificationKeyValidator {
         }
 
         if (gtin12 === undefined) {
-            throw new RangeError(i18next.t("IdentificationKey.invalidZeroSuppressedGTIN12", {
-                ns: gs1NS
-            }));
+            throw new RangeError(i18nextGS1.t("IdentificationKey.invalidZeroSuppressedGTIN12"));
         }
 
         // Make sure that resulting GTIN-12 is valid.
@@ -589,9 +584,7 @@ export class GTINValidator extends AbstractNumericIdentificationKeyValidator {
         switch (gtin.length) {
             case GTINType.GTIN13 as number:
                 if (gtin.startsWith("0")) {
-                    throw new RangeError(i18next.t("IdentificationKey.invalidGTIN13AtRetail", {
-                        ns: gs1NS
-                    }));
+                    throw new RangeError(i18nextGS1.t("IdentificationKey.invalidGTIN13AtRetail"));
                 }
 
                 // Validate prefix requiring exact match for prefix type.
@@ -627,23 +620,17 @@ export class GTINValidator extends AbstractNumericIdentificationKeyValidator {
                 break;
 
             default:
-                throw new RangeError(i18next.t("IdentificationKey.invalidGTINLength", {
-                    ns: gs1NS
-                }));
+                throw new RangeError(i18nextGS1.t("IdentificationKey.invalidGTINLength"));
         }
 
         // Validating the check digit will also validate the characters.
         if (!hasValidCheckDigit(lengthValidatedGTIN)) {
-            throw new RangeError(i18next.t("IdentificationKey.invalidCheckDigit", {
-                ns: gs1NS
-            }));
+            throw new RangeError(i18nextGS1.t("IdentificationKey.invalidCheckDigit"));
         }
 
         // Validate against level if required.
         if (gtinLevel !== GTINLevel.Any && gtinLevelRestriction !== GTINLevel.Any && gtinLevelRestriction !== gtinLevel) {
-            throw new RangeError(i18next.t(gtinLevel === GTINLevel.RetailConsumer ? "IdentificationKey.invalidGTINAtRetail" : "IdentificationKey.invalidGTINAtOtherThanRetail", {
-                ns: gs1NS
-            }));
+            throw new RangeError(i18nextGS1.t(gtinLevel === GTINLevel.RetailConsumer ? "IdentificationKey.invalidGTINAtRetail" : "IdentificationKey.invalidGTINAtOtherThanRetail"));
         }
     }
 
@@ -655,9 +642,7 @@ export class GTINValidator extends AbstractNumericIdentificationKeyValidator {
      */
     static validateGTIN14(gtin14: string): void {
         if (gtin14.length as GTINType !== GTINType.GTIN14) {
-            throw new RangeError(i18next.t("IdentificationKey.invalidGTIN14Length", {
-                ns: gs1NS
-            }));
+            throw new RangeError(i18nextGS1.t("IdentificationKey.invalidGTIN14Length"));
         }
 
         GTINCreator.validateAny(gtin14);
@@ -734,9 +719,7 @@ export class SerializableNumericIdentificationKeyValidator extends NonGTINNumeri
         this._serialComponentValidation = {
             minimumLength: 1,
             maximumLength: serialComponentLength,
-            component: () => i18next.t("IdentificationKey.serialComponent", {
-                ns: gs1NS
-            })
+            component: () => i18nextGS1.t("IdentificationKey.serialComponent")
         };
 
         this._serialComponentCreator = SerializableNumericIdentificationKeyValidator.creatorFor(serialComponentCharacterSet);
@@ -805,9 +788,7 @@ export class NonNumericIdentificationKeyValidator extends AbstractIdentification
          * @inheritDoc
          */
         protected override createErrorMessage(_s: string): string {
-            return i18next.t("IdentificationKey.referenceCantBeAllNumeric", {
-                ns: gs1NS
-            });
+            return i18nextGS1.t("IdentificationKey.referenceCantBeAllNumeric");
         }
     }(/\D/);
 
@@ -865,9 +846,7 @@ export class NonNumericIdentificationKeyValidator extends AbstractIdentification
             });
         // Validating the check character pair will also validate the characters.
         } else if (!hasValidCheckCharacterPair(this.padIdentificationKey(identificationKey, validation))) {
-            throw new RangeError(i18next.t("IdentificationKey.invalidCheckCharacterPair", {
-                ns: gs1NS
-            }));
+            throw new RangeError(i18nextGS1.t("IdentificationKey.invalidCheckCharacterPair"));
         }
 
         // Check for all-numeric identification key (minus check character pair) if excluded.
@@ -1242,9 +1221,7 @@ export class GTINCreator extends Mixin(GTINValidator, AbstractNumericIdentificat
     private static readonly REQUIRED_INDICATOR_DIGIT_VALIDATION: CharacterSetValidation = {
         minimumLength: 1,
         maximumLength: 1,
-        component: () => i18next.t("IdentificationKey.indicatorDigit", {
-            ns: gs1NS
-        })
+        component: () => i18nextGS1.t("IdentificationKey.indicatorDigit")
     };
 
     /**
@@ -1253,9 +1230,7 @@ export class GTINCreator extends Mixin(GTINValidator, AbstractNumericIdentificat
     private static readonly OPTIONAL_INDICATOR_DIGIT_VALIDATION: CharacterSetValidation = {
         minimumLength: 0,
         maximumLength: 1,
-        component: () => i18next.t("IdentificationKey.indicatorDigit", {
-            ns: gs1NS
-        })
+        component: () => i18nextGS1.t("IdentificationKey.indicatorDigit")
     };
 
     /**
@@ -1337,9 +1312,7 @@ export class GTINCreator extends Mixin(GTINValidator, AbstractNumericIdentificat
         }
 
         if (zeroSuppressedGTIN12 === undefined) {
-            throw new RangeError(i18next.t("IdentificationKey.invalidZeroSuppressibleGTIN12", {
-                ns: gs1NS
-            }));
+            throw new RangeError(i18nextGS1.t("IdentificationKey.invalidZeroSuppressibleGTIN12"));
         }
 
         return zeroSuppressedGTIN12;
@@ -1407,9 +1380,7 @@ export class GTINCreator extends Mixin(GTINValidator, AbstractNumericIdentificat
                     // GTIN is GTIN-8.
                     normalizedGTIN = gtin.substring(5);
                 } else {
-                    throw new RangeError(i18next.t("IdentificationKey.invalidZeroSuppressedGTIN12AsGTIN13", {
-                        ns: gs1NS
-                    }));
+                    throw new RangeError(i18nextGS1.t("IdentificationKey.invalidZeroSuppressedGTIN12AsGTIN13"));
                 }
                 break;
 
@@ -1442,16 +1413,12 @@ export class GTINCreator extends Mixin(GTINValidator, AbstractNumericIdentificat
                     // GTIN is GTIN-8.
                     normalizedGTIN = gtin.substring(6);
                 } else {
-                    throw new RangeError(i18next.t("IdentificationKey.invalidZeroSuppressedGTIN12AsGTIN14", {
-                        ns: gs1NS
-                    }));
+                    throw new RangeError(i18nextGS1.t("IdentificationKey.invalidZeroSuppressedGTIN12AsGTIN14"));
                 }
                 break;
 
             default:
-                throw new RangeError(i18next.t("IdentificationKey.invalidGTINLength", {
-                    ns: gs1NS
-                }));
+                throw new RangeError(i18nextGS1.t("IdentificationKey.invalidGTINLength"));
         }
 
         // Validation applies to the normalized GTIN.
@@ -1636,9 +1603,7 @@ export class NonNumericIdentificationKeyCreator extends Mixin(NonNumericIdentifi
             minimumLength: 1,
             // Maximum reference length has to account for prefix and check character pair.
             maximumLength: this.referenceLength,
-            component: () => i18next.t("IdentificationKey.reference", {
-                ns: gs1NS
-            })
+            component: () => i18nextGS1.t("IdentificationKey.reference")
         };
     }
 
@@ -1777,9 +1742,7 @@ export class PrefixManager {
     private static readonly GS1_COMPANY_PREFIX_VALIDATION: PrefixValidation = {
         minimumLength: PrefixManager.GS1_COMPANY_PREFIX_MINIMUM_LENGTH,
         maximumLength: PrefixManager.GS1_COMPANY_PREFIX_MAXIMUM_LENGTH,
-        component: () => i18next.t("Prefix.gs1CompanyPrefix", {
-            ns: gs1NS
-        })
+        component: () => i18nextGS1.t("Prefix.gs1CompanyPrefix")
     };
 
     /**
@@ -1788,9 +1751,7 @@ export class PrefixManager {
     private static readonly UPC_COMPANY_PREFIX_AS_GS1_COMPANY_PREFIX_VALIDATION: PrefixValidation = {
         minimumLength: PrefixManager.UPC_COMPANY_PREFIX_MINIMUM_LENGTH + 1,
         maximumLength: PrefixManager.UPC_COMPANY_PREFIX_MAXIMUM_LENGTH + 1,
-        component: () => i18next.t("Prefix.gs1CompanyPrefix", {
-            ns: gs1NS
-        })
+        component: () => i18nextGS1.t("Prefix.gs1CompanyPrefix")
     };
 
     /**
@@ -1799,9 +1760,7 @@ export class PrefixManager {
     private static readonly GS1_8_PREFIX_AS_GS1_COMPANY_PREFIX_VALIDATION: PrefixValidation = {
         minimumLength: PrefixManager.GS1_8_PREFIX_MINIMUM_LENGTH + 5,
         maximumLength: PrefixManager.GS1_8_PREFIX_MAXIMUM_LENGTH + 5,
-        component: () => i18next.t("Prefix.gs1CompanyPrefix", {
-            ns: gs1NS
-        })
+        component: () => i18nextGS1.t("Prefix.gs1CompanyPrefix")
     };
 
     /**
@@ -1810,9 +1769,7 @@ export class PrefixManager {
     private static readonly UPC_COMPANY_PREFIX_VALIDATION: PrefixValidation = {
         minimumLength: PrefixManager.UPC_COMPANY_PREFIX_MINIMUM_LENGTH,
         maximumLength: PrefixManager.UPC_COMPANY_PREFIX_MAXIMUM_LENGTH,
-        component: () => i18next.t("Prefix.upcCompanyPrefix", {
-            ns: gs1NS
-        })
+        component: () => i18nextGS1.t("Prefix.upcCompanyPrefix")
     };
 
     /**
@@ -1821,9 +1778,7 @@ export class PrefixManager {
     private static readonly GS1_8_PREFIX_VALIDATION: PrefixValidation = {
         minimumLength: PrefixManager.GS1_8_PREFIX_MINIMUM_LENGTH,
         maximumLength: PrefixManager.GS1_8_PREFIX_MAXIMUM_LENGTH,
-        component: () => i18next.t("Prefix.gs18Prefix", {
-            ns: gs1NS
-        })
+        component: () => i18nextGS1.t("Prefix.gs18Prefix")
     };
 
     /**
@@ -2061,32 +2016,24 @@ export class PrefixManager {
                     baseValidation = PrefixManager.GS1_COMPANY_PREFIX_VALIDATION;
                 } else if (!prefix.startsWith("00000")) {
                     if (!allowUPCCompanyPrefix) {
-                        throw new RangeError(i18next.t("Prefix.gs1CompanyPrefixCantStartWith0", {
-                            ns: gs1NS
-                        }));
+                        throw new RangeError(i18nextGS1.t("Prefix.gs1CompanyPrefixCantStartWith0"));
                     }
 
                     baseValidation = PrefixManager.UPC_COMPANY_PREFIX_AS_GS1_COMPANY_PREFIX_VALIDATION;
                 } else if (!prefix.startsWith("000000")) {
                     if (!allowGS18Prefix) {
-                        throw new RangeError(i18next.t("Prefix.gs1CompanyPrefixCantStartWith00000", {
-                            ns: gs1NS
-                        }));
+                        throw new RangeError(i18nextGS1.t("Prefix.gs1CompanyPrefixCantStartWith00000"));
                     }
 
                     baseValidation = PrefixManager.GS1_8_PREFIX_AS_GS1_COMPANY_PREFIX_VALIDATION;
                 } else {
-                    throw new RangeError(i18next.t("Prefix.gs1CompanyPrefixCantStartWith000000", {
-                        ns: gs1NS
-                    }));
+                    throw new RangeError(i18nextGS1.t("Prefix.gs1CompanyPrefixCantStartWith000000"));
                 }
                 break;
 
             case PrefixType.UPCCompanyPrefix:
                 if (prefix.startsWith("0000")) {
-                    throw new RangeError(i18next.t("Prefix.upcCompanyPrefixCantStartWith0000", {
-                        ns: gs1NS
-                    }));
+                    throw new RangeError(i18nextGS1.t("Prefix.upcCompanyPrefixCantStartWith0000"));
                 }
 
                 baseValidation = PrefixManager.UPC_COMPANY_PREFIX_VALIDATION;
@@ -2094,9 +2041,7 @@ export class PrefixManager {
 
             case PrefixType.GS18Prefix:
                 if (prefix.startsWith("0")) {
-                    throw new RangeError(i18next.t("Prefix.gs18PrefixCantStartWith0", {
-                        ns: gs1NS
-                    }));
+                    throw new RangeError(i18nextGS1.t("Prefix.gs18PrefixCantStartWith0"));
                 }
 
                 baseValidation = PrefixManager.GS1_8_PREFIX_VALIDATION;
@@ -2134,8 +2079,7 @@ export class PrefixManager {
 
         if (creator === undefined) {
             if (this.prefixType === PrefixType.GS18Prefix && identificationKeyType !== IdentificationKeyType.GTIN) {
-                throw new RangeError(i18next.t("Prefix.identificationKeyTypeNotSupportedByGS18Prefix", {
-                    ns: gs1NS,
+                throw new RangeError(i18nextGS1.t("Prefix.identificationKeyTypeNotSupportedByGS18Prefix", {
                     identificationKeyType
                 }));
             }

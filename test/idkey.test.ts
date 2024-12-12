@@ -1,4 +1,4 @@
-import { I18NEnvironment, i18nInit } from "@aidc-toolkit/core";
+import { I18NEnvironment } from "@aidc-toolkit/core";
 import { CharacterSetCreator, Exclusion, NUMERIC_CREATOR, Sequencer } from "@aidc-toolkit/utility";
 import { describe, expect, test } from "vitest";
 import {
@@ -25,6 +25,7 @@ import {
     type GTINValidator,
     hasValidCheckCharacterPair,
     hasValidCheckDigit,
+    i18nGS1Init,
     IdentificationKeyType,
     type IdentificationKeyValidator,
     LeaderType,
@@ -41,7 +42,7 @@ import {
     SSCC_VALIDATOR
 } from "../src/index.js";
 
-await i18nInit(I18NEnvironment.CLI);
+await i18nGS1Init(I18NEnvironment.CLI);
 
 function creatorFor(characterSet: ContentCharacterSet): CharacterSetCreator {
     let creator: CharacterSetCreator;

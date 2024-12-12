@@ -27,6 +27,7 @@
   "devDependencies": {
     "@aidc-toolkit/dev": "^0.9.7-beta",
     "eslint": "^9.16.0",
+    "i18next": "^24.1.0",
     "ts-node": "^10.9.2",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2",

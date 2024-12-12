@@ -1,4 +1,4 @@
-import { I18NEnvironment, i18nInit } from "@aidc-toolkit/core";
+import { I18NEnvironment } from "@aidc-toolkit/core";
 import { NUMERIC_CREATOR } from "@aidc-toolkit/utility";
 import { describe, expect, test } from "vitest";
 import {
@@ -8,10 +8,11 @@ import {
     fiveDigitPriceWeightCheckDigit,
     fourDigitPriceWeightCheckDigit,
     hasValidCheckCharacterPair,
-    hasValidCheckDigit
+    hasValidCheckDigit,
+    i18nGS1Init
 } from "../src/index.js";
 
-await i18nInit(I18NEnvironment.CLI);
+await i18nGS1Init(I18NEnvironment.CLI, true);
 
 describe("Check digit", () => {
     const testNumericString = "1234567890";
@@ -93,8 +94,8 @@ describe("Price/weight check digit", () => {
         testFourDigitPriceWeightCheckDigit("9012");
 
         expect(() => fourDigitPriceWeightCheckDigit("l234")).toThrow("Invalid character 'l' at position 1");
-        expect(() => fourDigitPriceWeightCheckDigit("123")).toThrow("String for price or weight sum must be exactly 4 characters");
-        expect(() => fourDigitPriceWeightCheckDigit("12345")).toThrow("String for price or weight sum must be exactly 4 characters");
+        expect(() => fourDigitPriceWeightCheckDigit("123")).toThrow("Length 3 of string for price or weight sum must be exactly 4");
+        expect(() => fourDigitPriceWeightCheckDigit("12345")).toThrow("Length 5 of string for price or weight sum must be exactly 4");
     });
 
     test("Five-digit", () => {
@@ -109,9 +110,9 @@ describe("Price/weight check digit", () => {
         testFiveDigitPriceWeightCheckDigit("89012");
         testFiveDigitPriceWeightCheckDigit("90123");
 
-        expect(() => fiveDigitPriceWeightCheckDigit("l2345")).toThrow("Invalid character 'l' at position 1");
-        expect(() => fiveDigitPriceWeightCheckDigit("1234")).toThrow("String for price or weight sum must be exactly 5 characters");
-        expect(() => fiveDigitPriceWeightCheckDigit("123456")).toThrow("String for price or weight sum must be exactly 5 characters");
+        expect(() => fiveDigitPriceWeightCheckDigit("l2345")).toThrow("Invalid character 'l' at position 1 of price or weight");
+        expect(() => fiveDigitPriceWeightCheckDigit("1234")).toThrow("Length 4 of string for price or weight sum must be exactly 5");
+        expect(() => fiveDigitPriceWeightCheckDigit("123456")).toThrow("Length 6 of string for price or weight sum must be exactly 5");
     });
 });
 
