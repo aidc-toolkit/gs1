@@ -1,5 +1,5 @@
 import { I18NEnvironment } from "@aidc-toolkit/core";
-import { CharacterSetCreator, Exclusion, NUMERIC_CREATOR, Sequencer } from "@aidc-toolkit/utility";
+import { CharacterSetCreator, Exclusion, NUMERIC_CREATOR, Sequence } from "@aidc-toolkit/utility";
 import { describe, expect, test } from "vitest";
 import {
     AI39_CREATOR,
@@ -379,8 +379,8 @@ describe("Sparse creation", () => {
 
     prefixManager.tweakFactor = 0;
 
-    const sparseGTINs = Array.from(prefixManager.gtinCreator.create(new Sequencer(0, 10), true));
-    const straightGTINs = Array.from(prefixManager.gtinCreator.create(new Sequencer(0, 10)));
+    const sparseGTINs = Array.from(prefixManager.gtinCreator.create(new Sequence(0, 10), true));
+    const straightGTINs = Array.from(prefixManager.gtinCreator.create(new Sequence(0, 10)));
 
     test("Tweak factor 0", () => {
         expect(sparseGTINs).toStrictEqual(straightGTINs);
@@ -424,7 +424,7 @@ function testNumericIdentificationKeyCreator(creator: NumericIdentificationKeyCr
             expect(creator.referenceLength).toBe(referenceLength);
             expect(creator.capacity).toBe(Number(CharacterSetCreator.powerOf10(referenceLength)));
 
-            const sequenceIterator = Iterator.from(creator.create(new Sequencer(0, referenceCount)));
+            const sequenceIterator = Iterator.from(creator.create(new Sequence(0, referenceCount)));
 
             let allCount = 0;
 
@@ -463,7 +463,7 @@ function testNumericIdentificationKeyCreator(creator: NumericIdentificationKeyCr
 
             let sequenceCount = 0;
 
-            Iterator.from(creator.create(new Sequencer(0, sparseReferenceCount), true)).forEach((identificationKey, index) => {
+            Iterator.from(creator.create(new Sequence(0, sparseReferenceCount), true)).forEach((identificationKey, index) => {
                 validate(identificationKey, index, true);
 
                 sequential = sequential && Number((hasExtensionDigit ? identificationKey.charAt(0) : "") + identificationKey.substring(referenceSubstringStart, referenceSubstringEnd)) === index;
@@ -564,7 +564,7 @@ function testGTINCreator(creator: GTINCreator): void {
         test("GTIN-14 straight", () => {
             let sequenceCount = 0;
 
-            Iterator.from(creator.createGTIN14("5", new Sequencer(0, referenceCount))).forEach((gtin, index) => {
+            Iterator.from(creator.createGTIN14("5", new Sequence(0, referenceCount))).forEach((gtin, index) => {
                 expect(Number(gtin.substring(referenceSubstringStart, referenceSubstringEnd))).toBe(index);
 
                 validate(gtin, index, false);
@@ -597,7 +597,7 @@ function testGTINCreator(creator: GTINCreator): void {
 
             let sequenceCount = 0;
 
-            Iterator.from(creator.createGTIN14("5", new Sequencer(0, sparseReferenceCount), true)).forEach((gtin, index) => {
+            Iterator.from(creator.createGTIN14("5", new Sequence(0, sparseReferenceCount), true)).forEach((gtin, index) => {
                 sequential = sequential && Number(gtin.substring(referenceSubstringStart, referenceSubstringEnd)) === index;
 
                 validate(gtin, index, true);
@@ -942,7 +942,7 @@ function testNonNumericIdentificationKeyCreator(creator: NonNumericIdentificatio
 
             let sequenceCount = 0;
 
-            Iterator.from(creator.create(creator.referenceCreator.create(TEST_REFERENCE_LENGTH, new Sequencer(0, referenceCount)))).forEach((identificationKey, index) => {
+            Iterator.from(creator.create(creator.referenceCreator.create(TEST_REFERENCE_LENGTH, new Sequence(0, referenceCount)))).forEach((identificationKey, index) => {
                 expect(() => {
                     creator.validate(identificationKey);
                 }).not.toThrow(RangeError);
@@ -966,7 +966,7 @@ function testNonNumericIdentificationKeyCreator(creator: NonNumericIdentificatio
 
             let sequenceCount = 0;
 
-            Iterator.from(creator.create(creator.referenceCreator.create(TEST_REFERENCE_LENGTH, new Sequencer(0, referenceCount), Exclusion.None, 123456n))).forEach((identificationKey, index) => {
+            Iterator.from(creator.create(creator.referenceCreator.create(TEST_REFERENCE_LENGTH, new Sequence(0, referenceCount), Exclusion.None, 123456n))).forEach((identificationKey, index) => {
                 expect(() => {
                     creator.validate(identificationKey);
                 }).not.toThrow(RangeError);

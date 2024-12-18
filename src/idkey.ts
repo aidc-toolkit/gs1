@@ -1054,7 +1054,7 @@ export interface NumericIdentificationKeyCreator extends NumericIdentificationKe
      * Create all identification keys for the prefix from `0` to `capacity - 1`.
      *
      * The implementation creates the strings only as needed using an internal generator function. Although the result
-     * is equivalent to calling `creator.create(new Sequencer(0, creator.capacity - 1))`, this method is significantly
+     * is equivalent to calling `creator.create(new Sequence(0, creator.capacity))`, this method is significantly
      * faster.
      *
      * @returns
