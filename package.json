@@ -26,8 +26,7 @@
   },
   "devDependencies": {
     "@aidc-toolkit/dev": "^0.9.8-beta",
-    "eslint": "^9.16.0",
-    "i18next": "^24.1.0",
+    "eslint": "^9.17.0",
     "ts-node": "^10.9.2",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2",
@@ -36,6 +35,7 @@
   "dependencies": {
     "@aidc-toolkit/core": "^0.9.8-beta",
     "@aidc-toolkit/utility": "^0.9.8-beta",
+    "i18next": "^24.2.0",
     "ts-mixer": "^6.0.4"
   }
 }
