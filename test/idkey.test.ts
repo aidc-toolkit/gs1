@@ -466,7 +466,7 @@ function testNumericIdentificationKeyCreator(creator: NumericIdentificationKeyCr
             Iterator.from(creator.create(new Sequence(0, sparseReferenceCount), true)).forEach((identificationKey, index) => {
                 validate(identificationKey, index, true);
 
-                sequential = sequential && Number((hasExtensionDigit ? identificationKey.charAt(0) : "") + identificationKey.substring(referenceSubstringStart, referenceSubstringEnd)) === index;
+                sequential &&= Number((hasExtensionDigit ? identificationKey.charAt(0) : "") + identificationKey.substring(referenceSubstringStart, referenceSubstringEnd)) === index;
 
                 expect(sequenceSet.has(identificationKey)).toBe(false);
                 sequenceSet.add(identificationKey);
@@ -598,7 +598,7 @@ function testGTINCreator(creator: GTINCreator): void {
             let sequenceCount = 0;
 
             Iterator.from(creator.createGTIN14("5", new Sequence(0, sparseReferenceCount), true)).forEach((gtin, index) => {
-                sequential = sequential && Number(gtin.substring(referenceSubstringStart, referenceSubstringEnd)) === index;
+                sequential &&= Number(gtin.substring(referenceSubstringStart, referenceSubstringEnd)) === index;
 
                 validate(gtin, index, true);
 
@@ -973,7 +973,7 @@ function testNonNumericIdentificationKeyCreator(creator: NonNumericIdentificatio
 
                 expect(Number(creator.referenceCreator.valueFor(identificationKey.substring(referenceSubstringStart, referenceSubstringEnd), Exclusion.None, 123456n))).toBe(index);
 
-                sequential = sequential && Number(creator.referenceCreator.valueFor(identificationKey.substring(referenceSubstringStart, referenceSubstringEnd))) === index;
+                sequential &&= Number(creator.referenceCreator.valueFor(identificationKey.substring(referenceSubstringStart, referenceSubstringEnd))) === index;
 
                 expect(identificationKey.length).toBeLessThanOrEqual(creator.length);
                 expect(identificationKey.substring(0, prefixLength)).toBe(prefix);

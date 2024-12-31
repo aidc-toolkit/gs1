@@ -1524,6 +1524,7 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
             result = transformIterable(serialComponentOrComponents, validateAndConcatenate);
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type determination is handled above.
         return result as TransformerOutput<T, string>;
     }
 
@@ -1655,6 +1656,7 @@ export class NonNumericIdentificationKeyCreator extends Mixin(NonNumericIdentifi
             result = transformIterable(referenceOrReferences, validateAndCreate);
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type determination is handled above.
         return result as TransformerOutput<T, string>;
     }
 }
@@ -2075,6 +2077,7 @@ export class PrefixManager {
      * Identification key creator.
      */
     private getIdentificationKeyCreator<T extends IdentificationKeyCreator>(identificationKeyType: IdentificationKeyType, constructorCallback: () => T): T {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type is paired with constructor callback.
         let creator = this._identificationKeyCreatorsMap.get(identificationKeyType) as (T | undefined);
 
         if (creator === undefined) {
