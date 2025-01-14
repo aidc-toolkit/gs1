@@ -19,10 +19,10 @@ import {
     GTIN13_VALIDATOR,
     GTIN8_VALIDATOR,
     GTIN_VALIDATORS,
-    GTINCreator,
+    type GTINCreator,
     GTINLevel,
     GTINType,
-    type GTINValidator,
+    GTINValidator,
     hasValidCheckCharacterPair,
     hasValidCheckDigit,
     i18nGS1Init,
@@ -550,7 +550,7 @@ function testGTINCreator(creator: GTINCreator): void {
 
         function validate(gtin: string, index: number, sparse: boolean): void {
             expect(() => {
-                GTINCreator.validateGTIN14(gtin);
+                GTINValidator.validateGTIN14(gtin);
             }).not.toThrow(RangeError);
             expect(gtin).toBe(creator.createGTIN14("5", index, sparse));
 
@@ -626,109 +626,109 @@ function testGTINCreator(creator: GTINCreator): void {
 
         if (creator.gtinType === GTINType.GTIN12) {
             test("Zero-suppress GTIN-12 rule 1", () => {
-                expect(GTINCreator.zeroSuppress("012345000058")).toBe("01234558");
-                expect(GTINCreator.zeroSuppress("012345000065")).toBe("01234565");
-                expect(GTINCreator.zeroSuppress("012345000072")).toBe("01234572");
-                expect(GTINCreator.zeroSuppress("012345000089")).toBe("01234589");
-                expect(GTINCreator.zeroSuppress("012345000096")).toBe("01234596");
+                expect(GTINValidator.zeroSuppress("012345000058")).toBe("01234558");
+                expect(GTINValidator.zeroSuppress("012345000065")).toBe("01234565");
+                expect(GTINValidator.zeroSuppress("012345000072")).toBe("01234572");
+                expect(GTINValidator.zeroSuppress("012345000089")).toBe("01234589");
+                expect(GTINValidator.zeroSuppress("012345000096")).toBe("01234596");
             });
 
             test("Zero-suppress GTIN-12 rule 2", () => {
-                expect(GTINCreator.zeroSuppress("045670000080")).toBe("04567840");
+                expect(GTINValidator.zeroSuppress("045670000080")).toBe("04567840");
             });
 
             test("Zero-suppress GTIN-12 rule 3", () => {
-                expect(GTINCreator.zeroSuppress("034000005673")).toBe("03456703");
-                expect(GTINCreator.zeroSuppress("034100005672")).toBe("03456712");
-                expect(GTINCreator.zeroSuppress("034200005671")).toBe("03456721");
+                expect(GTINValidator.zeroSuppress("034000005673")).toBe("03456703");
+                expect(GTINValidator.zeroSuppress("034100005672")).toBe("03456712");
+                expect(GTINValidator.zeroSuppress("034200005671")).toBe("03456721");
             });
 
             test("Zero-suppress GTIN-12 rule 4", () => {
-                expect(GTINCreator.zeroSuppress("098300000752")).toBe("09837532");
-                expect(GTINCreator.zeroSuppress("098400000751")).toBe("09847531");
-                expect(GTINCreator.zeroSuppress("098500000750")).toBe("09857530");
-                expect(GTINCreator.zeroSuppress("098600000759")).toBe("09867539");
-                expect(GTINCreator.zeroSuppress("098700000758")).toBe("09877538");
-                expect(GTINCreator.zeroSuppress("098800000757")).toBe("09887537");
-                expect(GTINCreator.zeroSuppress("098900000756")).toBe("09897536");
+                expect(GTINValidator.zeroSuppress("098300000752")).toBe("09837532");
+                expect(GTINValidator.zeroSuppress("098400000751")).toBe("09847531");
+                expect(GTINValidator.zeroSuppress("098500000750")).toBe("09857530");
+                expect(GTINValidator.zeroSuppress("098600000759")).toBe("09867539");
+                expect(GTINValidator.zeroSuppress("098700000758")).toBe("09877538");
+                expect(GTINValidator.zeroSuppress("098800000757")).toBe("09887537");
+                expect(GTINValidator.zeroSuppress("098900000756")).toBe("09897536");
             });
 
             test("Non-zero-suppressible GTIN-12 rule 1", () => {
-                expect(() => GTINCreator.zeroSuppress("012345100055")).toThrow("GTIN-12 not zero-suppressible");
-                expect(() => GTINCreator.zeroSuppress("012345010057")).toThrow("GTIN-12 not zero-suppressible");
-                expect(() => GTINCreator.zeroSuppress("012345001055")).toThrow("GTIN-12 not zero-suppressible");
-                expect(() => GTINCreator.zeroSuppress("012345000157")).toThrow("GTIN-12 not zero-suppressible");
-                expect(() => GTINCreator.zeroSuppress("012345000041")).toThrow("GTIN-12 not zero-suppressible");
-                expect(() => GTINCreator.zeroSuppress("012345000003")).toThrow("GTIN-12 not zero-suppressible");
+                expect(() => GTINValidator.zeroSuppress("012345100055")).toThrow("GTIN-12 not zero-suppressible");
+                expect(() => GTINValidator.zeroSuppress("012345010057")).toThrow("GTIN-12 not zero-suppressible");
+                expect(() => GTINValidator.zeroSuppress("012345001055")).toThrow("GTIN-12 not zero-suppressible");
+                expect(() => GTINValidator.zeroSuppress("012345000157")).toThrow("GTIN-12 not zero-suppressible");
+                expect(() => GTINValidator.zeroSuppress("012345000041")).toThrow("GTIN-12 not zero-suppressible");
+                expect(() => GTINValidator.zeroSuppress("012345000003")).toThrow("GTIN-12 not zero-suppressible");
             });
 
             test("Non-zero-suppressible GTIN-12 rule 2", () => {
-                expect(() => GTINCreator.zeroSuppress("045670100087")).toThrow("GTIN-12 not zero-suppressible");
-                expect(() => GTINCreator.zeroSuppress("045670010089")).toThrow("GTIN-12 not zero-suppressible");
-                expect(() => GTINCreator.zeroSuppress("045670001087")).toThrow("GTIN-12 not zero-suppressible");
-                expect(() => GTINCreator.zeroSuppress("045670000189")).toThrow("GTIN-12 not zero-suppressible");
+                expect(() => GTINValidator.zeroSuppress("045670100087")).toThrow("GTIN-12 not zero-suppressible");
+                expect(() => GTINValidator.zeroSuppress("045670010089")).toThrow("GTIN-12 not zero-suppressible");
+                expect(() => GTINValidator.zeroSuppress("045670001087")).toThrow("GTIN-12 not zero-suppressible");
+                expect(() => GTINValidator.zeroSuppress("045670000189")).toThrow("GTIN-12 not zero-suppressible");
             });
 
             test("Non-zero-suppressible GTIN-12 rule 3", () => {
-                expect(() => GTINCreator.zeroSuppress("034010005670")).toThrow("GTIN-12 not zero-suppressible");
-                expect(() => GTINCreator.zeroSuppress("034001005672")).toThrow("GTIN-12 not zero-suppressible");
-                expect(() => GTINCreator.zeroSuppress("034000105670")).toThrow("GTIN-12 not zero-suppressible");
-                expect(() => GTINCreator.zeroSuppress("034000015672")).toThrow("GTIN-12 not zero-suppressible");
+                expect(() => GTINValidator.zeroSuppress("034010005670")).toThrow("GTIN-12 not zero-suppressible");
+                expect(() => GTINValidator.zeroSuppress("034001005672")).toThrow("GTIN-12 not zero-suppressible");
+                expect(() => GTINValidator.zeroSuppress("034000105670")).toThrow("GTIN-12 not zero-suppressible");
+                expect(() => GTINValidator.zeroSuppress("034000015672")).toThrow("GTIN-12 not zero-suppressible");
             });
 
             test("Non-zero-suppressible GTIN-12 rule 4", () => {
-                expect(() => GTINCreator.zeroSuppress("098310000759")).toThrow("GTIN-12 not zero-suppressible");
-                expect(() => GTINCreator.zeroSuppress("098301000751")).toThrow("GTIN-12 not zero-suppressible");
-                expect(() => GTINCreator.zeroSuppress("098300100759")).toThrow("GTIN-12 not zero-suppressible");
-                expect(() => GTINCreator.zeroSuppress("098300010751")).toThrow("GTIN-12 not zero-suppressible");
-                expect(() => GTINCreator.zeroSuppress("098300001759")).toThrow("GTIN-12 not zero-suppressible");
+                expect(() => GTINValidator.zeroSuppress("098310000759")).toThrow("GTIN-12 not zero-suppressible");
+                expect(() => GTINValidator.zeroSuppress("098301000751")).toThrow("GTIN-12 not zero-suppressible");
+                expect(() => GTINValidator.zeroSuppress("098300100759")).toThrow("GTIN-12 not zero-suppressible");
+                expect(() => GTINValidator.zeroSuppress("098300010751")).toThrow("GTIN-12 not zero-suppressible");
+                expect(() => GTINValidator.zeroSuppress("098300001759")).toThrow("GTIN-12 not zero-suppressible");
             });
 
             test("Zero-suppress other error", () => {
-                expect(() => GTINCreator.zeroSuppress("0012345000059")).toThrow("GTIN must be 12 digits long");
-                expect(() => GTINCreator.zeroSuppress("012345000059")).toThrow("Invalid check digit");
-                expect(() => GTINCreator.zeroSuppress("112345000055")).toThrow("GTIN-12 not zero-suppressible");
+                expect(() => GTINValidator.zeroSuppress("0012345000059")).toThrow("GTIN must be 12 digits long");
+                expect(() => GTINValidator.zeroSuppress("012345000059")).toThrow("Invalid check digit");
+                expect(() => GTINValidator.zeroSuppress("112345000055")).toThrow("GTIN-12 not zero-suppressible");
             });
 
             test("Zero-expand GTIN-12 rule 1", () => {
-                expect(GTINCreator.zeroExpand("01234558")).toBe("012345000058");
-                expect(GTINCreator.zeroExpand("01234565")).toBe("012345000065");
-                expect(GTINCreator.zeroExpand("01234572")).toBe("012345000072");
-                expect(GTINCreator.zeroExpand("01234589")).toBe("012345000089");
-                expect(GTINCreator.zeroExpand("01234596")).toBe("012345000096");
-                expect(() => GTINCreator.zeroExpand("00000154")).toThrow("U.P.C. Company Prefix can't start with \"0000\"");
+                expect(GTINValidator.zeroExpand("01234558")).toBe("012345000058");
+                expect(GTINValidator.zeroExpand("01234565")).toBe("012345000065");
+                expect(GTINValidator.zeroExpand("01234572")).toBe("012345000072");
+                expect(GTINValidator.zeroExpand("01234589")).toBe("012345000089");
+                expect(GTINValidator.zeroExpand("01234596")).toBe("012345000096");
+                expect(() => GTINValidator.zeroExpand("00000154")).toThrow("U.P.C. Company Prefix can't start with \"0000\"");
             });
 
             test("Zero-expand GTIN-12 rule 2", () => {
-                expect(GTINCreator.zeroExpand("04567840")).toBe("045670000080");
-                expect(() => GTINCreator.zeroExpand("00001047")).toThrow("U.P.C. Company Prefix can't start with \"0000\"");
+                expect(GTINValidator.zeroExpand("04567840")).toBe("045670000080");
+                expect(() => GTINValidator.zeroExpand("00001047")).toThrow("U.P.C. Company Prefix can't start with \"0000\"");
             });
 
             test("Zero-expand GTIN-12 rule 3", () => {
-                expect(GTINCreator.zeroExpand("03456703")).toBe("034000005673");
-                expect(GTINCreator.zeroExpand("03456712")).toBe("034100005672");
-                expect(GTINCreator.zeroExpand("03456721")).toBe("034200005671");
-                expect(() => GTINCreator.zeroExpand("00000028")).not.toThrow(RangeError);
+                expect(GTINValidator.zeroExpand("03456703")).toBe("034000005673");
+                expect(GTINValidator.zeroExpand("03456712")).toBe("034100005672");
+                expect(GTINValidator.zeroExpand("03456721")).toBe("034200005671");
+                expect(() => GTINValidator.zeroExpand("00000028")).not.toThrow(RangeError);
             });
 
             test("Zero-expand GTIN-12 rule 4", () => {
-                expect(GTINCreator.zeroExpand("09837532")).toBe("098300000752");
-                expect(GTINCreator.zeroExpand("09847531")).toBe("098400000751");
-                expect(GTINCreator.zeroExpand("09857530")).toBe("098500000750");
-                expect(GTINCreator.zeroExpand("09867539")).toBe("098600000759");
-                expect(GTINCreator.zeroExpand("09877538")).toBe("098700000758");
-                expect(GTINCreator.zeroExpand("09887537")).toBe("098800000757");
-                expect(GTINCreator.zeroExpand("09897536")).toBe("098900000756");
-                expect(() => GTINCreator.zeroExpand("00030037")).not.toThrow(RangeError);
+                expect(GTINValidator.zeroExpand("09837532")).toBe("098300000752");
+                expect(GTINValidator.zeroExpand("09847531")).toBe("098400000751");
+                expect(GTINValidator.zeroExpand("09857530")).toBe("098500000750");
+                expect(GTINValidator.zeroExpand("09867539")).toBe("098600000759");
+                expect(GTINValidator.zeroExpand("09877538")).toBe("098700000758");
+                expect(GTINValidator.zeroExpand("09887537")).toBe("098800000757");
+                expect(GTINValidator.zeroExpand("09897536")).toBe("098900000756");
+                expect(() => GTINValidator.zeroExpand("00030037")).not.toThrow(RangeError);
             });
 
             test("Zero-expand error", () => {
-                expect(() => GTINCreator.zeroExpand("001234505")).toThrow("Length 9 must be less than or equal to 8");
-                expect(() => GTINCreator.zeroExpand("01234506")).toThrow("Invalid check digit");
-                expect(() => GTINCreator.zeroExpand("11234506")).toThrow("Invalid zero-suppressed GTIN-12");
-                expect(() => GTINCreator.zeroExpand("09800037")).toThrow("Invalid zero-suppressed GTIN-12");
-                expect(() => GTINCreator.zeroExpand("09800047")).toThrow("Invalid zero-suppressed GTIN-12");
-                expect(() => GTINCreator.zeroExpand("09800052")).toThrow("Invalid zero-suppressed GTIN-12");
+                expect(() => GTINValidator.zeroExpand("001234505")).toThrow("Length 9 must be less than or equal to 8");
+                expect(() => GTINValidator.zeroExpand("01234506")).toThrow("Invalid check digit");
+                expect(() => GTINValidator.zeroExpand("11234506")).toThrow("Invalid zero-suppressed GTIN-12");
+                expect(() => GTINValidator.zeroExpand("09800037")).toThrow("Invalid zero-suppressed GTIN-12");
+                expect(() => GTINValidator.zeroExpand("09800047")).toThrow("Invalid zero-suppressed GTIN-12");
+                expect(() => GTINValidator.zeroExpand("09800052")).toThrow("Invalid zero-suppressed GTIN-12");
             });
         }
 
@@ -737,20 +737,20 @@ function testGTINCreator(creator: GTINCreator): void {
 
             expect(gtin.length).toBe(creator.length);
 
-            let gtin14 = GTINCreator.convertToGTIN14("0", gtin);
+            let gtin14 = GTINValidator.convertToGTIN14("0", gtin);
 
             expect(gtin14.length).toBe(14);
-            expect(GTINCreator.normalize(gtin14)).toBe(gtin);
+            expect(GTINValidator.normalize(gtin14)).toBe(gtin);
 
-            gtin14 = GTINCreator.convertToGTIN14("1", gtin);
-
-            expect(gtin14.length).toBe(14);
-            expect(GTINCreator.normalize(gtin14)).not.toBe(gtin);
-
-            gtin14 = GTINCreator.convertToGTIN14("2", gtin14);
+            gtin14 = GTINValidator.convertToGTIN14("1", gtin);
 
             expect(gtin14.length).toBe(14);
-            expect(GTINCreator.normalize(gtin14)).not.toBe(gtin);
+            expect(GTINValidator.normalize(gtin14)).not.toBe(gtin);
+
+            gtin14 = GTINValidator.convertToGTIN14("2", gtin14);
+
+            expect(gtin14.length).toBe(14);
+            expect(GTINValidator.normalize(gtin14)).not.toBe(gtin);
         });
     });
 }
@@ -759,112 +759,112 @@ function testGTINValidationAndNormalization(): void {
     describe("GTIN validation and normalization", () => {
         test("Validation", () => {
             expect(() => {
-                GTINCreator.validateAny("9521873000122", GTINLevel.Any);
+                GTINValidator.validateAny("9521873000122", GTINLevel.Any);
             }).not.toThrow(RangeError);
             expect(() => {
-                GTINCreator.validateAny("19521873000129", GTINLevel.Any);
+                GTINValidator.validateAny("19521873000129", GTINLevel.Any);
             }).not.toThrow(RangeError);
             expect(() => {
-                GTINCreator.validateAny("9521873000160", GTINLevel.Any);
+                GTINValidator.validateAny("9521873000160", GTINLevel.Any);
             }).not.toThrow(RangeError);
             expect(() => {
-                GTINCreator.validateAny("95216843", GTINLevel.Any);
+                GTINValidator.validateAny("95216843", GTINLevel.Any);
             }).not.toThrow(RangeError);
             expect(() => {
-                GTINCreator.validateAny("95217800031", GTINLevel.Any);
+                GTINValidator.validateAny("95217800031", GTINLevel.Any);
             }).toThrow("GTIN must be 13, 12, 8, or 14 digits long");
             expect(() => {
-                GTINCreator.validateAny("614141773985", GTINLevel.Any);
+                GTINValidator.validateAny("614141773985", GTINLevel.Any);
             }).not.toThrow(RangeError);
             expect(() => {
-                GTINCreator.validateAny("614141773991", GTINLevel.Any);
+                GTINValidator.validateAny("614141773991", GTINLevel.Any);
             }).toThrow("Invalid check digit");
             expect(() => {
-                GTINCreator.validateAny("09867539", GTINLevel.Any);
+                GTINValidator.validateAny("09867539", GTINLevel.Any);
             }).not.toThrow(RangeError);
             expect(() => {
-                GTINCreator.validateAny("09800037", GTINLevel.Any);
+                GTINValidator.validateAny("09800037", GTINLevel.Any);
             }).toThrow("Invalid zero-suppressed GTIN-12");
             expect(() => {
-                GTINCreator.validateAny("9521873000122", GTINLevel.RetailConsumer);
+                GTINValidator.validateAny("9521873000122", GTINLevel.RetailConsumer);
             }).not.toThrow(RangeError);
             expect(() => {
-                GTINCreator.validateAny("19521873000129", GTINLevel.RetailConsumer);
+                GTINValidator.validateAny("19521873000129", GTINLevel.RetailConsumer);
             }).toThrow("GTIN not supported at retail consumer trade item level");
             expect(() => {
-                GTINCreator.validateAny("9521873000160", GTINLevel.RetailConsumer);
+                GTINValidator.validateAny("9521873000160", GTINLevel.RetailConsumer);
             }).not.toThrow(RangeError);
             expect(() => {
-                GTINCreator.validateAny("95216843", GTINLevel.RetailConsumer);
+                GTINValidator.validateAny("95216843", GTINLevel.RetailConsumer);
             }).not.toThrow(RangeError);
             expect(() => {
-                GTINCreator.validateAny("95217800031", GTINLevel.RetailConsumer);
+                GTINValidator.validateAny("95217800031", GTINLevel.RetailConsumer);
             }).toThrow("GTIN must be 13, 12, 8, or 14 digits long");
             expect(() => {
-                GTINCreator.validateAny("614141773985", GTINLevel.RetailConsumer);
+                GTINValidator.validateAny("614141773985", GTINLevel.RetailConsumer);
             }).not.toThrow(RangeError);
             expect(() => {
-                GTINCreator.validateAny("0614141773985", GTINLevel.RetailConsumer);
+                GTINValidator.validateAny("0614141773985", GTINLevel.RetailConsumer);
             }).toThrow("GTIN-13 at retail consumer trade item level can't start with zero");
             expect(() => {
-                GTINCreator.validateAny("614141773991", GTINLevel.RetailConsumer);
+                GTINValidator.validateAny("614141773991", GTINLevel.RetailConsumer);
             }).toThrow("Invalid check digit");
             expect(() => {
-                GTINCreator.validateAny("09867539", GTINLevel.RetailConsumer);
+                GTINValidator.validateAny("09867539", GTINLevel.RetailConsumer);
             }).not.toThrow(RangeError);
             expect(() => {
-                GTINCreator.validateAny("09800037", GTINLevel.RetailConsumer);
+                GTINValidator.validateAny("09800037", GTINLevel.RetailConsumer);
             }).toThrow("Invalid zero-suppressed GTIN-12");
             expect(() => {
-                GTINCreator.validateAny("9521873000122", GTINLevel.OtherThanRetailConsumer);
+                GTINValidator.validateAny("9521873000122", GTINLevel.OtherThanRetailConsumer);
             }).not.toThrow(RangeError);
             expect(() => {
-                GTINCreator.validateAny("19521873000129", GTINLevel.OtherThanRetailConsumer);
+                GTINValidator.validateAny("19521873000129", GTINLevel.OtherThanRetailConsumer);
             }).not.toThrow(RangeError);
             expect(() => {
-                GTINCreator.validateAny("9521873000160", GTINLevel.OtherThanRetailConsumer);
+                GTINValidator.validateAny("9521873000160", GTINLevel.OtherThanRetailConsumer);
             }).not.toThrow(RangeError);
             expect(() => {
-                GTINCreator.validateAny("95216843", GTINLevel.OtherThanRetailConsumer);
+                GTINValidator.validateAny("95216843", GTINLevel.OtherThanRetailConsumer);
             }).toThrow("GTIN not supported at other than retail consumer trade item level");
             expect(() => {
-                GTINCreator.validateAny("95217800031", GTINLevel.OtherThanRetailConsumer);
+                GTINValidator.validateAny("95217800031", GTINLevel.OtherThanRetailConsumer);
             }).toThrow("GTIN must be 13, 12, 8, or 14 digits long");
             expect(() => {
-                GTINCreator.validateAny("614141773985", GTINLevel.OtherThanRetailConsumer);
+                GTINValidator.validateAny("614141773985", GTINLevel.OtherThanRetailConsumer);
             }).not.toThrow(RangeError);
             expect(() => {
-                GTINCreator.validateAny("614141773991", GTINLevel.OtherThanRetailConsumer);
+                GTINValidator.validateAny("614141773991", GTINLevel.OtherThanRetailConsumer);
             }).toThrow("Invalid check digit");
             expect(() => {
-                GTINCreator.validateAny("09867539", GTINLevel.OtherThanRetailConsumer);
+                GTINValidator.validateAny("09867539", GTINLevel.OtherThanRetailConsumer);
             }).toThrow("GTIN not supported at other than retail consumer trade item level");
             expect(() => {
-                GTINCreator.validateAny("09800037", GTINLevel.OtherThanRetailConsumer);
+                GTINValidator.validateAny("09800037", GTINLevel.OtherThanRetailConsumer);
             }).toThrow("Invalid zero-suppressed GTIN-12");
         });
 
         test("Normalization", () => {
             // GTIN-14.
-            expect(GTINCreator.normalize("09526543219996")).toBe("9526543219996");
-            expect(GTINCreator.normalize("00614141009992")).toBe("614141009992");
-            expect(() => GTINCreator.normalize("00000001234505")).toThrow("Invalid zero-suppressed GTIN-12 as GTIN-14");
-            expect(GTINCreator.normalize("00000095209999")).toBe("95209999");
-            expect(GTINCreator.normalize("49526543219994")).toBe("49526543219994");
+            expect(GTINValidator.normalize("09526543219996")).toBe("9526543219996");
+            expect(GTINValidator.normalize("00614141009992")).toBe("614141009992");
+            expect(() => GTINValidator.normalize("00000001234505")).toThrow("Invalid zero-suppressed GTIN-12 as GTIN-14");
+            expect(GTINValidator.normalize("00000095209999")).toBe("95209999");
+            expect(GTINValidator.normalize("49526543219994")).toBe("49526543219994");
 
             // GTIN-13.
-            expect(GTINCreator.normalize("9526543219996")).toBe("9526543219996");
-            expect(GTINCreator.normalize("0614141009992")).toBe("614141009992");
-            expect(() => GTINCreator.normalize("0000001234505")).toThrow("Invalid zero-suppressed GTIN-12 as GTIN-13");
-            expect(GTINCreator.normalize("0000095209999")).toBe("95209999");
+            expect(GTINValidator.normalize("9526543219996")).toBe("9526543219996");
+            expect(GTINValidator.normalize("0614141009992")).toBe("614141009992");
+            expect(() => GTINValidator.normalize("0000001234505")).toThrow("Invalid zero-suppressed GTIN-12 as GTIN-13");
+            expect(GTINValidator.normalize("0000095209999")).toBe("95209999");
 
             // GTIN-12.
-            expect(GTINCreator.normalize("614141009992")).toBe("614141009992");
-            expect(GTINCreator.normalize("01234505")).toBe("012000003455");
-            expect(() => GTINCreator.normalize("09800037")).toThrow("Invalid zero-suppressed GTIN-12");
+            expect(GTINValidator.normalize("614141009992")).toBe("614141009992");
+            expect(GTINValidator.normalize("01234505")).toBe("012000003455");
+            expect(() => GTINValidator.normalize("09800037")).toThrow("Invalid zero-suppressed GTIN-12");
 
             // GTIN-8.
-            expect(GTINCreator.normalize("95209999")).toBe("95209999");
+            expect(GTINValidator.normalize("95209999")).toBe("95209999");
         });
     });
 }
