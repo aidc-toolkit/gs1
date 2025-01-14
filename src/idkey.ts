@@ -142,7 +142,7 @@ export interface IdentificationKeyValidation extends StringValidation {
  * Identification key validator. Validates an identification key against its definition in section 3 of the {@link
  * https://www.gs1.org/genspecs | GS1 General Specifications}.
  */
-export interface IdentificationKeyValidator<V extends IdentificationKeyValidation = IdentificationKeyValidation> extends StringValidator<V> {
+export interface IdentificationKeyValidator<TIdentificationKeyValidation extends IdentificationKeyValidation = IdentificationKeyValidation> extends StringValidator<TIdentificationKeyValidation> {
     /**
      * Get the identification key type. Per the GS1 General Specifications, the identification key type determines
      * the remaining properties.
@@ -180,13 +180,13 @@ export interface IdentificationKeyValidator<V extends IdentificationKeyValidatio
      * @param validation
      * Identification key validation parameters.
      */
-    validate: (identificationKey: string, validation?: V) => void;
+    validate: (identificationKey: string, validation?: TIdentificationKeyValidation) => void;
 }
 
 /**
  * Abstract identification key validator. Implements common functionality for an identification key validator.
  */
-abstract class AbstractIdentificationKeyValidator<V extends IdentificationKeyValidation = IdentificationKeyValidation> implements IdentificationKeyValidator<V> {
+abstract class AbstractIdentificationKeyValidator<TIdentificationKeyValidation extends IdentificationKeyValidation = IdentificationKeyValidation> implements IdentificationKeyValidator<TIdentificationKeyValidation> {
     private static readonly CHARACTER_SET_CREATORS = [
         NUMERIC_CREATOR, AI82_CREATOR, AI39_CREATOR
     ];
@@ -319,7 +319,7 @@ abstract class AbstractIdentificationKeyValidator<V extends IdentificationKeyVal
         PrefixManager.validatePrefix(this.prefixType, true, false, partialIdentificationKey, true, this.referenceCharacterSet === ContentCharacterSet.Numeric, positionOffset);
     }
 
-    abstract validate(identificationKey: string, validation?: V): void;
+    abstract validate(identificationKey: string, validation?: TIdentificationKeyValidation): void;
 }
 
 /**
@@ -1048,7 +1048,7 @@ export interface NumericIdentificationKeyCreator extends NumericIdentificationKe
      * @returns
      * Identification key(s).
      */
-    create: <T extends TransformerInput<number | bigint>>(valueOrValues: T, sparse?: boolean) => TransformerOutput<T, string>;
+    create: <TTransformerInput extends TransformerInput<number | bigint>>(valueOrValues: TTransformerInput, sparse?: boolean) => TransformerOutput<TTransformerInput, string>;
 
     /**
      * Create all identification keys for the prefix from `0` to `capacity - 1`.
@@ -1134,7 +1134,7 @@ abstract class AbstractNumericIdentificationKeyCreator extends AbstractIdentific
     /**
      * @inheritDoc
      */
-    create<T extends TransformerInput<number | bigint>>(valueOrValues: T, sparse = false): TransformerOutput<T, string> {
+    create<TTransformerInput extends TransformerInput<number | bigint>>(valueOrValues: TTransformerInput, sparse = false): TransformerOutput<TTransformerInput, string> {
         return NUMERIC_CREATOR.create(this.referenceLength, valueOrValues, Exclusion.None, sparse ? this.tweak : undefined, reference => this.buildIdentificationKey(reference));
     }
 
@@ -1271,7 +1271,7 @@ export class GTINCreator extends Mixin(GTINValidator, AbstractNumericIdentificat
      * @returns
      * GTIN-14(s).
      */
-    createGTIN14<T extends TransformerInput<number | bigint>>(indicatorDigit: string, valueOrValues: T, sparse = false): TransformerOutput<T, string> {
+    createGTIN14<TTransformerInput extends TransformerInput<number | bigint>>(indicatorDigit: string, valueOrValues: TTransformerInput, sparse = false): TransformerOutput<TTransformerInput, string> {
         NUMERIC_CREATOR.validate(indicatorDigit, GTINCreator.REQUIRED_INDICATOR_DIGIT_VALIDATION);
 
         return NUMERIC_CREATOR.create(GTINType.GTIN13 - this.prefixManager.gs1CompanyPrefix.length - 1, valueOrValues, Exclusion.None, sparse ? this.tweak : undefined, (reference) => {
@@ -1496,7 +1496,7 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
      * @returns
      * Serialized identification key(s).
      */
-    private concatenateValidated<T extends TransformerInput<string>>(baseIdentificationKey: string, serialComponentOrComponents: T): TransformerOutput<T, string> {
+    private concatenateValidated<TTransformerInput extends TransformerInput<string>>(baseIdentificationKey: string, serialComponentOrComponents: TTransformerInput): TransformerOutput<TTransformerInput, string> {
         // TODO Refactor type when https://github.com/microsoft/TypeScript/pull/56941 released.
         let result: string | Iterable<string>;
 
@@ -1525,7 +1525,7 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
         }
 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type determination is handled above.
-        return result as TransformerOutput<T, string>;
+        return result as TransformerOutput<TTransformerInput, string>;
     }
 
     /**
@@ -1544,7 +1544,7 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
      * @returns
      * Serialized identification keys.
      */
-    createSerialized<T extends TransformerInput<string>>(value: number, serialComponentOrComponents: T, sparse?: boolean): TransformerOutput<T, string> {
+    createSerialized<TTransformerInput extends TransformerInput<string>>(value: number, serialComponentOrComponents: TTransformerInput, sparse?: boolean): TransformerOutput<TTransformerInput, string> {
         return this.concatenateValidated(this.create(value, sparse), serialComponentOrComponents);
     }
 
@@ -1560,7 +1560,7 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
      * @returns
      * Serialized identification key(s).
      */
-    concatenate<T extends TransformerInput<string>>(baseIdentificationKey: string, serialComponentOrComponents: T): TransformerOutput<T, string> {
+    concatenate<TTransformerInput extends TransformerInput<string>>(baseIdentificationKey: string, serialComponentOrComponents: TTransformerInput): TransformerOutput<TTransformerInput, string> {
         this.validate(baseIdentificationKey);
 
         return this.concatenateValidated(baseIdentificationKey, serialComponentOrComponents);
@@ -1624,7 +1624,7 @@ export class NonNumericIdentificationKeyCreator extends Mixin(NonNumericIdentifi
      * @returns
      * Identification key(s).
      */
-    create<T extends TransformerInput<string>>(referenceOrReferences: T): TransformerOutput<T, string> {
+    create<TTransformerInput extends TransformerInput<string>>(referenceOrReferences: TTransformerInput): TransformerOutput<TTransformerInput, string> {
         // TODO Refactor type when https://github.com/microsoft/TypeScript/pull/56941 released.
         let result: string | Iterable<string>;
 
@@ -1657,7 +1657,7 @@ export class NonNumericIdentificationKeyCreator extends Mixin(NonNumericIdentifi
         }
 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type determination is handled above.
-        return result as TransformerOutput<T, string>;
+        return result as TransformerOutput<TTransformerInput, string>;
     }
 }
 
@@ -2076,9 +2076,9 @@ export class PrefixManager {
      * @returns
      * Identification key creator.
      */
-    private getIdentificationKeyCreator<T extends IdentificationKeyCreator>(identificationKeyType: IdentificationKeyType, constructorCallback: () => T): T {
+    private getIdentificationKeyCreator<TIdentificationKeyCreator extends IdentificationKeyCreator>(identificationKeyType: IdentificationKeyType, constructorCallback: () => TIdentificationKeyCreator): TIdentificationKeyCreator {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type is paired with constructor callback.
-        let creator = this._identificationKeyCreatorsMap.get(identificationKeyType) as (T | undefined);
+        let creator = this._identificationKeyCreatorsMap.get(identificationKeyType) as (TIdentificationKeyCreator | undefined);
 
         if (creator === undefined) {
             if (this.prefixType === PrefixType.GS18Prefix && identificationKeyType !== IdentificationKeyType.GTIN) {
