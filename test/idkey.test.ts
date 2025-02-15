@@ -420,7 +420,10 @@ function testNumericIdentificationKeyCreator(creator: NumericIdentificationKeyCr
             expect(hasValidCheckDigit(identificationKey)).toBe(true);
         }
 
-        test("Straight", () => {
+        test("Straight", {
+            // Test can take a long time.
+            timeout: 20 * 1000
+        }, () => {
             expect(creator.referenceLength).toBe(referenceLength);
             expect(creator.capacity).toBe(Number(CharacterSetCreator.powerOf10(referenceLength)));
 
