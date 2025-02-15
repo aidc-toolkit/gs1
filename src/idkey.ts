@@ -1824,6 +1824,11 @@ export class PrefixManager {
     private readonly _gs18Prefix: string | undefined;
 
     /**
+     * Default tweak factor.
+     */
+    private readonly _defaultTweakFactor: bigint;
+
+    /**
      * Tweak factor.
      */
     private _tweakFactor = 0n;
@@ -1855,6 +1860,9 @@ export class PrefixManager {
             this._gs18Prefix = gs1CompanyPrefix.substring(5);
             this._prefix = this._gs18Prefix;
         }
+
+        // Default tweak factor is the numeric value of the GS1 Company Prefix preceded by '1'.
+        this._defaultTweakFactor = BigInt(`1${this.gs1CompanyPrefix}`);
 
         this.resetTweakFactor();
     }
@@ -1939,8 +1947,7 @@ export class PrefixManager {
      * Reset the tweak factor to its default (numeric value of the GS1 Company Prefix preceded by '1').
      */
     resetTweakFactor(): void {
-        // Default tweak factor is the numeric value of the GS1 Company Prefix preceded by '1'.
-        this.tweakFactor = BigInt("1" + this.gs1CompanyPrefix);
+        this.tweakFactor = this._defaultTweakFactor;
     }
 
     /**
