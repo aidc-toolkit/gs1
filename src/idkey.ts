@@ -1979,6 +1979,10 @@ export class PrefixManager {
             case PrefixType.GS18Prefix:
                 gs1CompanyPrefix = "00000" + prefix;
                 break;
+
+            // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check -- Method may be called by unsafe means.
+            default:
+                throw new RangeError(i18nextGS1.t("Prefix.invalidPrefixType"));
         }
 
         let prefixManager = PrefixManager.PREFIX_MANAGERS_MAP.get(gs1CompanyPrefix);

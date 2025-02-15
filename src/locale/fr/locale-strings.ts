@@ -26,6 +26,7 @@ export const localeStrings = {
         gs1CompanyPrefix: "Préfixe de l'entreprise GS1",
         upcCompanyPrefix: "Préfixe de l'entreprise U.P.C.",
         gs18Prefix: "Préfixe GS1-8",
+        invalidPrefixType: "Type de préfixe invalide",
         gs1CompanyPrefixCantStartWith0: "Le préfixe de l'entreprise GS1 ne peut pas commencer par \"0\"",
         gs1CompanyPrefixCantStartWith00000: "Le préfixe de l'entreprise GS1 ne peut pas commencer par \"00000\"",
         gs1CompanyPrefixCantStartWith000000: "Le préfixe de l'entreprise GS1 ne peut pas commencer par \"000000\"",
