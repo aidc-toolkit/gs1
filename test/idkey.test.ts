@@ -40,7 +40,7 @@ import {
     type SerializableNumericIdentificationKeyCreator,
     type SerializableNumericIdentificationKeyValidator,
     SSCC_VALIDATOR
-} from "../src/index.js";
+} from "../src";
 
 await i18nGS1Init(I18NEnvironment.CLI);
 
@@ -427,20 +427,20 @@ function testNumericIdentificationKeyCreator(creator: NumericIdentificationKeyCr
             expect(creator.referenceLength).toBe(referenceLength);
             expect(creator.capacity).toBe(Number(CharacterSetCreator.powerOf10(referenceLength)));
 
-            const sequenceIterator = Iterator.from(creator.create(new Sequence(0, referenceCount)));
+            const sequenceIterator = creator.create(new Sequence(0, referenceCount))[Symbol.iterator]();
 
-            let allCount = 0;
+            let index = 0;
 
-            Iterator.from(creator.createAll()).forEach((identificationKey, index) => {
+            for (const identificationKey of creator.createAll()) {
                 validate(identificationKey, index, false);
 
                 expect(Number((hasExtensionDigit ? identificationKey.charAt(0) : "") + identificationKey.substring(referenceSubstringStart, referenceSubstringEnd))).toBe(index);
                 expect(sequenceIterator.next().value).toBe(identificationKey);
 
-                allCount++;
-            });
+                index++;
+            }
 
-            expect(allCount).toBe(referenceCount);
+            expect(index).toBe(referenceCount);
             expect(sequenceIterator.next().value).toBeUndefined();
 
             const randomValues = new Array<number>();
@@ -464,9 +464,9 @@ function testNumericIdentificationKeyCreator(creator: NumericIdentificationKeyCr
 
             const sequenceSet = new Set<string>();
 
-            let sequenceCount = 0;
+            let index = 0;
 
-            Iterator.from(creator.create(new Sequence(0, sparseReferenceCount), true)).forEach((identificationKey, index) => {
+            for (const identificationKey of creator.create(new Sequence(0, sparseReferenceCount), true)) {
                 validate(identificationKey, index, true);
 
                 sequential &&= Number((hasExtensionDigit ? identificationKey.charAt(0) : "") + identificationKey.substring(referenceSubstringStart, referenceSubstringEnd)) === index;
@@ -474,11 +474,11 @@ function testNumericIdentificationKeyCreator(creator: NumericIdentificationKeyCr
                 expect(sequenceSet.has(identificationKey)).toBe(false);
                 sequenceSet.add(identificationKey);
 
-                sequenceCount++;
-            });
+                index++;
+            }
 
             expect(sequential).toBe(false);
-            expect(sequenceCount).toBe(sparseReferenceCount);
+            expect(index).toBe(sparseReferenceCount);
 
             const randomValues = new Array<number>();
             const identificationKeys = new Array<string>();
@@ -565,17 +565,17 @@ function testGTINCreator(creator: GTINCreator): void {
         }
 
         test("GTIN-14 straight", () => {
-            let sequenceCount = 0;
+            let index = 0;
 
-            Iterator.from(creator.createGTIN14("5", new Sequence(0, referenceCount))).forEach((gtin, index) => {
+            for (const gtin of creator.createGTIN14("5", new Sequence(0, referenceCount))) {
                 expect(Number(gtin.substring(referenceSubstringStart, referenceSubstringEnd))).toBe(index);
 
                 validate(gtin, index, false);
 
-                sequenceCount++;
-            });
+                index++;
+            }
 
-            expect(sequenceCount).toBe(referenceCount);
+            expect(index).toBe(referenceCount);
 
             const randomValues = new Array<number>();
             const identificationKeys = new Array<string>();
@@ -598,9 +598,9 @@ function testGTINCreator(creator: GTINCreator): void {
 
             const sequenceSet = new Set<string>();
 
-            let sequenceCount = 0;
+            let index = 0;
 
-            Iterator.from(creator.createGTIN14("5", new Sequence(0, sparseReferenceCount), true)).forEach((gtin, index) => {
+            for (const gtin of creator.createGTIN14("5", new Sequence(0, sparseReferenceCount), true)) {
                 sequential &&= Number(gtin.substring(referenceSubstringStart, referenceSubstringEnd)) === index;
 
                 validate(gtin, index, true);
@@ -608,11 +608,11 @@ function testGTINCreator(creator: GTINCreator): void {
                 expect(sequenceSet.has(gtin)).toBe(false);
                 sequenceSet.add(gtin);
 
-                sequenceCount++;
-            });
+                index++;
+            }
 
             expect(sequential).toBe(false);
-            expect(sequenceCount).toBe(sparseReferenceCount);
+            expect(index).toBe(sparseReferenceCount);
 
             const randomValues = new Array<number>();
             const identificationKeys = new Array<string>();
@@ -943,9 +943,9 @@ function testNonNumericIdentificationKeyCreator(creator: NonNumericIdentificatio
         test("Straight", () => {
             expect(creator.referenceLength).toBe(referenceLength);
 
-            let sequenceCount = 0;
+            let index = 0;
 
-            Iterator.from(creator.create(creator.referenceCreator.create(TEST_REFERENCE_LENGTH, new Sequence(0, referenceCount)))).forEach((identificationKey, index) => {
+            for (const identificationKey of creator.create(creator.referenceCreator.create(TEST_REFERENCE_LENGTH, new Sequence(0, referenceCount)))) {
                 expect(() => {
                     creator.validate(identificationKey);
                 }).not.toThrow(RangeError);
@@ -958,18 +958,18 @@ function testNonNumericIdentificationKeyCreator(creator: NonNumericIdentificatio
 
                 expect(identificationKey).toBe(creator.referenceCreator.create(TEST_REFERENCE_LENGTH, index, Exclusion.None, undefined, reference => creator.create(reference)));
 
-                sequenceCount++;
-            });
+                index++;
+            }
 
-            expect(sequenceCount).toBe(referenceCount);
+            expect(index).toBe(referenceCount);
         });
 
         test("Sparse", () => {
             let sequential = true;
 
-            let sequenceCount = 0;
+            let index = 0;
 
-            Iterator.from(creator.create(creator.referenceCreator.create(TEST_REFERENCE_LENGTH, new Sequence(0, referenceCount), Exclusion.None, 123456n))).forEach((identificationKey, index) => {
+            for (const identificationKey of creator.create(creator.referenceCreator.create(TEST_REFERENCE_LENGTH, new Sequence(0, referenceCount), Exclusion.None, 123456n))) {
                 expect(() => {
                     creator.validate(identificationKey);
                 }).not.toThrow(RangeError);
@@ -984,11 +984,11 @@ function testNonNumericIdentificationKeyCreator(creator: NonNumericIdentificatio
 
                 expect(identificationKey).toBe(creator.referenceCreator.create(TEST_REFERENCE_LENGTH, index, Exclusion.None, 123456n, reference => creator.create(reference)));
 
-                sequenceCount++;
-            });
+                index++;
+            }
 
             expect(sequential).toBe(false);
-            expect(sequenceCount).toBe(referenceCount);
+            expect(index).toBe(referenceCount);
         });
 
         test("Position offset", () => {

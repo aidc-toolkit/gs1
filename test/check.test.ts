@@ -10,7 +10,7 @@ import {
     hasValidCheckCharacterPair,
     hasValidCheckDigit,
     i18nGS1Init
-} from "../src/index.js";
+} from "../src";
 
 await i18nGS1Init(I18NEnvironment.CLI, true);
 
