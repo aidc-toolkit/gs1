@@ -1,6 +1,6 @@
 {
   "name": "@aidc-toolkit/gs1",
-  "version": "0.9.16-beta",
+  "version": "0.9.17-beta",
   "description": "GS1 AIDC Toolkit",
   "type": "module",
   "main": "dist/index.js",
@@ -27,12 +27,12 @@
     "test": "vitest run"
   },
   "devDependencies": {
-    "@aidc-toolkit/dev": "alpha",
+    "@aidc-toolkit/dev": "^0.9.17-beta",
     "vitest": "^3.0.7"
   },
   "dependencies": {
-    "@aidc-toolkit/core": "alpha",
-    "@aidc-toolkit/utility": "alpha",
+    "@aidc-toolkit/core": "^0.9.17-beta",
+    "@aidc-toolkit/utility": "^0.9.17-beta",
     "i18next": "^24.2.2",
     "ts-mixer": "^6.0.4"
   }
