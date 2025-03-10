@@ -8,7 +8,7 @@ import {
     type StringValidator,
     type TransformerInput,
     type TransformerOutput,
-    transformIterable
+    mapIterable
 } from "@aidc-toolkit/utility";
 import { Mixin } from "ts-mixer";
 import { AI39_CREATOR, AI82_CREATOR } from "./character-set.js";
@@ -1521,7 +1521,7 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
         if (typeof serialComponentOrComponents !== "object") {
             result = validateAndConcatenate(serialComponentOrComponents);
         } else {
-            result = transformIterable(serialComponentOrComponents, validateAndConcatenate);
+            result = mapIterable(serialComponentOrComponents, validateAndConcatenate);
         }
 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type determination is handled above.
@@ -1653,7 +1653,7 @@ export class NonNumericIdentificationKeyCreator extends Mixin(NonNumericIdentifi
         if (typeof referenceOrReferences !== "object") {
             result = validateAndCreate(referenceOrReferences);
         } else {
-            result = transformIterable(referenceOrReferences, validateAndCreate);
+            result = mapIterable(referenceOrReferences, validateAndCreate);
         }
 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type determination is handled above.
