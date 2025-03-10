@@ -1,11 +1,11 @@
 export const localeStrings = {
     Check: {
-        lengthOfStringForPriceOrWeightMustBeExactly: "Length {{length}} of string for price or weight sum must be exactly {{exactLength}}",
+        lengthOfStringForPriceOrWeightMustBeExactly: "Length {{length, number}} of string for price or weight sum must be exactly {{exactLength, number}}",
         priceOrWeightComponent: "price or weight",
-        lengthOfStringForCheckCharacterPairMustBeLessThanOrEqualTo: "Length {{length}} of string for check character pair must be less than or equal to {{maximumLength}}"
+        lengthOfStringForCheckCharacterPairMustBeLessThanOrEqualTo: "Length {{length, number}} of string for check character pair must be less than or equal to {{maximumLength, number}}"
     },
     IdentificationKey: {
-        identificationKeyTypeLength: "{{identificationKeyType}} must be {{length}} digits long",
+        identificationKeyTypeLength: "{{identificationKeyType}} must be {{length, number}} digits long",
         invalidCheckDigit: "Invalid check digit",
         invalidGTINLength: "GTIN must be 13, 12, 8, or 14 digits long",
         invalidGTIN14Length: "GTIN must be 14 digits long",

@@ -1,11 +1,11 @@
 export const localeStrings = {
     Check: {
-        lengthOfStringForPriceOrWeightMustBeExactly: "La longueur {{longueur}} de la chaîne pour le prix ou la somme du poids doit être exactement {{exactLength}}",
+        lengthOfStringForPriceOrWeightMustBeExactly: "La longueur {{longueur}} de la chaîne pour le prix ou la somme du poids doit être exactement {{exactLength, number}}",
         priceOrWeightComponent: "prix ou poids",
-        lengthOfStringForCheckCharacterPairMustBeLessThanOrEqualTo: "La longueur {{length}} de la chaîne pour la paire de caractères de vérification doit être inférieure ou égale à {{maximum Length}}"
+        lengthOfStringForCheckCharacterPairMustBeLessThanOrEqualTo: "La longueur {{length, number}} de la chaîne pour la paire de caractères de vérification doit être inférieure ou égale à {{maximum Length}}"
     },
     IdentificationKey: {
-        identificationKeyTypeLength: "{{identificationKeyType}} doit comporter {{length}} chiffres",
+        identificationKeyTypeLength: "{{identificationKeyType}} doit comporter {{length, number}} chiffres",
         invalidCheckDigit: "Chiffre de contrôle non valide",
         invalidGTINLength: "Le GTIN doit comporter 13, 12, 8 ou 14 chiffres",
         invalidGTIN14Length: "Le GTIN doit comporter 14 chiffres",
