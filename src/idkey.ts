@@ -141,6 +141,9 @@ export interface IdentificationKeyValidation extends StringValidation {
 /**
  * Identification key validator. Validates an identification key against its definition in section 3 of the {@link
  * https://www.gs1.org/genspecs | GS1 General Specifications}.
+ *
+ * @template TIdentificationKeyValidation
+ * Identification key validation type.
  */
 export interface IdentificationKeyValidator<TIdentificationKeyValidation extends IdentificationKeyValidation = IdentificationKeyValidation> extends StringValidator<TIdentificationKeyValidation> {
     /**
@@ -167,7 +170,7 @@ export interface IdentificationKeyValidator<TIdentificationKeyValidation extends
     get referenceCharacterSet(): ContentCharacterSet;
 
     /**
-     * Get the reference validator.
+     * Get the reference creator.
      */
     get referenceCreator(): CharacterSetCreator;
 
@@ -1194,6 +1197,9 @@ export interface NumericIdentificationKeyCreator extends NumericIdentificationKe
      * Create identification key(s) with reference(s) based on numeric value(s). The value(s) is/are converted to
      * references of the appropriate length using {@linkcode NUMERIC_CREATOR}.
      *
+     * @template TTransformerInput
+     * Transformer input type.
+     *
      * @param valueOrValues
      * Numeric value(s).
      *
@@ -1405,6 +1411,9 @@ export class GTINCreator extends Mixin(GTINValidator, AbstractNumericIdentificat
      * Create GTIN-14(s) with an indicator digit and reference(s) based on numeric value(s). The value(s) is/are
      * converted to reference(s) of the appropriate length using {@linkcode NUMERIC_CREATOR}.
      *
+     * @template TTransformerInput
+     * Transformer input type.
+     *
      * @param indicatorDigit
      * Indicator digit.
      *
@@ -1487,6 +1496,9 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
     /**
      * Concatenate a validated base identification key with serial component(s).
      *
+     * @template TTransformerInput
+     * Transformer input type.
+     *
      * @param baseIdentificationKey
      * Base identification key.
      *
@@ -1532,6 +1544,9 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
      * Create serialized identification key(s) with a reference based on a numeric value concatenated with serial
      * component(s). The value is converted to a reference of the appropriate length using {@linkcode NUMERIC_CREATOR}.
      *
+     * @template TTransformerInput
+     * Transformer input type.
+     *
      * @param value
      * Numeric value of the reference.
      *
@@ -1550,6 +1565,9 @@ export class SerializableNumericIdentificationKeyCreator extends Mixin(Serializa
 
     /**
      * Concatenate a base identification key with serial component(s).
+     *
+     * @template TTransformerInput
+     * Transformer input type.
      *
      * @param baseIdentificationKey
      * Base identification key.
@@ -1617,6 +1635,9 @@ export class NonNumericIdentificationKeyCreator extends Mixin(NonNumericIdentifi
 
     /**
      * Create identification key(s) with reference(s).
+     *
+     * @template TTransformerInput
+     * Transformer input type.
      *
      * @param referenceOrReferences
      * Reference(s).
