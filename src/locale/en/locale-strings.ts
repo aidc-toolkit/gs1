@@ -1,6 +1,6 @@
 export const localeStrings = {
     Check: {
-        lengthOfStringForPriceOrWeightMustBeExactly: "Length {{length, number}} of string for price or weight sum must be exactly {{exactLength, number}}",
+        lengthOfStringForPriceOrWeightMustBeExactly: "Length {{length, number}} of string for price or weight must be 4 or 5",
         priceOrWeightComponent: "price or weight",
         lengthOfStringForCheckCharacterPairMustBeLessThanOrEqualTo: "Length {{length, number}} of string for check character pair must be less than or equal to {{maximumLength, number}}"
     },

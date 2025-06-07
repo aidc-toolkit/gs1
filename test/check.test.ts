@@ -5,11 +5,10 @@ import {
     checkCharacterPair,
     checkDigit,
     checkDigitSum,
-    fiveDigitPriceWeightCheckDigit,
-    fourDigitPriceWeightCheckDigit,
     hasValidCheckCharacterPair,
-    hasValidCheckDigit,
-    i18nGS1Init
+    hasValidCheckDigit, hasValidPriceWeightCheckDigit,
+    i18nGS1Init,
+    priceWeightCheckDigit
 } from "../src";
 
 await i18nGS1Init(I18NEnvironment.CLI, true);
@@ -69,7 +68,8 @@ describe("Price/weight check digit", () => {
 
         const sum = weight2Minus(characterIndexes[0]) + weight2Minus(characterIndexes[1]) + weight3(characterIndexes[2]) + weight5Minus(characterIndexes[3]);
 
-        expect(fourDigitPriceWeightCheckDigit(s)).toBe(NUMERIC_CREATOR.character(sum * 3 % 10));
+        expect(priceWeightCheckDigit(s)).toBe(NUMERIC_CREATOR.character(sum * 3 % 10));
+        expect(hasValidPriceWeightCheckDigit(s + priceWeightCheckDigit(s))).toBe(true);
     }
 
     function testFiveDigitPriceWeightCheckDigit(s: string): void {
@@ -78,7 +78,8 @@ describe("Price/weight check digit", () => {
 
         const sum = weight5Plus(characterIndexes[0]) + weight2Minus(characterIndexes[1]) + weight5Minus(characterIndexes[2]) + weight5Plus(characterIndexes[3]) + weight2Minus(characterIndexes[4]);
 
-        expect(weight5Minus(Number(fiveDigitPriceWeightCheckDigit(s)))).toBe(9 - (sum + 9) % 10);
+        expect(weight5Minus(Number(priceWeightCheckDigit(s)))).toBe(9 - (sum + 9) % 10);
+        expect(hasValidPriceWeightCheckDigit(s + priceWeightCheckDigit(s))).toBe(true);
     }
 
     test("Four-digit", () => {
@@ -92,10 +93,6 @@ describe("Price/weight check digit", () => {
         testFourDigitPriceWeightCheckDigit("7890");
         testFourDigitPriceWeightCheckDigit("8901");
         testFourDigitPriceWeightCheckDigit("9012");
-
-        expect(() => fourDigitPriceWeightCheckDigit("l234")).toThrow("Invalid character 'l' at position 1");
-        expect(() => fourDigitPriceWeightCheckDigit("123")).toThrow("Length 3 of string for price or weight sum must be exactly 4");
-        expect(() => fourDigitPriceWeightCheckDigit("12345")).toThrow("Length 5 of string for price or weight sum must be exactly 4");
     });
 
     test("Five-digit", () => {
@@ -109,10 +106,12 @@ describe("Price/weight check digit", () => {
         testFiveDigitPriceWeightCheckDigit("78901");
         testFiveDigitPriceWeightCheckDigit("89012");
         testFiveDigitPriceWeightCheckDigit("90123");
+    });
 
-        expect(() => fiveDigitPriceWeightCheckDigit("l2345")).toThrow("Invalid character 'l' at position 1 of price or weight");
-        expect(() => fiveDigitPriceWeightCheckDigit("1234")).toThrow("Length 4 of string for price or weight sum must be exactly 5");
-        expect(() => fiveDigitPriceWeightCheckDigit("123456")).toThrow("Length 6 of string for price or weight sum must be exactly 5");
+    test("Invalid", () => {
+        expect(() => priceWeightCheckDigit("l2345")).toThrow("Invalid character 'l' at position 1 of price or weight");
+        expect(() => priceWeightCheckDigit("123")).toThrow("Length 3 of string for price or weight must be 4 or 5");
+        expect(() => priceWeightCheckDigit("123456")).toThrow("Length 6 of string for price or weight must be 4 or 5");
     });
 });
 
