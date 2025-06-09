@@ -27,12 +27,12 @@
     "test": "vitest run"
   },
   "devDependencies": {
-    "@aidc-toolkit/dev": "^0.9.18-beta",
+    "@aidc-toolkit/dev": "alpha",
     "vitest": "^3.2.2"
   },
   "dependencies": {
-    "@aidc-toolkit/core": "^0.9.18-beta",
-    "@aidc-toolkit/utility": "^0.9.18-beta",
+    "@aidc-toolkit/core": "alpha",
+    "@aidc-toolkit/utility": "alpha",
     "i18next": "^25.2.1",
     "ts-mixer": "^6.0.4"
   }
