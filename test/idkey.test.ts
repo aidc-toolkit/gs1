@@ -1,4 +1,4 @@
-import { I18NEnvironment } from "@aidc-toolkit/core";
+import { I18nEnvironment } from "@aidc-toolkit/core";
 import { CharacterSetCreator, Exclusion, NUMERIC_CREATOR, Sequence } from "@aidc-toolkit/utility";
 import { describe, expect, test } from "vitest";
 import {
@@ -42,7 +42,7 @@ import {
     SSCC_VALIDATOR
 } from "../src";
 
-await i18nGS1Init(I18NEnvironment.CLI);
+await i18nGS1Init(I18nEnvironment.CLI);
 
 function creatorFor(characterSet: ContentCharacterSet): CharacterSetCreator {
     let creator: CharacterSetCreator;
