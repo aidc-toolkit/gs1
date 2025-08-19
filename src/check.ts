@@ -100,7 +100,7 @@ export function hasValidCheckDigit(s: string): boolean {
 }
 
 /**
- * Calculate the price/weight sum for a numeric string.
+ * Calculate the price or weight sum for a numeric string.
  *
  * @param weightsResults
  * Array of weight results arrays to apply to each digit.
@@ -111,7 +111,7 @@ export function hasValidCheckDigit(s: string): boolean {
  * @returns
  * Accumulated sum of the weight result for each digit at the digit's position.
  */
-function priceWeightSum(weightsResults: ReadonlyArray<readonly number[]>, s: string): number {
+function priceOrWeightSum(weightsResults: ReadonlyArray<readonly number[]>, s: string): number {
     // Calculate sum of each weight result for each digit at its position.
     return NUMERIC_CREATOR.characterIndexes(s).reduce<number>((accumulator, characterIndex, index) => {
         if (characterIndex === undefined) {
@@ -129,7 +129,7 @@ function priceWeightSum(weightsResults: ReadonlyArray<readonly number[]>, s: str
 }
 
 /**
- * Calculate the price/weight check digit for a four-or five-digit numeric string as per section 7.9.3 of the {@link
+ * Calculate the price or weight check digit for a four-or five-digit numeric string as per section 7.9.3 of the {@link
  * https://www.gs1.org/genspecs | GS1 General Specifications}.
  *
  * @param s
@@ -138,16 +138,16 @@ function priceWeightSum(weightsResults: ReadonlyArray<readonly number[]>, s: str
  * @returns
  * Check digit 0-9 as a string.
  */
-export function priceWeightCheckDigit(s: string): string {
+export function priceOrWeightCheckDigit(s: string): string {
     let checkDigit: string;
 
     switch (s.length) {
         case 4:
-            checkDigit = NUMERIC_CREATOR.character(priceWeightSum([TWO_MINUS_WEIGHT_RESULTS, TWO_MINUS_WEIGHT_RESULTS, THREE_WEIGHT_RESULTS, FIVE_MINUS_WEIGHT_RESULTS], s) * 3 % 10);
+            checkDigit = NUMERIC_CREATOR.character(priceOrWeightSum([TWO_MINUS_WEIGHT_RESULTS, TWO_MINUS_WEIGHT_RESULTS, THREE_WEIGHT_RESULTS, FIVE_MINUS_WEIGHT_RESULTS], s) * 3 % 10);
             break;
 
         case 5:
-            checkDigit = NUMERIC_CREATOR.character(INVERSE_FIVE_MINUS_WEIGHT_RESULTS[9 - (priceWeightSum([FIVE_PLUS_WEIGHT_RESULTS, TWO_MINUS_WEIGHT_RESULTS, FIVE_MINUS_WEIGHT_RESULTS, FIVE_PLUS_WEIGHT_RESULTS, TWO_MINUS_WEIGHT_RESULTS], s) + 9) % 10]);
+            checkDigit = NUMERIC_CREATOR.character(INVERSE_FIVE_MINUS_WEIGHT_RESULTS[9 - (priceOrWeightSum([FIVE_PLUS_WEIGHT_RESULTS, TWO_MINUS_WEIGHT_RESULTS, FIVE_MINUS_WEIGHT_RESULTS, FIVE_PLUS_WEIGHT_RESULTS, TWO_MINUS_WEIGHT_RESULTS], s) + 9) % 10]);
             break;
 
         default:
@@ -160,18 +160,19 @@ export function priceWeightCheckDigit(s: string): string {
 }
 
 /**
- * Determine if a numeric string has a valid price/weight check digit.
+ * Determine if a price or weight check digit is valid for numeric string.
  *
  * @param s
- * Numeric string exactly five or six characters long.
+ * Numeric string exactly four or five characters long.
+ *
+ * @param checkDigit
+ * Price or weight check digit.
  *
  * @returns
  * True if the check digit is valid.
  */
-export function hasValidPriceWeightCheckDigit(s: string): boolean {
-    const priceWeightCheckDigitIndex = s.length - 1;
-
-    return priceWeightCheckDigit(s.substring(0, priceWeightCheckDigitIndex)) === s.charAt(priceWeightCheckDigitIndex);
+export function isValidPriceOrWeightCheckDigit(s: string, checkDigit: string): boolean {
+    return priceOrWeightCheckDigit(s) === checkDigit;
 }
 
 /**
