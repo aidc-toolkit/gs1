@@ -1,6 +1,6 @@
 import { i18nAssertValidResources, i18nCoreInit, type I18nEnvironment } from "@aidc-toolkit/core";
 import { i18nUtilityInit, utilityResources } from "@aidc-toolkit/utility";
-import i18next, { type i18n } from "i18next";
+import i18next, { type i18n, type Resource } from "i18next";
 import { localeStrings as enLocaleStrings } from "./en/locale-strings.js";
 import { localeStrings as frLocaleStrings } from "./fr/locale-strings.js";
 
@@ -16,7 +16,7 @@ i18nAssertValidResources(enLocaleStrings, "fr", frLocaleStrings);
 /**
  * GS1 resources.
  */
-export const gs1Resources = {
+export const gs1Resources: Resource = {
     en: {
         aidct_gs1: enLocaleStrings
     },
