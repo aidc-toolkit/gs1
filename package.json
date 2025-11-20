@@ -28,12 +28,12 @@
   },
   "devDependencies": {
     "@aidc-toolkit/dev": "alpha",
-    "vitest": "^3.2.4"
+    "vitest": "^4.0.12"
   },
   "dependencies": {
     "@aidc-toolkit/core": "alpha",
     "@aidc-toolkit/utility": "alpha",
-    "i18next": "^25.5.2",
+    "i18next": "^25.6.3",
     "ts-mixer": "^6.0.4"
   }
 }
