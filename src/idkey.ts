@@ -2370,7 +2370,7 @@ export class PrefixManager {
      */
     private getIdentificationKeyCreator<TIdentificationKeyCreator extends IdentificationKeyCreator>(identificationKeyType: IdentificationKeyType, constructorCallback: () => TIdentificationKeyCreator): TIdentificationKeyCreator {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type is paired with constructor callback.
-        let creator = this._identificationKeyCreatorsMap.get(identificationKeyType) as (TIdentificationKeyCreator | undefined);
+        let creator = this._identificationKeyCreatorsMap.get(identificationKeyType) as TIdentificationKeyCreator | undefined;
 
         if (creator === undefined) {
             if (this.prefixType === PrefixType.GS18Prefix && identificationKeyType !== IdentificationKeyType.GTIN) {
