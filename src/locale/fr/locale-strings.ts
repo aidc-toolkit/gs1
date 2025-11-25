@@ -4,8 +4,8 @@ export const localeStrings = {
         priceOrWeightComponent: "prix ou poids",
         lengthOfStringForCheckCharacterPairMustBeLessThanOrEqualTo: "La longueur {{length, number}} de la chaîne pour la paire de caractères de vérification doit être inférieure ou égale à {{maximum Length}}"
     },
-    IdentificationKey: {
-        identificationKeyTypeLength: "{{identificationKeyType}} doit comporter {{length, number}} chiffres",
+    Identifier: {
+        identifierTypeLength: "{{identifierType}} doit comporter {{length, number}} chiffres",
         invalidCheckDigit: "Chiffre de contrôle non valide",
         invalidGTINLength: "Le GTIN doit comporter 13, 12, 8 ou 14 chiffres",
         invalidGTIN14Length: "Le GTIN doit comporter 14 chiffres",
@@ -36,6 +36,6 @@ export const localeStrings = {
         gs1CompanyPrefixCantStartWith000000: "Le préfixe de l'entreprise GS1 ne peut pas commencer par \"000000\"",
         upcCompanyPrefixCantStartWith0000: "Le préfixe de l'entreprise U.P.C. ne peut pas commencer par \"0000\"",
         gs18PrefixCantStartWith0: "Le préfixe GS1-8 ne peut pas commencer par \"0\"",
-        identificationKeyTypeNotSupportedByGS18Prefix: "{{identificationKeyType}} non pris en charge par le préfixe GS1-8"
+        identifierTypeNotSupportedByGS18Prefix: "{{identifierType}} non pris en charge par le préfixe GS1-8"
     }
 } as const;
