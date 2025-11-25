@@ -11,7 +11,7 @@ import type { IdentifierType } from "./identifier-type.js";
 import type { ContentCharacterSet } from "./identifier-validator.js";
 import { i18nextGS1 } from "./locale/i18n.js";
 import { NonNumericIdentifierValidator } from "./non-numeric-identifier-validator.js";
-import type { PrefixManager } from "./prefix-manager.js";
+import type { PrefixProvider } from "./prefix-provider";
 
 /**
  * Non-numeric identifier creator.
@@ -23,11 +23,11 @@ export class NonNumericIdentifierCreator extends Mixin(NonNumericIdentifierValid
     private readonly _referenceValidation: CharacterSetValidation;
 
     /**
-     * Constructor. Called internally by {@link PrefixManager} non-numeric identifier creator getters; should
-     * not be called by other code.
+     * Constructor. Typically called internally by a prefix manager but may be called by other code with another prefix
+     * provider type.
      *
-     * @param prefixManager
-     * Prefix manager.
+     * @param prefixProvider
+     * Prefix provider.
      *
      * @param identifierType
      * Identifier type.
@@ -41,10 +41,10 @@ export class NonNumericIdentifierCreator extends Mixin(NonNumericIdentifierValid
      * @param requiresCheckCharacterPair
      * True if the identifier requires a check character pair.
      */
-    constructor(prefixManager: PrefixManager, identifierType: IdentifierType, length: number, referenceCharacterSet: ContentCharacterSet, requiresCheckCharacterPair = false) {
+    constructor(prefixProvider: PrefixProvider, identifierType: IdentifierType, length: number, referenceCharacterSet: ContentCharacterSet, requiresCheckCharacterPair = false) {
         super(identifierType, length, referenceCharacterSet, requiresCheckCharacterPair);
 
-        this.init(prefixManager, prefixManager.gs1CompanyPrefix, 2 * Number(requiresCheckCharacterPair));
+        this.init(prefixProvider, prefixProvider.gs1CompanyPrefix, 2 * Number(requiresCheckCharacterPair));
 
         this._referenceValidation = {
             minimumLength: 1,

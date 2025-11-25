@@ -8,7 +8,7 @@ import {
 import { checkDigit, checkDigitSum } from "./check.js";
 import { AbstractIdentifierCreator, type IdentifierCreator } from "./identifier-creator.js";
 import { type LeaderType, LeaderTypes, type NumericIdentifierValidator } from "./numeric-identifier-validator.js";
-import type { PrefixManager } from "./prefix-manager.js";
+import type { PrefixProvider } from "./prefix-provider";
 
 /**
  * Numeric identifier creator. Creates one or many numeric identifiers.
@@ -66,16 +66,16 @@ export abstract class AbstractNumericIdentifierCreator extends AbstractIdentifie
     private _tweak = 0n;
 
     /**
-     * Initialize the prefix manager. This method is in lieu of a constructor due to the mixin architecture.
+     * Initialize the prefix provider. This method is in lieu of a constructor due to the mixin architecture.
      *
-     * @param prefixManager
-     * Prefix manager.
+     * @param prefixProvider
+     * Prefix provider.
      *
      * @param prefix
      * Prefix within prefix manager to use to calculate reference length.
      */
-    protected override init(prefixManager: PrefixManager, prefix: string): void {
-        super.init(prefixManager, prefix, 1);
+    protected override init(prefixProvider: PrefixProvider, prefix: string): void {
+        super.init(prefixProvider, prefix, 1);
 
         // Capacity is always in number range.
         this._capacity = Number(CharacterSetCreator.powerOf10(this.referenceLength));

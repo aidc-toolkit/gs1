@@ -3,7 +3,7 @@ import { Mixin } from "ts-mixer";
 import type { IdentifierType } from "./identifier-type.js";
 import type { ContentCharacterSet } from "./identifier-validator.js";
 import { AbstractNumericIdentifierCreator } from "./numeric-identifier-creator.js";
-import type { PrefixManager } from "./prefix-manager.js";
+import type { PrefixProvider } from "./prefix-provider";
 import { SerializableNumericIdentifierValidator } from "./serializable-numeric-identifier-validator.js";
 
 /**
@@ -11,11 +11,11 @@ import { SerializableNumericIdentifierValidator } from "./serializable-numeric-i
  */
 export class SerializableNumericIdentifierCreator extends Mixin(SerializableNumericIdentifierValidator, AbstractNumericIdentifierCreator) {
     /**
-     * Constructor. Called internally by {@link PrefixManager} serialized numeric identifier creator getters;
-     * should not be called by other code.
+     * Constructor. Typically called internally by a prefix manager but may be called by other code with another prefix
+     * provider type.
      *
-     * @param prefixManager
-     * Prefix manager.
+     * @param prefixProvider
+     * Prefix provider.
      *
      * @param identifierType
      * Identifier type.
@@ -29,10 +29,10 @@ export class SerializableNumericIdentifierCreator extends Mixin(SerializableNume
      * @param serialComponentCharacterSet
      * Serial component character set.
      */
-    constructor(prefixManager: PrefixManager, identifierType: IdentifierType, length: number, serialComponentLength: number, serialComponentCharacterSet: ContentCharacterSet) {
+    constructor(prefixProvider: PrefixProvider, identifierType: IdentifierType, length: number, serialComponentLength: number, serialComponentCharacterSet: ContentCharacterSet) {
         super(identifierType, length, serialComponentLength, serialComponentCharacterSet);
 
-        this.init(prefixManager, prefixManager.gs1CompanyPrefix);
+        this.init(prefixProvider, prefixProvider.gs1CompanyPrefix);
     }
 
     /**

@@ -3,18 +3,18 @@ import type { IdentifierType } from "./identifier-type.js";
 import { NonGTINNumericIdentifierValidator } from "./non-gtin-numeric-identifier-validator.js";
 import { AbstractNumericIdentifierCreator } from "./numeric-identifier-creator.js";
 import { type LeaderType, LeaderTypes } from "./numeric-identifier-validator.js";
-import type { PrefixManager } from "./prefix-manager.js";
+import type { PrefixProvider } from "./prefix-provider";
 
 /**
  * Non-GTIN numeric identifier creator.
  */
 export class NonGTINNumericIdentifierCreator extends Mixin(NonGTINNumericIdentifierValidator, AbstractNumericIdentifierCreator) {
     /**
-     * Constructor. Called internally by {@link PrefixManager} non-GTIN numeric identifier creator getters;
-     * should not be called by other code.
+     * Constructor. Typically called internally by a prefix manager but may be called by other code with another prefix
+     * provider type.
      *
-     * @param prefixManager
-     * Prefix manager.
+     * @param prefixProvider
+     * Prefix provider.
      *
      * @param identifierType
      * Identifier type.
@@ -25,9 +25,9 @@ export class NonGTINNumericIdentifierCreator extends Mixin(NonGTINNumericIdentif
      * @param leaderType
      * Leader type.
      */
-    constructor(prefixManager: PrefixManager, identifierType: IdentifierType, length: number, leaderType: LeaderType = LeaderTypes.None) {
+    constructor(prefixProvider: PrefixProvider, identifierType: IdentifierType, length: number, leaderType: LeaderType = LeaderTypes.None) {
         super(identifierType, length, leaderType);
 
-        this.init(prefixManager, prefixManager.gs1CompanyPrefix);
+        this.init(prefixProvider, prefixProvider.gs1CompanyPrefix);
     }
 }

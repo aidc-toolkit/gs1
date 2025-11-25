@@ -10,7 +10,7 @@ import { checkDigit, priceOrWeightCheckDigit } from "./check.js";
 import { type GTINType, GTINTypes, GTINValidator } from "./gtin-validator.js";
 import { i18nextGS1 } from "./locale/i18n.js";
 import { AbstractNumericIdentifierCreator } from "./numeric-identifier-creator.js";
-import type { PrefixManager } from "./prefix-manager.js";
+import type { PrefixProvider } from "./prefix-provider";
 
 /**
  * GTIN creator. Applicable to GTIN-13, GTIN-12, and GTIN-8 types; no applicable to GTIN-14 type.
@@ -26,25 +26,26 @@ export class GTINCreator extends Mixin(GTINValidator, AbstractNumericIdentifierC
     };
 
     /**
-     * Constructor. Called internally by {@link PrefixManager.gtinCreator}; should not be called by other code.
+     * Constructor. Typically called internally by a prefix manager but may be called by other code with another prefix
+     * provider type.
      *
-     * @param prefixManager
-     * Prefix manager.
+     * @param prefixProvider
+     * Prefix provider.
      *
      * @param gtinType
      * GTIN type.
      */
-    constructor(prefixManager: PrefixManager, gtinType: GTINType) {
+    constructor(prefixProvider: PrefixProvider, gtinType: GTINType) {
         super(gtinType);
 
-        this.init(prefixManager, prefixManager.prefix);
+        this.init(prefixProvider, prefixProvider.prefix);
     }
 
     /**
      * @inheritDoc
      */
     override get prefix(): string {
-        return this.prefixManager.prefix;
+        return this.prefixProvider.prefix;
     }
 
     /**
@@ -69,8 +70,8 @@ export class GTINCreator extends Mixin(GTINValidator, AbstractNumericIdentifierC
     createGTIN14<TTransformerInput extends TransformerInput<number | bigint>>(indicatorDigit: string, valueOrValues: TTransformerInput, sparse = false): TransformerOutput<TTransformerInput, string> {
         NUMERIC_CREATOR.validate(indicatorDigit, GTINCreator.REQUIRED_INDICATOR_DIGIT_VALIDATION);
 
-        return NUMERIC_CREATOR.create(GTINTypes.GTIN13 - this.prefixManager.gs1CompanyPrefix.length - 1, valueOrValues, Exclusion.None, sparse ? this.tweak : undefined, (reference) => {
-            const partialIdentifier = indicatorDigit + this.prefixManager.gs1CompanyPrefix + reference;
+        return NUMERIC_CREATOR.create(GTINTypes.GTIN13 - this.prefixProvider.gs1CompanyPrefix.length - 1, valueOrValues, Exclusion.None, sparse ? this.tweak : undefined, (reference) => {
+            const partialIdentifier = indicatorDigit + this.prefixProvider.gs1CompanyPrefix + reference;
 
             return partialIdentifier + checkDigit(partialIdentifier);
         });

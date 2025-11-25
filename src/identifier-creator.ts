@@ -1,7 +1,7 @@
 import type { CharacterSetCreator } from "@aidc-toolkit/utility";
 import type { IdentifierType } from "./identifier-type.js";
 import type { ContentCharacterSet, IdentifierValidation, IdentifierValidator } from "./identifier-validator.js";
-import type { PrefixManager } from "./prefix-manager.js";
+import type { PrefixProvider } from "./prefix-provider";
 import type { PrefixType } from "./prefix-type.js";
 
 /**
@@ -12,14 +12,13 @@ import type { PrefixType } from "./prefix-type.js";
  */
 export interface IdentifierCreator extends IdentifierValidator {
     /**
-     * Get the prefix manager to which this identifier creator is bound.
+     * Get the prefix provider to which this identifier creator is bound.
      */
-    get prefixManager(): PrefixManager;
+    get prefixProvider(): PrefixProvider;
 
     /**
-     * Get the prefix, equivalent to calling {@linkcode PrefixManager.prefix | prefixManager.prefix} for a GTIN or
-     * {@linkcode PrefixManager.gs1CompanyPrefix | prefixManager.gs1CompanyPrefix} for all other identifier
-     * types.
+     * Get the prefix, equivalent to calling {@linkcode PrefixProvider.prefix | prefixProvider.prefix} for a GTIN or
+     * {@linkcode PrefixProvider.gs1CompanyPrefix | prefixProvider.gs1CompanyPrefix} for all other identifier types.
      */
     get prefix(): string;
 
@@ -31,13 +30,13 @@ export interface IdentifierCreator extends IdentifierValidator {
 
 /**
  * Abstract identifier creator. Implements common functionality for an identifier creator, bound to a
- * {@link PrefixManager}.
+ * {@link PrefixProvider}.
  */
 export abstract class AbstractIdentifierCreator implements IdentifierCreator {
     /**
-     * Prefix manager.
+     * Prefix provider.
      */
-    private _prefixManager!: PrefixManager;
+    private _prefixProvider!: PrefixProvider;
 
     /**
      * Reference length.
@@ -47,8 +46,8 @@ export abstract class AbstractIdentifierCreator implements IdentifierCreator {
     /**
      * Initialize the prefix manager. This method is in lieu of a constructor due to the mixin architecture.
      *
-     * @param prefixManager
-     * Prefix manager.
+     * @param prefixProvider
+     * Prefix provider.
      *
      * @param prefix
      * Prefix within prefix manager to use to calculate reference length.
@@ -56,8 +55,8 @@ export abstract class AbstractIdentifierCreator implements IdentifierCreator {
      * @param checkAllowance
      * Number of characters to allow for check digit or check character pair.
      */
-    protected init(prefixManager: PrefixManager, prefix: string, checkAllowance: number): void {
-        this._prefixManager = prefixManager;
+    protected init(prefixProvider: PrefixProvider, prefix: string, checkAllowance: number): void {
+        this._prefixProvider = prefixProvider;
 
         // Reference length allows for prefix and optionally check digit or check character pair.
         this._referenceLength = this.length - prefix.length - checkAllowance;
@@ -76,15 +75,15 @@ export abstract class AbstractIdentifierCreator implements IdentifierCreator {
     /**
      * @inheritDoc
      */
-    get prefixManager(): PrefixManager {
-        return this._prefixManager;
+    get prefixProvider(): PrefixProvider {
+        return this._prefixProvider;
     }
 
     /**
      * @inheritDoc
      */
     get prefix(): string {
-        return this.prefixManager.gs1CompanyPrefix;
+        return this.prefixProvider.gs1CompanyPrefix;
     }
 
     /**

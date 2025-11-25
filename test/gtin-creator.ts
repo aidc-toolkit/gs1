@@ -21,7 +21,7 @@ export function testGTINCreator(creator: GTINCreator): void {
             }
         });
     }, () => {
-        const gs1CompanyPrefix = creator.prefixManager.gs1CompanyPrefix;
+        const gs1CompanyPrefix = creator.prefixProvider.gs1CompanyPrefix;
         const prefix = creator.prefix;
         const prefixLength = prefix.length;
         const prefixSubstringStart = 14 - creator.length;
