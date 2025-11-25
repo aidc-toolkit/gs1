@@ -1,4 +1,3 @@
-import { I18nEnvironment } from "@aidc-toolkit/core";
 import { NUMERIC_CREATOR } from "@aidc-toolkit/utility";
 import { describe, expect, test } from "vitest";
 import {
@@ -7,12 +6,9 @@ import {
     checkDigitSum,
     hasValidCheckCharacterPair,
     hasValidCheckDigit,
-    i18nGS1Init,
     isValidPriceOrWeightCheckDigit,
     priceOrWeightCheckDigit
 } from "../src";
-
-await i18nGS1Init(I18nEnvironment.CLI, true);
 
 describe("Check digit", () => {
     const testNumericString = "1234567890";
