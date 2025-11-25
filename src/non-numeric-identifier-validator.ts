@@ -1,4 +1,4 @@
-import { Exclusion, RegExpValidator } from "@aidc-toolkit/utility";
+import { Exclusions, RegExpValidator } from "@aidc-toolkit/utility";
 import { hasValidCheckCharacterPair } from "./check.js";
 import { type IdentifierType, IdentifierTypes } from "./identifier-type.js";
 import {
@@ -24,7 +24,7 @@ export interface NonNumericIdentifierValidation extends IdentifierValidation {
      * Exclusion support for reference. Prevents non-numeric identifier from being mistaken for numeric
      * identifier.
      */
-    exclusion?: Exclusion.None | Exclusion.AllNumeric | undefined;
+    exclusion?: typeof Exclusions.None | typeof Exclusions.AllNumeric | undefined;
 }
 
 /**
@@ -101,7 +101,7 @@ export class NonNumericIdentifierValidator extends AbstractIdentifierValidator<N
         }
 
         // Check for all-numeric identifier (minus check character pair) if excluded.
-        if (validation?.exclusion === Exclusion.AllNumeric) {
+        if (validation?.exclusion === Exclusions.AllNumeric) {
             NonNumericIdentifierValidator.NOT_ALL_NUMERIC_VALIDATOR.validate(partialIdentifier);
         }
     }

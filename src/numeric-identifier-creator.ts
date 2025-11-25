@@ -1,6 +1,6 @@
 import {
     CharacterSetCreator,
-    Exclusion,
+    Exclusions,
     NUMERIC_CREATOR,
     type TransformerInput,
     type TransformerOutput
@@ -123,7 +123,7 @@ export abstract class AbstractNumericIdentifierCreator extends AbstractIdentifie
      * @inheritDoc
      */
     create<TTransformerInput extends TransformerInput<number | bigint>>(valueOrValues: TTransformerInput, sparse = false): TransformerOutput<TTransformerInput, string> {
-        return NUMERIC_CREATOR.create(this.referenceLength, valueOrValues, Exclusion.None, sparse ? this.tweak : undefined, reference => this.buildIdentifier(reference));
+        return NUMERIC_CREATOR.create(this.referenceLength, valueOrValues, Exclusions.None, sparse ? this.tweak : undefined, reference => this.buildIdentifier(reference));
     }
 
     /**

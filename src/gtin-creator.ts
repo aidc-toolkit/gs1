@@ -1,6 +1,6 @@
 import {
     type CharacterSetValidation,
-    Exclusion,
+    Exclusions,
     NUMERIC_CREATOR,
     type TransformerInput,
     type TransformerOutput
@@ -70,7 +70,7 @@ export class GTINCreator extends Mixin(GTINValidator, AbstractNumericIdentifierC
     createGTIN14<TTransformerInput extends TransformerInput<number | bigint>>(indicatorDigit: string, valueOrValues: TTransformerInput, sparse = false): TransformerOutput<TTransformerInput, string> {
         NUMERIC_CREATOR.validate(indicatorDigit, GTINCreator.REQUIRED_INDICATOR_DIGIT_VALIDATION);
 
-        return NUMERIC_CREATOR.create(GTINTypes.GTIN13 - this.prefixProvider.gs1CompanyPrefix.length - 1, valueOrValues, Exclusion.None, sparse ? this.tweak : undefined, (reference) => {
+        return NUMERIC_CREATOR.create(GTINTypes.GTIN13 - this.prefixProvider.gs1CompanyPrefix.length - 1, valueOrValues, Exclusions.None, sparse ? this.tweak : undefined, (reference) => {
             const partialIdentifier = indicatorDigit + this.prefixProvider.gs1CompanyPrefix + reference;
 
             return partialIdentifier + checkDigit(partialIdentifier);

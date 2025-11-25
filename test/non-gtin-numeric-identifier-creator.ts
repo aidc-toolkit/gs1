@@ -1,4 +1,4 @@
-import { Exclusion, Sequence } from "@aidc-toolkit/utility";
+import { Exclusions, Sequence } from "@aidc-toolkit/utility";
 import { describe, expect, test } from "vitest";
 import {
     hasValidCheckCharacterPair,
@@ -38,7 +38,7 @@ export function testNonNumericIdentifierCreator(creator: NonNumericIdentifierCre
                 expect(identifier.substring(0, prefixLength)).toBe(prefix);
                 expect(!creator.requiresCheckCharacterPair || hasValidCheckCharacterPair(identifier)).toBe(true);
 
-                expect(identifier).toBe(creator.referenceCreator.create(TEST_REFERENCE_LENGTH, index, Exclusion.None, undefined, reference => creator.create(reference)));
+                expect(identifier).toBe(creator.referenceCreator.create(TEST_REFERENCE_LENGTH, index, Exclusions.None, undefined, reference => creator.create(reference)));
 
                 index++;
             }
@@ -51,12 +51,12 @@ export function testNonNumericIdentifierCreator(creator: NonNumericIdentifierCre
 
             let index = 0;
 
-            for (const identifier of creator.create(creator.referenceCreator.create(TEST_REFERENCE_LENGTH, new Sequence(0, referenceCount), Exclusion.None, 123456n))) {
+            for (const identifier of creator.create(creator.referenceCreator.create(TEST_REFERENCE_LENGTH, new Sequence(0, referenceCount), Exclusions.None, 123456n))) {
                 expect(() => {
                     creator.validate(identifier);
                 }).not.toThrow(RangeError);
 
-                expect(Number(creator.referenceCreator.valueFor(identifier.substring(referenceSubstringStart, referenceSubstringEnd), Exclusion.None, 123456n))).toBe(index);
+                expect(Number(creator.referenceCreator.valueFor(identifier.substring(referenceSubstringStart, referenceSubstringEnd), Exclusions.None, 123456n))).toBe(index);
 
                 sequential &&= Number(creator.referenceCreator.valueFor(identifier.substring(referenceSubstringStart, referenceSubstringEnd))) === index;
 
@@ -64,7 +64,7 @@ export function testNonNumericIdentifierCreator(creator: NonNumericIdentifierCre
                 expect(identifier.substring(0, prefixLength)).toBe(prefix);
                 expect(!creator.requiresCheckCharacterPair || hasValidCheckCharacterPair(identifier)).toBe(true);
 
-                expect(identifier).toBe(creator.referenceCreator.create(TEST_REFERENCE_LENGTH, index, Exclusion.None, 123456n, reference => creator.create(reference)));
+                expect(identifier).toBe(creator.referenceCreator.create(TEST_REFERENCE_LENGTH, index, Exclusions.None, 123456n, reference => creator.create(reference)));
 
                 index++;
             }
@@ -84,13 +84,13 @@ export function testNonNumericIdentifierCreator(creator: NonNumericIdentifierCre
         test("Not all numeric", () => {
             expect(() => {
                 creator.validate(creator.create("01234"), {
-                    exclusion: Exclusion.AllNumeric
+                    exclusion: Exclusions.AllNumeric
                 });
             }).toThrow("Reference can't be all-numeric");
 
             expect(() => {
                 creator.validate(creator.create("O1234"), {
-                    exclusion: Exclusion.AllNumeric
+                    exclusion: Exclusions.AllNumeric
                 });
             }).not.toThrow(RangeError);
         });
