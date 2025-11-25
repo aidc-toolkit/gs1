@@ -83,8 +83,8 @@ export class SerializableNumericIdentifierCreator extends Mixin(SerializableNume
     }
 
     /**
-     * Create serialized identifier(s) with a reference based on a numeric value concatenated with serial
-     * component(s). The value is converted to a reference of the appropriate length using {@linkcode NUMERIC_CREATOR}.
+     * Create serialized identifier(s) with a reference based on a numeric value concatenated with serial component(s).
+     * The value is converted to a reference of the appropriate length using a numeric creator.
      *
      * @template TTransformerInput
      * Transformer input type.
