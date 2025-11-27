@@ -20,6 +20,7 @@ import {
     type NonNumericIdentifierValidator
 } from "./non-numeric-identifier-validator.js";
 import type { AbstractNumericIdentifierCreator } from "./numeric-identifier-creator.js";
+import type { NumericIdentifierType } from "./numeric-identifier-validator.js";
 import type { PrefixProvider } from "./prefix-provider.js";
 import { type PrefixType, PrefixTypes } from "./prefix-type.js";
 import { PrefixValidator } from "./prefix-validator.js";
@@ -59,19 +60,19 @@ export class PrefixManager implements PrefixProvider {
     private static readonly PREFIX_MANAGERS_MAP = new Map<string, PrefixManager>();
 
     /**
-     * Creator tweak factors. Different numeric identifier types have different tweak factors so that sparse
-     * creation generates different sequences for each.
+     * Creator tweak factors. Different numeric identifier types have different tweak factors so that sparse creation
+     * generates different sequences for each.
      */
-    private static readonly CREATOR_TWEAK_FACTORS_MAP: ReadonlyMap<IdentifierType, bigint> = new Map([
-        [IdentifierTypes.GTIN, 1987n],
-        [IdentifierTypes.GLN, 4241n],
-        [IdentifierTypes.SSCC, 8087n],
-        [IdentifierTypes.GRAI, 3221n],
-        [IdentifierTypes.GSRN, 2341n],
-        [IdentifierTypes.GDTI, 7333n],
-        [IdentifierTypes.GSIN, 5623n],
-        [IdentifierTypes.GCN, 6869n]
-    ]);
+    private static readonly CREATOR_TWEAK_FACTORS: Readonly<Record<NumericIdentifierType, bigint>> = {
+        GTIN: 1987n,
+        GLN: 4241n,
+        SSCC: 8087n,
+        GRAI: 3221n,
+        GSRN: 2341n,
+        GDTI: 7333n,
+        GSIN: 5623n,
+        GCN: 6869n
+    };
 
     /**
      * Normalized prefix type.
@@ -111,7 +112,7 @@ export class PrefixManager implements PrefixProvider {
     /**
      * Cached identifier creators.
      */
-    private readonly _identifierCreatorsMap = new Map<IdentifierType, IdentifierCreator>();
+    private readonly _identifierCreators: Partial<Record<IdentifierType, IdentifierCreator>> = {};
 
     /**
      * Constructor.
@@ -184,11 +185,11 @@ export class PrefixManager implements PrefixProvider {
      * Identifier creator.
      */
     private setCreatorTweak(creator: IdentifierCreator): void {
-        const creatorTweakFactor = PrefixManager.CREATOR_TWEAK_FACTORS_MAP.get(creator.identifierType);
+        if (creator.identifierType in PrefixManager.CREATOR_TWEAK_FACTORS) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type is known by testing for presence in record.
+            const creatorTweakFactor = PrefixManager.CREATOR_TWEAK_FACTORS[creator.identifierType as NumericIdentifierType];
 
-        // Creator tweak factor is defined for numeric identifiers only.
-        if (creatorTweakFactor !== undefined) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion,no-param-reassign -- Explicit cast without testing is necessary as "instanceof" doesn't work for mixin types. Method purpose is to set the tweak.
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion,no-param-reassign -- Type is known by testing identifier type. Method purpose is to set the tweak.
             (creator as AbstractNumericIdentifierCreator).tweak = this.tweakFactor * creatorTweakFactor;
         }
     }
@@ -212,7 +213,7 @@ export class PrefixManager implements PrefixProvider {
         if (this._tweakFactor !== tweakFactor) {
             this._tweakFactor = tweakFactor;
 
-            for (const creator of this._identifierCreatorsMap.values()) {
+            for (const creator of Object.values(this._identifierCreators)) {
                 this.setCreatorTweak(creator);
             }
         }
@@ -284,7 +285,7 @@ export class PrefixManager implements PrefixProvider {
      */
     private getIdentifierCreator<TIdentifierCreator extends IdentifierCreator>(identifierType: IdentifierType, constructorCallback: () => TIdentifierCreator): TIdentifierCreator {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type is paired with constructor callback.
-        let creator = this._identifierCreatorsMap.get(identifierType) as TIdentifierCreator | undefined;
+        let creator = this._identifierCreators[identifierType] as TIdentifierCreator | undefined;
 
         if (creator === undefined) {
             if (this.prefixType === PrefixTypes.GS18Prefix && identifierType !== IdentifierTypes.GTIN) {
@@ -297,7 +298,7 @@ export class PrefixManager implements PrefixProvider {
 
             this.setCreatorTweak(creator);
 
-            this._identifierCreatorsMap.set(identifierType, creator);
+            this._identifierCreators[identifierType] = creator;
         }
 
         return creator;
