@@ -1,6 +1,6 @@
 {
   "name": "@aidc-toolkit/gs1",
-  "version": "0.9.21-beta",
+  "version": "1.0.21-beta",
   "description": "GS1 AIDC Toolkit",
   "type": "module",
   "main": "dist/index.js",
