@@ -1,4 +1,4 @@
-export const localeStrings = {
+export default {
     Check: {
         lengthOfStringForPriceOrWeightMustBeExactly: "La longueur {{length, number}} de la chaîne pour le prix ou le poids doit être 4 ou 5",
         priceOrWeightComponent: "prix ou poids",
