@@ -1,7 +1,7 @@
 import { CharacterSetCreator, Sequence } from "@aidc-toolkit/utility";
 import { expect, test } from "vitest";
 import { type GTINCreator, GTINTypes, GTINValidator, hasValidCheckDigit, PrefixTypes } from "../src";
-import { testNumericIdentifierCreator } from "./numeric-identifier-creator.js";
+import { testNumericIdentifierCreator } from "./numeric-identifier-creator";
 
 export function testGTINCreator(creator: GTINCreator): void {
     testNumericIdentifierCreator(creator, () => {

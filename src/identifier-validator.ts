@@ -4,10 +4,10 @@ import {
     type StringValidation,
     type StringValidator
 } from "@aidc-toolkit/utility";
-import { AI39_CREATOR, AI82_CREATOR } from "./character-set.js";
-import type { IdentifierType } from "./identifier-type.js";
-import type { PrefixType } from "./prefix-type.js";
-import { PrefixValidator } from "./prefix-validator.js";
+import { AI39_CREATOR, AI82_CREATOR } from "./character-set";
+import type { IdentifierType } from "./identifier-type";
+import type { PrefixType } from "./prefix-type";
+import { PrefixValidator } from "./prefix-validator";
 
 /**
  * Character sets supported by the reference portion of an identifier or the serial component of a numeric identifier.

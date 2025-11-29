@@ -5,7 +5,7 @@ import {
     type NonGTINNumericIdentifierCreator,
     type NonNumericIdentifierCreator
 } from "../src";
-import { testNumericIdentifierCreator } from "./numeric-identifier-creator.js";
+import { testNumericIdentifierCreator } from "./numeric-identifier-creator";
 
 export function testNonGTINNumericIdentifierCreator(creator: NonGTINNumericIdentifierCreator, preTestCallback?: () => void, postTestCallback?: () => void): void {
     testNumericIdentifierCreator(creator, preTestCallback, postTestCallback);

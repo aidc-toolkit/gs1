@@ -8,7 +8,7 @@ import {
     type NumericIdentifierValidator,
     type PrefixType
 } from "../src";
-import { validateIdentifierValidator } from "./identifier-validator.js";
+import { validateIdentifierValidator } from "./identifier-validator";
 
 export function validateNumericIdentifierValidator(validator: NumericIdentifierValidator, isCreator: boolean, identifierType: IdentifierType, prefixType: PrefixType, length: number, leaderType: LeaderType): void {
     validateIdentifierValidator(validator, identifierType, prefixType, length);

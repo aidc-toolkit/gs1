@@ -9,7 +9,7 @@ import {
     type PrefixType,
     PrefixTypes
 } from "../src";
-import { validateNumericIdentifierValidator } from "./numeric-identifier-validator.js";
+import { validateNumericIdentifierValidator } from "./numeric-identifier-validator";
 
 export function validateGTINValidator(validator: GTINValidator, isCreator: boolean, gtinType: GTINType): void {
     let prefixType: PrefixType;

@@ -1,15 +1,15 @@
 import { Exclusions, RegExpValidator } from "@aidc-toolkit/utility";
-import { hasValidCheckCharacterPair } from "./check.js";
-import { type IdentifierType, IdentifierTypes } from "./identifier-type.js";
+import { hasValidCheckCharacterPair } from "./check";
+import { type IdentifierType, IdentifierTypes } from "./identifier-type";
 import {
     AbstractIdentifierValidator,
     type ContentCharacterSet,
     ContentCharacterSets,
     type IdentifierValidation
-} from "./identifier-validator.js";
-import { i18nextGS1 } from "./locale/i18n.js";
-import type { NumericIdentifierType } from "./numeric-identifier-validator.js";
-import { PrefixTypes } from "./prefix-type.js";
+} from "./identifier-validator";
+import { i18nextGS1 } from "./locale/i18n";
+import type { NumericIdentifierType } from "./numeric-identifier-validator";
+import { PrefixTypes } from "./prefix-type";
 
 /**
  * Non-numeric identifier type.

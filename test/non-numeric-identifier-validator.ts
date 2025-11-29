@@ -6,8 +6,8 @@ import {
     type NonNumericIdentifierValidator,
     PrefixTypes
 } from "../src";
-import { validateIdentifierValidator } from "./identifier-validator.js";
-import { creatorFor } from "./utility.js";
+import { validateIdentifierValidator } from "./identifier-validator";
+import { creatorFor } from "./utility";
 
 export function validateNonNumericIdentifierValidator(validator: NonNumericIdentifierValidator, isCreator: boolean, identifierType: IdentifierType, length: number, referenceCharacterSet: ContentCharacterSet, requiresCheckCharacterPair: boolean): void {
     validateIdentifierValidator(validator, identifierType, PrefixTypes.GS1CompanyPrefix, length);

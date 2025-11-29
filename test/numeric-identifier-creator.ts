@@ -1,7 +1,7 @@
 import { CharacterSetCreator, Sequence } from "@aidc-toolkit/utility";
 import { describe, expect, test } from "vitest";
 import { hasValidCheckDigit, IdentifierTypes, LeaderTypes, type NumericIdentifierCreator } from "../src";
-import { testIdentifierCreatorCallback } from "./identifier-creator.js";
+import { testIdentifierCreatorCallback } from "./identifier-creator";
 
 export function testNumericIdentifierCreator(creator: NumericIdentifierCreator, preTestCallback?: () => void, postTestCallback?: () => void): void {
     describe(creator.identifierType === IdentifierTypes.GTIN ? `${creator.identifierType}-${creator.length}` : creator.identifierType, () => {

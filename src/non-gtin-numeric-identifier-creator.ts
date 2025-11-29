@@ -1,8 +1,8 @@
 import { Mixin } from "ts-mixer";
-import type { IdentifierType } from "./identifier-type.js";
-import { NonGTINNumericIdentifierValidator } from "./non-gtin-numeric-identifier-validator.js";
-import { AbstractNumericIdentifierCreator } from "./numeric-identifier-creator.js";
-import { type LeaderType, LeaderTypes } from "./numeric-identifier-validator.js";
+import type { IdentifierType } from "./identifier-type";
+import { NonGTINNumericIdentifierValidator } from "./non-gtin-numeric-identifier-validator";
+import { AbstractNumericIdentifierCreator } from "./numeric-identifier-creator";
+import { type LeaderType, LeaderTypes } from "./numeric-identifier-validator";
 import type { PrefixProvider } from "./prefix-provider";
 
 /**

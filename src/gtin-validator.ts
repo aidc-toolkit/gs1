@@ -1,10 +1,10 @@
 import { type CharacterSetValidation, NUMERIC_CREATOR } from "@aidc-toolkit/utility";
-import { checkDigit, hasValidCheckDigit, isValidPriceOrWeightCheckDigit } from "./check.js";
-import { IdentifierTypes } from "./identifier-type.js";
-import { i18nextGS1 } from "./locale/i18n.js";
-import { AbstractNumericIdentifierValidator, LeaderTypes } from "./numeric-identifier-validator.js";
-import { type PrefixType, PrefixTypes } from "./prefix-type.js";
-import { PrefixValidator } from "./prefix-validator.js";
+import { checkDigit, hasValidCheckDigit, isValidPriceOrWeightCheckDigit } from "./check";
+import { IdentifierTypes } from "./identifier-type";
+import { i18nextGS1 } from "./locale/i18n";
+import { AbstractNumericIdentifierValidator, LeaderTypes } from "./numeric-identifier-validator";
+import { type PrefixType, PrefixTypes } from "./prefix-type";
+import { PrefixValidator } from "./prefix-validator";
 
 /**
  * GTIN types. The numeric values are equal to the lengths of the GTIN types.

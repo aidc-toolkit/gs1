@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 import { ContentCharacterSets, type SerializableNumericIdentifierCreator } from "../src";
-import { testNonGTINNumericIdentifierCreator } from "./non-gtin-numeric-identifier-creator.js";
+import { testNonGTINNumericIdentifierCreator } from "./non-gtin-numeric-identifier-creator";
 
 export function testSerializableNumericIdentifierCreator(creator: SerializableNumericIdentifierCreator): void {
     testNonGTINNumericIdentifierCreator(creator, undefined, () => {

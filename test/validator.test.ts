@@ -21,10 +21,10 @@ import {
     PrefixTypes,
     SSCC_VALIDATOR
 } from "../src";
-import { validateGTINValidator } from "./gtin-validator.test.js";
-import { validateNonGTINNumericIdentifierValidator } from "./non-gtin-numeric-identifier-validator.js";
-import { validateNonNumericIdentifierValidator } from "./non-numeric-identifier-validator.js";
-import { validateSerializableNumericIdentifierValidator } from "./serializable-numeric-identifier-validator.js";
+import { validateGTINValidator } from "./gtin-validator.test";
+import { validateNonGTINNumericIdentifierValidator } from "./non-gtin-numeric-identifier-validator";
+import { validateNonNumericIdentifierValidator } from "./non-numeric-identifier-validator";
+import { validateSerializableNumericIdentifierValidator } from "./serializable-numeric-identifier-validator";
 
 describe("Validators", () => {
     test("GTIN", () => {

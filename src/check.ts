@@ -1,6 +1,6 @@
 import { NUMERIC_CREATOR, utilityNS } from "@aidc-toolkit/utility";
-import { AI82_CREATOR } from "./character-set.js";
-import { i18nextGS1 } from "./locale/i18n.js";
+import { AI82_CREATOR } from "./character-set";
+import { i18nextGS1 } from "./locale/i18n";
 
 /**
  * Results of multiplying digits by 3.

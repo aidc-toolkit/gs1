@@ -1,36 +1,36 @@
-import { GTINCreator } from "./gtin-creator.js";
-import { type GTINType, GTINTypes } from "./gtin-validator.js";
-import type { IdentifierCreator } from "./identifier-creator.js";
-import { type IdentifierType, IdentifierTypes } from "./identifier-type.js";
-import { i18nextGS1 } from "./locale/i18n.js";
-import { NonGTINNumericIdentifierCreator } from "./non-gtin-numeric-identifier-creator.js";
+import { GTINCreator } from "./gtin-creator";
+import { type GTINType, GTINTypes } from "./gtin-validator";
+import type { IdentifierCreator } from "./identifier-creator";
+import { type IdentifierType, IdentifierTypes } from "./identifier-type";
+import { i18nextGS1 } from "./locale/i18n";
+import { NonGTINNumericIdentifierCreator } from "./non-gtin-numeric-identifier-creator";
 import {
     GLN_VALIDATOR,
     GSIN_VALIDATOR,
     GSRN_VALIDATOR,
     type NonGTINNumericIdentifierValidator,
     SSCC_VALIDATOR
-} from "./non-gtin-numeric-identifier-validator.js";
-import { NonNumericIdentifierCreator } from "./non-numeric-identifier-creator.js";
+} from "./non-gtin-numeric-identifier-validator";
+import { NonNumericIdentifierCreator } from "./non-numeric-identifier-creator";
 import {
     CPID_VALIDATOR,
     GIAI_VALIDATOR,
     GINC_VALIDATOR,
     GMN_VALIDATOR,
     type NonNumericIdentifierValidator
-} from "./non-numeric-identifier-validator.js";
-import type { AbstractNumericIdentifierCreator } from "./numeric-identifier-creator.js";
-import type { NumericIdentifierType } from "./numeric-identifier-validator.js";
-import type { PrefixProvider } from "./prefix-provider.js";
-import { type PrefixType, PrefixTypes } from "./prefix-type.js";
-import { PrefixValidator } from "./prefix-validator.js";
-import { SerializableNumericIdentifierCreator } from "./serializable-numeric-identifier-creator.js";
+} from "./non-numeric-identifier-validator";
+import type { AbstractNumericIdentifierCreator } from "./numeric-identifier-creator";
+import type { NumericIdentifierType } from "./numeric-identifier-validator";
+import type { PrefixProvider } from "./prefix-provider";
+import { type PrefixType, PrefixTypes } from "./prefix-type";
+import { PrefixValidator } from "./prefix-validator";
+import { SerializableNumericIdentifierCreator } from "./serializable-numeric-identifier-creator";
 import {
     GCN_VALIDATOR,
     GDTI_VALIDATOR,
     GRAI_VALIDATOR,
     type SerializableNumericIdentifierValidator
-} from "./serializable-numeric-identifier-validator.js";
+} from "./serializable-numeric-identifier-validator";
 
 /**
  * Prefix manager. This is the core class for identifier creation.

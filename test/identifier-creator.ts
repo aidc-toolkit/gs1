@@ -8,10 +8,10 @@ import {
     type PrefixManager,
     PrefixTypes
 } from "../src";
-import { validateGTINValidator } from "./gtin-validator.test.js";
-import { validateNonGTINNumericIdentifierValidator } from "./non-gtin-numeric-identifier-validator.js";
-import { validateNonNumericIdentifierValidator } from "./non-numeric-identifier-validator.js";
-import { validateSerializableNumericIdentifierValidator } from "./serializable-numeric-identifier-validator.js";
+import { validateGTINValidator } from "./gtin-validator.test";
+import { validateNonGTINNumericIdentifierValidator } from "./non-gtin-numeric-identifier-validator";
+import { validateNonNumericIdentifierValidator } from "./non-numeric-identifier-validator";
+import { validateSerializableNumericIdentifierValidator } from "./serializable-numeric-identifier-validator";
 
 export function validateIdentifierCreators(prefixManager: PrefixManager): void {
     let gtinType: GTINType;

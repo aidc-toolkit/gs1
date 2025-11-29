@@ -1,12 +1,12 @@
 import type { CharacterSetCreator, CharacterSetValidation } from "@aidc-toolkit/utility";
-import { type IdentifierType, IdentifierTypes } from "./identifier-type.js";
-import { type ContentCharacterSet, ContentCharacterSets, type IdentifierValidation } from "./identifier-validator.js";
-import { i18nextGS1 } from "./locale/i18n.js";
+import { type IdentifierType, IdentifierTypes } from "./identifier-type";
+import { type ContentCharacterSet, ContentCharacterSets, type IdentifierValidation } from "./identifier-validator";
+import { i18nextGS1 } from "./locale/i18n";
 import {
     type NonGTINNumericIdentifierType,
     NonGTINNumericIdentifierValidator
-} from "./non-gtin-numeric-identifier-validator.js";
-import { LeaderTypes } from "./numeric-identifier-validator.js";
+} from "./non-gtin-numeric-identifier-validator";
+import { LeaderTypes } from "./numeric-identifier-validator";
 
 /**
  * Serializable numeric identifier type.

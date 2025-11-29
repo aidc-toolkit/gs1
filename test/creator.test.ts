@@ -1,11 +1,11 @@
 import { describe } from "vitest";
 import { PrefixManager, PrefixTypes } from "../src";
-import { testGTINCreator } from "./gtin-creator.js";
+import { testGTINCreator } from "./gtin-creator";
 import {
     testNonGTINNumericIdentifierCreator,
     testNonNumericIdentifierCreator
-} from "./non-gtin-numeric-identifier-creator.js";
-import { testSerializableNumericIdentifierCreator } from "./serializable-numeric-identifier-creator.js";
+} from "./non-gtin-numeric-identifier-creator";
+import { testSerializableNumericIdentifierCreator } from "./serializable-numeric-identifier-creator";
 
 describe("Creators", () => {
     testGTINCreator(PrefixManager.get(PrefixTypes.GS1CompanyPrefix, "952123456").gtinCreator);

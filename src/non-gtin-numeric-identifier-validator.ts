@@ -1,11 +1,11 @@
-import { type IdentifierType, IdentifierTypes } from "./identifier-type.js";
+import { type IdentifierType, IdentifierTypes } from "./identifier-type";
 import {
     AbstractNumericIdentifierValidator,
     type LeaderType,
     LeaderTypes,
     type NumericIdentifierType
-} from "./numeric-identifier-validator.js";
-import { PrefixTypes } from "./prefix-type.js";
+} from "./numeric-identifier-validator";
+import { PrefixTypes } from "./prefix-type";
 
 /**
  * Non-GTIN numeric identifier type.

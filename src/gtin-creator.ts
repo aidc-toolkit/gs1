@@ -6,10 +6,10 @@ import {
     type TransformerOutput
 } from "@aidc-toolkit/utility";
 import { Mixin } from "ts-mixer";
-import { checkDigit, priceOrWeightCheckDigit } from "./check.js";
-import { type GTINType, GTINTypes, GTINValidator } from "./gtin-validator.js";
-import { i18nextGS1 } from "./locale/i18n.js";
-import { AbstractNumericIdentifierCreator } from "./numeric-identifier-creator.js";
+import { checkDigit, priceOrWeightCheckDigit } from "./check";
+import { type GTINType, GTINTypes, GTINValidator } from "./gtin-validator";
+import { i18nextGS1 } from "./locale/i18n";
+import { AbstractNumericIdentifierCreator } from "./numeric-identifier-creator";
 import type { PrefixProvider } from "./prefix-provider";
 
 /**

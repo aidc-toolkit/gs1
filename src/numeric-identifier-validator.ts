@@ -1,13 +1,13 @@
-import { hasValidCheckDigit } from "./check.js";
-import type { IdentifierType, IdentifierTypes } from "./identifier-type.js";
+import { hasValidCheckDigit } from "./check";
+import type { IdentifierType, IdentifierTypes } from "./identifier-type";
 import {
     AbstractIdentifierValidator,
     ContentCharacterSets,
     type IdentifierValidation,
     type IdentifierValidator
-} from "./identifier-validator.js";
-import { i18nextGS1 } from "./locale/i18n.js";
-import type { PrefixType } from "./prefix-type.js";
+} from "./identifier-validator";
+import { i18nextGS1 } from "./locale/i18n";
+import type { PrefixType } from "./prefix-type";
 
 /**
  * Numeric identifier type.

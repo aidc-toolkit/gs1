@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { PrefixManager, PrefixTypes } from "../src";
-import { validateIdentifierCreators } from "./identifier-creator.js";
+import { validateIdentifierCreators } from "./identifier-creator";
 
 describe("Prefix manager", () => {
     let prefixManager: PrefixManager;

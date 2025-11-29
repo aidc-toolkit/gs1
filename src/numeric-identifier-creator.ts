@@ -5,9 +5,9 @@ import {
     type TransformerInput,
     type TransformerOutput
 } from "@aidc-toolkit/utility";
-import { checkDigit, checkDigitSum } from "./check.js";
-import { AbstractIdentifierCreator, type IdentifierCreator } from "./identifier-creator.js";
-import { type LeaderType, LeaderTypes, type NumericIdentifierValidator } from "./numeric-identifier-validator.js";
+import { checkDigit, checkDigitSum } from "./check";
+import { AbstractIdentifierCreator, type IdentifierCreator } from "./identifier-creator";
+import { type LeaderType, LeaderTypes, type NumericIdentifierValidator } from "./numeric-identifier-validator";
 import type { PrefixProvider } from "./prefix-provider";
 
 /**
