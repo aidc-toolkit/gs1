@@ -1,23 +1,23 @@
 import type { CharacterSetCreator, CharacterSetValidation } from "@aidc-toolkit/utility";
-import { type IdentifierType, IdentifierTypes } from "./identifier-type";
+import { IdentifierTypes } from "./identifier-type";
 import { type ContentCharacterSet, ContentCharacterSets, type IdentifierValidation } from "./identifier-validator";
 import { i18nextGS1 } from "./locale/i18n";
-import {
-    type NonGTINNumericIdentifierType,
-    NonGTINNumericIdentifierValidator
-} from "./non-gtin-numeric-identifier-validator";
+import { NonGTINNumericIdentifierValidator } from "./non-gtin-numeric-identifier-validator";
 import { LeaderTypes } from "./numeric-identifier-validator";
 
 /**
  * Serializable numeric identifier type.
  */
-export type SerializableNumericIdentifierType = Exclude<NonGTINNumericIdentifierType, typeof IdentifierTypes.GLN | typeof IdentifierTypes.SSCC | typeof IdentifierTypes.GSRN | typeof IdentifierTypes.GSIN>;
+export type SerializableNumericIdentifierType =
+    typeof IdentifierTypes.GRAI |
+    typeof IdentifierTypes.GDTI |
+    typeof IdentifierTypes.GCN;
 
 /**
- * Serializable numeric identifier validator. Validates both serialized and non-serialized forms of
- * numeric identifiers that support serialization.
+ * Serializable numeric identifier validator. Validates both serialized and non-serialized forms of numeric identifiers
+ * that support serialization.
  */
-export class SerializableNumericIdentifierValidator extends NonGTINNumericIdentifierValidator {
+export class SerializableNumericIdentifierValidator extends NonGTINNumericIdentifierValidator<SerializableNumericIdentifierType> {
     /**
      * Serial component length.
      */
@@ -53,7 +53,7 @@ export class SerializableNumericIdentifierValidator extends NonGTINNumericIdenti
      * @param serialComponentCharacterSet
      * Serial component character set.
      */
-    constructor(identifierType: IdentifierType, length: number, serialComponentLength: number, serialComponentCharacterSet: ContentCharacterSet) {
+    constructor(identifierType: SerializableNumericIdentifierType, length: number, serialComponentLength: number, serialComponentCharacterSet: ContentCharacterSet) {
         super(identifierType, length, LeaderTypes.None);
 
         this._serialComponentLength = serialComponentLength;

@@ -1,15 +1,14 @@
 import { Exclusions, RegExpValidator } from "@aidc-toolkit/utility";
+import { AbstractIdentifierValidator } from "./abstract-identifier-validator";
 import { hasValidCheckCharacterPair } from "./check";
 import { type IdentifierType, IdentifierTypes } from "./identifier-type";
 import {
-    AbstractIdentifierValidator,
     type ContentCharacterSet,
     ContentCharacterSets,
     type IdentifierValidation
 } from "./identifier-validator";
 import { i18nextGS1 } from "./locale/i18n";
 import type { NumericIdentifierType } from "./numeric-identifier-validator";
-import { PrefixTypes } from "./prefix-type";
 
 /**
  * Non-numeric identifier type.
@@ -21,8 +20,7 @@ export type NonNumericIdentifierType = Exclude<IdentifierType, NumericIdentifier
  */
 export interface NonNumericIdentifierValidation extends IdentifierValidation {
     /**
-     * Exclusion support for reference. Prevents non-numeric identifier from being mistaken for numeric
-     * identifier.
+     * Exclusion support for reference. Prevents non-numeric identifier from being mistaken for numeric dentifier.
      */
     exclusion?: typeof Exclusions.None | typeof Exclusions.AllNumeric | undefined;
 }
@@ -30,7 +28,7 @@ export interface NonNumericIdentifierValidation extends IdentifierValidation {
 /**
  * Non-numeric identifier validator.
  */
-export class NonNumericIdentifierValidator extends AbstractIdentifierValidator<NonNumericIdentifierValidation> {
+export class NonNumericIdentifierValidator extends AbstractIdentifierValidator<NonNumericIdentifierType, NonNumericIdentifierValidation> {
     /**
      * Validator to ensure that an identifier (minus check character pair) is not all numeric.
      */
@@ -63,8 +61,8 @@ export class NonNumericIdentifierValidator extends AbstractIdentifierValidator<N
      * @param requiresCheckCharacterPair
      * True if the identifier requires a check character pair.
      */
-    constructor(identifierType: IdentifierType, length: number, referenceCharacterSet: ContentCharacterSet, requiresCheckCharacterPair = false) {
-        super(identifierType, PrefixTypes.GS1CompanyPrefix, length, referenceCharacterSet);
+    constructor(identifierType: NonNumericIdentifierType, length: number, referenceCharacterSet: ContentCharacterSet, requiresCheckCharacterPair = false) {
+        super(identifierType, length, referenceCharacterSet);
 
         this._requiresCheckCharacterPair = requiresCheckCharacterPair;
     }
@@ -88,15 +86,14 @@ export class NonNumericIdentifierValidator extends AbstractIdentifierValidator<N
     validate(identifier: string, validation?: NonNumericIdentifierValidation): void {
         const partialIdentifier = this.requiresCheckCharacterPair ? identifier.substring(0, identifier.length - 2) : identifier;
 
-        super.validatePrefix(partialIdentifier, validation?.positionOffset);
+        super.validatePrefix(partialIdentifier);
 
         if (!this.requiresCheckCharacterPair) {
             this.referenceCreator.validate(identifier, {
-                maximumLength: this.length,
-                positionOffset: validation?.positionOffset
+                maximumLength: this.length
             });
             // Validating the check character pair will also validate the characters.
-        } else if (!hasValidCheckCharacterPair(this.padIdentifier(identifier, validation))) {
+        } else if (!hasValidCheckCharacterPair(this.padIdentifier(identifier))) {
             throw new RangeError(i18nextGS1.t("Identifier.invalidCheckCharacterPair"));
         }
 

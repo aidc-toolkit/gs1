@@ -1,7 +1,9 @@
+import type { AbstractNumericIdentifierCreator } from "./abstract-numeric-identifier-creator";
 import { GTINCreator } from "./gtin-creator";
 import { type GTINType, GTINTypes } from "./gtin-validator";
 import type { IdentifierCreator } from "./identifier-creator";
 import { type IdentifierType, IdentifierTypes } from "./identifier-type";
+import type { IdentifierValidation } from "./identifier-validator";
 import { i18nextGS1 } from "./locale/i18n";
 import { NonGTINNumericIdentifierCreator } from "./non-gtin-numeric-identifier-creator";
 import {
@@ -19,7 +21,6 @@ import {
     GMN_VALIDATOR,
     type NonNumericIdentifierValidator
 } from "./non-numeric-identifier-validator";
-import type { AbstractNumericIdentifierCreator } from "./numeric-identifier-creator";
 import type { NumericIdentifierType } from "./numeric-identifier-validator";
 import type { PrefixProvider } from "./prefix-provider";
 import { type PrefixType, PrefixTypes } from "./prefix-type";
@@ -112,7 +113,7 @@ export class PrefixManager implements PrefixProvider {
     /**
      * Cached identifier creators.
      */
-    private readonly _identifierCreators: Partial<Record<IdentifierType, IdentifierCreator>> = {};
+    private readonly _identifierCreators: Partial<Record<IdentifierType, IdentifierCreator<IdentifierType, IdentifierValidation>>> = {};
 
     /**
      * Constructor.
@@ -184,13 +185,13 @@ export class PrefixManager implements PrefixProvider {
      * @param creator
      * Identifier creator.
      */
-    private setCreatorTweak(creator: IdentifierCreator): void {
+    private setCreatorTweak(creator: IdentifierCreator<IdentifierType, IdentifierValidation>): void {
         if (creator.identifierType in PrefixManager.CREATOR_TWEAK_FACTORS) {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type is known by testing for presence in record.
             const creatorTweakFactor = PrefixManager.CREATOR_TWEAK_FACTORS[creator.identifierType as NumericIdentifierType];
 
             // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion,no-param-reassign -- Type is known by testing identifier type. Method purpose is to set the tweak.
-            (creator as AbstractNumericIdentifierCreator).tweak = this.tweakFactor * creatorTweakFactor;
+            (creator as AbstractNumericIdentifierCreator<NumericIdentifierType>).tweak = this.tweakFactor * creatorTweakFactor;
         }
     }
 
@@ -283,7 +284,7 @@ export class PrefixManager implements PrefixProvider {
      * @returns
      * Identifier creator.
      */
-    private getIdentifierCreator<TIdentifierCreator extends IdentifierCreator>(identifierType: IdentifierType, constructorCallback: () => TIdentifierCreator): TIdentifierCreator {
+    private getIdentifierCreator<TIdentifierType extends IdentifierType, TIdentifierCreator extends IdentifierCreator<TIdentifierType, IdentifierValidation>>(identifierType: TIdentifierType, constructorCallback: () => TIdentifierCreator): TIdentifierCreator {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type is paired with constructor callback.
         let creator = this._identifierCreators[identifierType] as TIdentifierCreator | undefined;
 

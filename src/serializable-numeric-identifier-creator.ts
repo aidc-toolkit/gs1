@@ -1,10 +1,12 @@
 import { mapIterable, type TransformerInput, type TransformerOutput } from "@aidc-toolkit/utility";
 import { Mixin } from "ts-mixer";
-import type { IdentifierType } from "./identifier-type";
+import { AbstractNumericIdentifierCreator } from "./abstract-numeric-identifier-creator";
 import type { ContentCharacterSet } from "./identifier-validator";
-import { AbstractNumericIdentifierCreator } from "./numeric-identifier-creator";
 import type { PrefixProvider } from "./prefix-provider";
-import { SerializableNumericIdentifierValidator } from "./serializable-numeric-identifier-validator";
+import {
+    type SerializableNumericIdentifierType,
+    SerializableNumericIdentifierValidator
+} from "./serializable-numeric-identifier-validator";
 
 /**
  * Serializable numeric identifier creator.
@@ -29,7 +31,7 @@ export class SerializableNumericIdentifierCreator extends Mixin(SerializableNume
      * @param serialComponentCharacterSet
      * Serial component character set.
      */
-    constructor(prefixProvider: PrefixProvider, identifierType: IdentifierType, length: number, serialComponentLength: number, serialComponentCharacterSet: ContentCharacterSet) {
+    constructor(prefixProvider: PrefixProvider, identifierType: SerializableNumericIdentifierType, length: number, serialComponentLength: number, serialComponentCharacterSet: ContentCharacterSet) {
         super(identifierType, length, serialComponentLength, serialComponentCharacterSet);
 
         this.init(prefixProvider, prefixProvider.gs1CompanyPrefix);

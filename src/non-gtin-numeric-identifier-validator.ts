@@ -1,21 +1,15 @@
-import { type IdentifierType, IdentifierTypes } from "./identifier-type";
+import { AbstractNumericIdentifierValidator } from "./abstract-numeric-identifier-validator";
+import { IdentifierTypes } from "./identifier-type";
 import {
-    AbstractNumericIdentifierValidator,
     type LeaderType,
     LeaderTypes,
-    type NumericIdentifierType
+    type NonGTINNumericIdentifierType
 } from "./numeric-identifier-validator";
-import { PrefixTypes } from "./prefix-type";
-
-/**
- * Non-GTIN numeric identifier type.
- */
-export type NonGTINNumericIdentifierType = Exclude<NumericIdentifierType, typeof IdentifierTypes.GTIN>;
 
 /**
  * Non-GTIN numeric identifier validator.
  */
-export class NonGTINNumericIdentifierValidator extends AbstractNumericIdentifierValidator {
+export class NonGTINNumericIdentifierValidator<TNonGTINNumericIdentifierType extends NonGTINNumericIdentifierType = NonGTINNumericIdentifierType> extends AbstractNumericIdentifierValidator<TNonGTINNumericIdentifierType> {
     /**
      * Constructor.
      *
@@ -28,8 +22,8 @@ export class NonGTINNumericIdentifierValidator extends AbstractNumericIdentifier
      * @param leaderType
      * Leader type.
      */
-    constructor(identifierType: IdentifierType, length: number, leaderType: LeaderType = LeaderTypes.None) {
-        super(identifierType, PrefixTypes.GS1CompanyPrefix, length, leaderType);
+    constructor(identifierType: TNonGTINNumericIdentifierType, length: number, leaderType: LeaderType = LeaderTypes.None) {
+        super(identifierType, length, leaderType);
     }
 }
 

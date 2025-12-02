@@ -6,10 +6,10 @@ import {
     type TransformerOutput
 } from "@aidc-toolkit/utility";
 import { Mixin } from "ts-mixer";
+import { AbstractNumericIdentifierCreator } from "./abstract-numeric-identifier-creator";
 import { checkDigit, priceOrWeightCheckDigit } from "./check";
 import { type GTINType, GTINTypes, GTINValidator } from "./gtin-validator";
 import { i18nextGS1 } from "./locale/i18n";
-import { AbstractNumericIdentifierCreator } from "./numeric-identifier-creator";
 import type { PrefixProvider } from "./prefix-provider";
 
 /**
@@ -33,9 +33,9 @@ export class GTINCreator extends Mixin(GTINValidator, AbstractNumericIdentifierC
      * Prefix provider.
      *
      * @param gtinType
-     * GTIN type.
+     * GTIN type except GTIN-14.
      */
-    constructor(prefixProvider: PrefixProvider, gtinType: GTINType) {
+    constructor(prefixProvider: PrefixProvider, gtinType: Exclude<GTINType, typeof GTINTypes.GTIN14>) {
         super(gtinType);
 
         this.init(prefixProvider, prefixProvider.prefix);

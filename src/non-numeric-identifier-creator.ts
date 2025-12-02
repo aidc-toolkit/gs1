@@ -5,12 +5,11 @@ import {
     type TransformerOutput
 } from "@aidc-toolkit/utility";
 import { Mixin } from "ts-mixer";
+import { AbstractIdentifierCreator } from "./abstract-identifier-creator";
 import { checkCharacterPair } from "./check";
-import { AbstractIdentifierCreator } from "./identifier-creator";
-import type { IdentifierType } from "./identifier-type";
 import type { ContentCharacterSet } from "./identifier-validator";
 import { i18nextGS1 } from "./locale/i18n";
-import { NonNumericIdentifierValidator } from "./non-numeric-identifier-validator";
+import { type NonNumericIdentifierType, NonNumericIdentifierValidator } from "./non-numeric-identifier-validator";
 import type { PrefixProvider } from "./prefix-provider";
 
 /**
@@ -41,7 +40,7 @@ export class NonNumericIdentifierCreator extends Mixin(NonNumericIdentifierValid
      * @param requiresCheckCharacterPair
      * True if the identifier requires a check character pair.
      */
-    constructor(prefixProvider: PrefixProvider, identifierType: IdentifierType, length: number, referenceCharacterSet: ContentCharacterSet, requiresCheckCharacterPair = false) {
+    constructor(prefixProvider: PrefixProvider, identifierType: NonNumericIdentifierType, length: number, referenceCharacterSet: ContentCharacterSet, requiresCheckCharacterPair = false) {
         super(identifierType, length, referenceCharacterSet, requiresCheckCharacterPair);
 
         this.init(prefixProvider, prefixProvider.gs1CompanyPrefix, 2 * Number(requiresCheckCharacterPair));

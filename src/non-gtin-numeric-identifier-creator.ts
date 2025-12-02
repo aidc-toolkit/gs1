@@ -1,8 +1,7 @@
 import { Mixin } from "ts-mixer";
-import type { IdentifierType } from "./identifier-type";
+import { AbstractNumericIdentifierCreator } from "./abstract-numeric-identifier-creator";
 import { NonGTINNumericIdentifierValidator } from "./non-gtin-numeric-identifier-validator";
-import { AbstractNumericIdentifierCreator } from "./numeric-identifier-creator";
-import { type LeaderType, LeaderTypes } from "./numeric-identifier-validator";
+import { type LeaderType, LeaderTypes, type NonGTINNumericIdentifierType } from "./numeric-identifier-validator";
 import type { PrefixProvider } from "./prefix-provider";
 
 /**
@@ -25,7 +24,7 @@ export class NonGTINNumericIdentifierCreator extends Mixin(NonGTINNumericIdentif
      * @param leaderType
      * Leader type.
      */
-    constructor(prefixProvider: PrefixProvider, identifierType: IdentifierType, length: number, leaderType: LeaderType = LeaderTypes.None) {
+    constructor(prefixProvider: PrefixProvider, identifierType: NonGTINNumericIdentifierType, length: number, leaderType: LeaderType = LeaderTypes.None) {
         super(identifierType, length, leaderType);
 
         this.init(prefixProvider, prefixProvider.gs1CompanyPrefix);

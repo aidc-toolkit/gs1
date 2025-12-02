@@ -1,8 +1,9 @@
 import { type CharacterSetValidation, NUMERIC_CREATOR } from "@aidc-toolkit/utility";
+import { AbstractNumericIdentifierValidator } from "./abstract-numeric-identifier-validator";
 import { checkDigit, hasValidCheckDigit, isValidPriceOrWeightCheckDigit } from "./check";
 import { IdentifierTypes } from "./identifier-type";
 import { i18nextGS1 } from "./locale/i18n";
-import { AbstractNumericIdentifierValidator, LeaderTypes } from "./numeric-identifier-validator";
+import { LeaderTypes } from "./numeric-identifier-validator";
 import { type PrefixType, PrefixTypes } from "./prefix-type";
 import { PrefixValidator } from "./prefix-validator";
 
@@ -79,7 +80,7 @@ export interface RCNReference {
 /**
  * GTIN validator.
  */
-export class GTINValidator extends AbstractNumericIdentifierValidator {
+export class GTINValidator extends AbstractNumericIdentifierValidator<typeof IdentifierTypes.GTIN> {
     /**
      * Validation parameters for optional indicator digit.
      */
@@ -98,34 +99,40 @@ export class GTINValidator extends AbstractNumericIdentifierValidator {
     };
 
     /**
+     * Prefix type.
+     */
+    private readonly _prefixType: PrefixType;
+
+    /**
      * Constructor.
      *
      * @param gtinType
-     * GTIN type.
+     * GTIN type except GTIN-14.
      */
-    constructor(gtinType: GTINType) {
-        let prefixType: PrefixType;
+    constructor(gtinType: Exclude<GTINType, typeof GTINTypes.GTIN14>) {
+        super(IdentifierTypes.GTIN, gtinType, LeaderTypes.IndicatorDigit);
 
         // Determine the prefix type based on the GTIN type.
         switch (gtinType) {
             case GTINTypes.GTIN13:
-                prefixType = PrefixTypes.GS1CompanyPrefix;
+                this._prefixType = PrefixTypes.GS1CompanyPrefix;
                 break;
 
             case GTINTypes.GTIN12:
-                prefixType = PrefixTypes.UPCCompanyPrefix;
+                this._prefixType = PrefixTypes.UPCCompanyPrefix;
                 break;
 
             case GTINTypes.GTIN8:
-                prefixType = PrefixTypes.GS18Prefix;
+                this._prefixType = PrefixTypes.GS18Prefix;
                 break;
-
-            default:
-                // Should never get here.
-                throw new Error("Not supported");
         }
+    }
 
-        super(IdentifierTypes.GTIN, prefixType, gtinType, LeaderTypes.IndicatorDigit);
+    /**
+     * @inheritDoc
+     */
+    override get prefixType(): PrefixType {
+        return this._prefixType;
     }
 
     /**
