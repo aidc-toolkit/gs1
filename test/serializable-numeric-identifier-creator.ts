@@ -1,9 +1,17 @@
 import { expect, test } from "vitest";
-import { ContentCharacterSets, type SerializableNumericIdentifierCreator } from "../src";
+import {
+    ContentCharacterSets,
+    isSerializableNumericIdentifierCreator,
+    type SerializableNumericIdentifierCreator
+} from "../src";
 import { testNonGTINNumericIdentifierCreator } from "./non-gtin-numeric-identifier-creator";
 
 export function testSerializableNumericIdentifierCreator(creator: SerializableNumericIdentifierCreator): void {
-    testNonGTINNumericIdentifierCreator(creator, undefined, () => {
+    testNonGTINNumericIdentifierCreator(creator, () => {
+        test("Mapping", () => {
+            expect(isSerializableNumericIdentifierCreator(creator)).toBe(true);
+        });
+    }, () => {
         test("Serialization", () => {
             const identifier = creator.create(0, true);
             const serial = "12345678";

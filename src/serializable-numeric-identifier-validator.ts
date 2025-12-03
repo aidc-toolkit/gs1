@@ -1,23 +1,17 @@
 import type { CharacterSetCreator, CharacterSetValidation } from "@aidc-toolkit/utility";
-import { IdentifierTypes } from "./identifier-type";
-import { type ContentCharacterSet, ContentCharacterSets, type IdentifierValidation } from "./identifier-validator";
+import { AbstractNumericIdentifierValidator } from "./abstract-numeric-identifier-validator";
+import type { ContentCharacterSet } from "./content-character-set";
+import { IdentifierDescriptors } from "./descriptors";
+import type { IdentifierValidation } from "./identifier-validator";
 import { i18nextGS1 } from "./locale/i18n";
-import { NonGTINNumericIdentifierValidator } from "./non-gtin-numeric-identifier-validator";
-import { LeaderTypes } from "./numeric-identifier-validator";
-
-/**
- * Serializable numeric identifier type.
- */
-export type SerializableNumericIdentifierType =
-    typeof IdentifierTypes.GRAI |
-    typeof IdentifierTypes.GDTI |
-    typeof IdentifierTypes.GCN;
+import type { SerializableNumericIdentifierDescriptor } from "./serializable-numeric-identifier-descriptor";
+import type { SerializableNumericIdentifierType } from "./serializable-numeric-identifier-type";
 
 /**
  * Serializable numeric identifier validator. Validates both serialized and non-serialized forms of numeric identifiers
  * that support serialization.
  */
-export class SerializableNumericIdentifierValidator extends NonGTINNumericIdentifierValidator<SerializableNumericIdentifierType> {
+export class SerializableNumericIdentifierValidator extends AbstractNumericIdentifierValidator<SerializableNumericIdentifierDescriptor> {
     /**
      * Serial component length.
      */
@@ -43,29 +37,22 @@ export class SerializableNumericIdentifierValidator extends NonGTINNumericIdenti
      *
      * @param identifierType
      * Identifier type.
-     *
-     * @param length
-     * Length.
-     *
-     * @param serialComponentLength
-     * Serial component length.
-     *
-     * @param serialComponentCharacterSet
-     * Serial component character set.
      */
-    constructor(identifierType: SerializableNumericIdentifierType, length: number, serialComponentLength: number, serialComponentCharacterSet: ContentCharacterSet) {
-        super(identifierType, length, LeaderTypes.None);
+    constructor(identifierType: SerializableNumericIdentifierType) {
+        const identifierDescriptor = IdentifierDescriptors.get(identifierType);
 
-        this._serialComponentLength = serialComponentLength;
-        this._serialComponentCharacterSet = serialComponentCharacterSet;
+        super(identifierDescriptor);
+
+        this._serialComponentLength = identifierDescriptor.serialComponentLength;
+        this._serialComponentCharacterSet = identifierDescriptor.serialComponentCharacterSet;
 
         this._serialComponentValidation = {
             minimumLength: 1,
-            maximumLength: serialComponentLength,
+            maximumLength: identifierDescriptor.serialComponentLength,
             component: () => i18nextGS1.t("Identifier.serialComponent")
         };
 
-        this._serialComponentCreator = SerializableNumericIdentifierValidator.creatorFor(serialComponentCharacterSet);
+        this._serialComponentCreator = SerializableNumericIdentifierValidator.creatorFor(identifierDescriptor.serialComponentCharacterSet);
     }
 
     /**
@@ -107,18 +94,3 @@ export class SerializableNumericIdentifierValidator extends NonGTINNumericIdenti
         }
     }
 }
-
-/**
- * GRAI validator.
- */
-export const GRAI_VALIDATOR = new SerializableNumericIdentifierValidator(IdentifierTypes.GRAI, 13, 16, ContentCharacterSets.AI82);
-
-/**
- * GDTI validator.
- */
-export const GDTI_VALIDATOR = new SerializableNumericIdentifierValidator(IdentifierTypes.GDTI, 13, 17, ContentCharacterSets.AI82);
-
-/**
- * GCN validator.
- */
-export const GCN_VALIDATOR = new SerializableNumericIdentifierValidator(IdentifierTypes.GCN, 13, 12, ContentCharacterSets.Numeric);

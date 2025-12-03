@@ -2,15 +2,15 @@ import { CharacterSetCreator, Sequence } from "@aidc-toolkit/utility";
 import { describe, expect, test } from "vitest";
 import {
     hasValidCheckDigit,
-    IdentifierTypes,
+    isGTINCreator,
     LeaderTypes,
     type NumericIdentifierCreator,
-    type NumericIdentifierType
+    type NumericIdentifierDescriptor
 } from "../src";
 import { testIdentifierCreatorCallback } from "./identifier-creator";
 
-export function testNumericIdentifierCreator<TNumericIdentifierType extends NumericIdentifierType>(creator: NumericIdentifierCreator<TNumericIdentifierType>, preTestCallback?: () => void, postTestCallback?: () => void): void {
-    describe(creator.identifierType === IdentifierTypes.GTIN ? `${creator.identifierType}-${creator.length}` : creator.identifierType, () => {
+export function testNumericIdentifierCreator<TNumericIdentifierDescriptor extends NumericIdentifierDescriptor>(creator: NumericIdentifierCreator<TNumericIdentifierDescriptor>, preTestCallback?: () => void, postTestCallback?: () => void): void {
+    describe(isGTINCreator(creator) ? `${creator.identifierType}-${creator.length}` : creator.identifierType as string, () => {
         testIdentifierCreatorCallback(preTestCallback);
 
         const prefix = creator.prefix;

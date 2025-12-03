@@ -1,19 +1,26 @@
 import type { TransformerInput, TransformerOutput } from "@aidc-toolkit/utility";
 import type { IdentifierCreator } from "./identifier-creator";
-import type {
-    NumericIdentifierType,
-    NumericIdentifierValidation,
-    NumericIdentifierValidator
-} from "./numeric-identifier-validator";
+import type { NumericIdentifierDescriptor } from "./numeric-identifier-descriptor";
+import type { NumericIdentifierValidation, NumericIdentifierValidator } from "./numeric-identifier-validator";
 
 /**
  * Numeric identifier creator. Creates one or many numeric identifiers.
  */
-export interface NumericIdentifierCreator<TNumericIdentifierType extends NumericIdentifierType> extends NumericIdentifierValidator<TNumericIdentifierType>, IdentifierCreator<TNumericIdentifierType, NumericIdentifierValidation> {
+export interface NumericIdentifierCreator<TNumericIdentifierDescriptor extends NumericIdentifierDescriptor = NumericIdentifierDescriptor> extends NumericIdentifierValidator<TNumericIdentifierDescriptor>, IdentifierCreator<TNumericIdentifierDescriptor, NumericIdentifierValidation> {
     /**
      * Get the capacity (`10**referenceLength`).
      */
     get capacity(): number;
+
+    /**
+     * Get the tweak for sparse creation.
+     */
+    get tweak(): bigint;
+
+    /**
+     * Set the tweak for sparse creation.
+     */
+    set tweak(value: bigint);
 
     /**
      * Create identifier(s) with reference(s) based on numeric value(s). The value(s) is/are converted to references of

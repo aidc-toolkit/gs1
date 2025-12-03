@@ -1,15 +1,14 @@
 import type { CharacterSetCreator } from "@aidc-toolkit/utility";
 import type { IdentifierCreator } from "./identifier-creator";
-import type { IdentifierType } from "./identifier-type";
-import type { ContentCharacterSet, IdentifierValidation } from "./identifier-validator";
+import type { IdentifierDescriptor } from "./identifier-descriptor";
+import type { IdentifierValidation } from "./identifier-validator";
 import type { PrefixProvider } from "./prefix-provider";
-import type { PrefixType } from "./prefix-type";
 
 /**
  * Abstract identifier creator. Implements common functionality for an identifier creator, bound to a
  * {@link PrefixProvider}.
  */
-export abstract class AbstractIdentifierCreator<TIdentifierType extends IdentifierType, TIdentifierValidation extends IdentifierValidation> implements IdentifierCreator<TIdentifierType, TIdentifierValidation> {
+export abstract class AbstractIdentifierCreator<TIdentifierDescriptor extends IdentifierDescriptor, TIdentifierValidation extends IdentifierValidation> implements IdentifierCreator<TIdentifierDescriptor, TIdentifierValidation> {
     /**
      * Prefix provider.
      */
@@ -42,12 +41,12 @@ export abstract class AbstractIdentifierCreator<TIdentifierType extends Identifi
     /**
      * @inheritDoc
      */
-    abstract get identifierType(): TIdentifierType;
+    abstract get identifierType(): TIdentifierDescriptor["identifierType"];
 
     /**
      * @inheritDoc
      */
-    abstract get prefixType(): PrefixType;
+    abstract get prefixType(): TIdentifierDescriptor["prefixType"];
 
     /**
      * @inheritDoc
@@ -57,7 +56,7 @@ export abstract class AbstractIdentifierCreator<TIdentifierType extends Identifi
     /**
      * @inheritDoc
      */
-    abstract get referenceCharacterSet(): ContentCharacterSet;
+    abstract get referenceCharacterSet(): TIdentifierDescriptor["referenceCharacterSet"];
 
     /**
      * @inheritDoc
@@ -88,5 +87,5 @@ export abstract class AbstractIdentifierCreator<TIdentifierType extends Identifi
     /**
      * @inheritDoc
      */
-    abstract validate(identifier: string, validation?: IdentifierValidation): void;
+    abstract validate(identifier: string, validation?: TIdentifierValidation): void;
 }

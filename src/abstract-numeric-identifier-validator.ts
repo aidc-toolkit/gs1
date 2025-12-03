@@ -1,23 +1,18 @@
 import { AbstractIdentifierValidator } from "./abstract-identifier-validator";
 import { hasValidCheckDigit } from "./check";
-import { ContentCharacterSets } from "./identifier-validator";
 import { i18nextGS1 } from "./locale/i18n";
-import {
-    type LeaderType,
-    LeaderTypes,
-    type NumericIdentifierType,
-    type NumericIdentifierValidation,
-    type NumericIdentifierValidator
-} from "./numeric-identifier-validator";
+import type { NumericIdentifierDescriptor } from "./numeric-identifier-descriptor";
+import { LeaderTypes } from "./numeric-identifier-type";
+import type { NumericIdentifierValidation, NumericIdentifierValidator } from "./numeric-identifier-validator";
 
 /**
  * Abstract numeric identifier validator.
  */
-export abstract class AbstractNumericIdentifierValidator<TNumericIdentifierType extends NumericIdentifierType> extends AbstractIdentifierValidator<TNumericIdentifierType, NumericIdentifierValidation> implements NumericIdentifierValidator<TNumericIdentifierType> {
+export abstract class AbstractNumericIdentifierValidator<TNumericIdentifierDescriptor extends NumericIdentifierDescriptor> extends AbstractIdentifierValidator<TNumericIdentifierDescriptor, NumericIdentifierValidation> implements NumericIdentifierValidator<TNumericIdentifierDescriptor> {
     /**
      * Leader type.
      */
-    private readonly _leaderType: LeaderType;
+    private readonly _leaderType: TNumericIdentifierDescriptor["leaderType"];
 
     /**
      * Prefix position, determined by the leader type.
@@ -27,26 +22,20 @@ export abstract class AbstractNumericIdentifierValidator<TNumericIdentifierType 
     /**
      * Constructor.
      *
-     * @param identifierType
-     * Identifier type.
-     *
-     * @param length
-     * Length.
-     *
-     * @param leaderType
-     * Leader type.
+     * @param identifierDescriptor
+     * Identifier descriptor.
      */
-    constructor(identifierType: TNumericIdentifierType, length: number, leaderType: LeaderType) {
-        super(identifierType, length, ContentCharacterSets.Numeric);
+    constructor(identifierDescriptor: NumericIdentifierDescriptor) {
+        super(identifierDescriptor);
 
-        this._leaderType = leaderType;
-        this._prefixPosition = this.leaderType !== LeaderTypes.ExtensionDigit ? 0 : 1;
+        this._leaderType = identifierDescriptor.leaderType;
+        this._prefixPosition = Number(this.leaderType === LeaderTypes.ExtensionDigit);
     }
 
     /**
      * @inheritDoc
      */
-    get leaderType(): LeaderType {
+    get leaderType(): TNumericIdentifierDescriptor["leaderType"] {
         return this._leaderType;
     }
 

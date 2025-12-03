@@ -8,7 +8,8 @@ import {
 import { Mixin } from "ts-mixer";
 import { AbstractNumericIdentifierCreator } from "./abstract-numeric-identifier-creator";
 import { checkDigit, priceOrWeightCheckDigit } from "./check";
-import { type GTINType, GTINTypes, GTINValidator } from "./gtin-validator";
+import { type GTINBaseType, GTINTypes } from "./gtin-type";
+import { GTINValidator } from "./gtin-validator";
 import { i18nextGS1 } from "./locale/i18n";
 import type { PrefixProvider } from "./prefix-provider";
 
@@ -32,11 +33,11 @@ export class GTINCreator extends Mixin(GTINValidator, AbstractNumericIdentifierC
      * @param prefixProvider
      * Prefix provider.
      *
-     * @param gtinType
-     * GTIN type except GTIN-14.
+     * @param gtinBaseType
+     * GTIN base type (all except GTIN-14).
      */
-    constructor(prefixProvider: PrefixProvider, gtinType: Exclude<GTINType, typeof GTINTypes.GTIN14>) {
-        super(gtinType);
+    constructor(prefixProvider: PrefixProvider, gtinBaseType: GTINBaseType) {
+        super(gtinBaseType);
 
         this.init(prefixProvider, prefixProvider.prefix);
     }

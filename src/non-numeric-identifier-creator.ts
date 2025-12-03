@@ -7,9 +7,9 @@ import {
 import { Mixin } from "ts-mixer";
 import { AbstractIdentifierCreator } from "./abstract-identifier-creator";
 import { checkCharacterPair } from "./check";
-import type { ContentCharacterSet } from "./identifier-validator";
 import { i18nextGS1 } from "./locale/i18n";
-import { type NonNumericIdentifierType, NonNumericIdentifierValidator } from "./non-numeric-identifier-validator";
+import type { NonNumericIdentifierType } from "./non-numeric-identifier-type";
+import { NonNumericIdentifierValidator } from "./non-numeric-identifier-validator";
 import type { PrefixProvider } from "./prefix-provider";
 
 /**
@@ -30,20 +30,11 @@ export class NonNumericIdentifierCreator extends Mixin(NonNumericIdentifierValid
      *
      * @param identifierType
      * Identifier type.
-     *
-     * @param length
-     * Length.
-     *
-     * @param referenceCharacterSet
-     * Reference character set.
-     *
-     * @param requiresCheckCharacterPair
-     * True if the identifier requires a check character pair.
      */
-    constructor(prefixProvider: PrefixProvider, identifierType: NonNumericIdentifierType, length: number, referenceCharacterSet: ContentCharacterSet, requiresCheckCharacterPair = false) {
-        super(identifierType, length, referenceCharacterSet, requiresCheckCharacterPair);
+    constructor(prefixProvider: PrefixProvider, identifierType: NonNumericIdentifierType) {
+        super(identifierType);
 
-        this.init(prefixProvider, prefixProvider.gs1CompanyPrefix, 2 * Number(requiresCheckCharacterPair));
+        this.init(prefixProvider, prefixProvider.gs1CompanyPrefix, 2 * Number(this.requiresCheckCharacterPair));
 
         this._referenceValidation = {
             minimumLength: 1,

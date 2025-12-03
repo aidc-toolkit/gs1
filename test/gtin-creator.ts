@@ -1,10 +1,14 @@
 import { CharacterSetCreator, Sequence } from "@aidc-toolkit/utility";
 import { expect, test } from "vitest";
-import { type GTINCreator, GTINTypes, GTINValidator, hasValidCheckDigit, PrefixTypes } from "../src";
+import { type GTINCreator, GTINTypes, GTINValidator, hasValidCheckDigit, isGTINCreator, PrefixTypes } from "../src";
 import { testNumericIdentifierCreator } from "./numeric-identifier-creator";
 
 export function testGTINCreator(creator: GTINCreator): void {
     testNumericIdentifierCreator(creator, () => {
+        test("Mapping", () => {
+            expect(isGTINCreator(creator)).toBe(true);
+        });
+
         test("Length", () => {
             switch (creator.prefixType) {
                 case PrefixTypes.GS1CompanyPrefix:

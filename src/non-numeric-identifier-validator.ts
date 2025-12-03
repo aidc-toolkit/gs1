@@ -1,19 +1,11 @@
 import { Exclusions, RegExpValidator } from "@aidc-toolkit/utility";
 import { AbstractIdentifierValidator } from "./abstract-identifier-validator";
 import { hasValidCheckCharacterPair } from "./check";
-import { type IdentifierType, IdentifierTypes } from "./identifier-type";
-import {
-    type ContentCharacterSet,
-    ContentCharacterSets,
-    type IdentifierValidation
-} from "./identifier-validator";
+import { IdentifierDescriptors } from "./descriptors";
+import type { IdentifierValidation } from "./identifier-validator";
 import { i18nextGS1 } from "./locale/i18n";
-import type { NumericIdentifierType } from "./numeric-identifier-validator";
-
-/**
- * Non-numeric identifier type.
- */
-export type NonNumericIdentifierType = Exclude<IdentifierType, NumericIdentifierType>;
+import type { NonNumericIdentifierDescriptor } from "./non-numeric-identifier-descriptor";
+import type { NonNumericIdentifierType } from "./non-numeric-identifier-type";
 
 /**
  * Non-numeric identifier validation parameters.
@@ -28,7 +20,7 @@ export interface NonNumericIdentifierValidation extends IdentifierValidation {
 /**
  * Non-numeric identifier validator.
  */
-export class NonNumericIdentifierValidator extends AbstractIdentifierValidator<NonNumericIdentifierType, NonNumericIdentifierValidation> {
+export class NonNumericIdentifierValidator extends AbstractIdentifierValidator<NonNumericIdentifierDescriptor, NonNumericIdentifierValidation> {
     /**
      * Validator to ensure that an identifier (minus check character pair) is not all numeric.
      */
@@ -51,20 +43,13 @@ export class NonNumericIdentifierValidator extends AbstractIdentifierValidator<N
      *
      * @param identifierType
      * Identifier type.
-     *
-     * @param length
-     * Length.
-     *
-     * @param referenceCharacterSet
-     * Reference character set.
-     *
-     * @param requiresCheckCharacterPair
-     * True if the identifier requires a check character pair.
      */
-    constructor(identifierType: NonNumericIdentifierType, length: number, referenceCharacterSet: ContentCharacterSet, requiresCheckCharacterPair = false) {
-        super(identifierType, length, referenceCharacterSet);
+    constructor(identifierType: NonNumericIdentifierType) {
+        const identifierDescriptor = IdentifierDescriptors.get(identifierType);
 
-        this._requiresCheckCharacterPair = requiresCheckCharacterPair;
+        super(identifierDescriptor);
+
+        this._requiresCheckCharacterPair = identifierDescriptor.requiresCheckCharacterPair;
     }
 
     /**
@@ -103,23 +88,3 @@ export class NonNumericIdentifierValidator extends AbstractIdentifierValidator<N
         }
     }
 }
-
-/**
- * GIAI validator.
- */
-export const GIAI_VALIDATOR = new NonNumericIdentifierValidator(IdentifierTypes.GIAI, 30, ContentCharacterSets.AI82);
-
-/**
- * GINC validator.
- */
-export const GINC_VALIDATOR = new NonNumericIdentifierValidator(IdentifierTypes.GINC, 30, ContentCharacterSets.AI82);
-
-/**
- * CPID validator.
- */
-export const CPID_VALIDATOR = new NonNumericIdentifierValidator(IdentifierTypes.CPID, 30, ContentCharacterSets.AI39);
-
-/**
- * GMN validator.
- */
-export const GMN_VALIDATOR = new NonNumericIdentifierValidator(IdentifierTypes.GMN, 25, ContentCharacterSets.AI82, true);

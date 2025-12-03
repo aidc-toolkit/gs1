@@ -1,0 +1,45 @@
+import { type PrefixType, PrefixTypes } from "./prefix-type";
+
+/**
+ * GTIN types. The numeric values are equal to the lengths of the GTIN types.
+ */
+export const GTINTypes = {
+    /**
+     * GTIN-13.
+     */
+    GTIN13: 13,
+
+    /**
+     * GTIN-12.
+     */
+    GTIN12: 12,
+
+    /**
+     * GTIN-8.
+     */
+    GTIN8: 8,
+
+    /**
+     * GTIN-14.
+     */
+    GTIN14: 14
+} as const;
+
+/**
+ * GTIN type.
+ */
+export type GTINType = typeof GTINTypes[keyof typeof GTINTypes];
+
+/**
+ * GTIN base type (all except GTIN-14).
+ */
+export type GTINBaseType = Exclude<GTINType, typeof GTINTypes.GTIN14>;
+
+/**
+ * GTIN base types by prefix type.
+ */
+export const GTIN_BASE_TYPES: Readonly<Record<PrefixType, GTINBaseType>> = {
+    [PrefixTypes.GS1CompanyPrefix]: GTINTypes.GTIN13,
+    [PrefixTypes.UPCCompanyPrefix]: GTINTypes.GTIN12,
+    [PrefixTypes.GS18Prefix]: GTINTypes.GTIN8
+};

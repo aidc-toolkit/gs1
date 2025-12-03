@@ -1,41 +1,12 @@
 import { type CharacterSetValidation, NUMERIC_CREATOR } from "@aidc-toolkit/utility";
 import { AbstractNumericIdentifierValidator } from "./abstract-numeric-identifier-validator";
 import { checkDigit, hasValidCheckDigit, isValidPriceOrWeightCheckDigit } from "./check";
-import { IdentifierTypes } from "./identifier-type";
+import { IdentifierDescriptors } from "./descriptors";
+import type { GTINDescriptor } from "./gtin-descriptor";
+import { type GTINBaseType, type GTINType, GTINTypes } from "./gtin-type";
 import { i18nextGS1 } from "./locale/i18n";
-import { LeaderTypes } from "./numeric-identifier-validator";
 import { type PrefixType, PrefixTypes } from "./prefix-type";
 import { PrefixValidator } from "./prefix-validator";
-
-/**
- * GTIN types. The numeric values are equal to the lengths of the GTIN types.
- */
-export const GTINTypes = {
-    /**
-     * GTIN-13.
-     */
-    GTIN13: 13,
-
-    /**
-     * GTIN-12.
-     */
-    GTIN12: 12,
-
-    /**
-     * GTIN-8.
-     */
-    GTIN8: 8,
-
-    /**
-     * GTIN-14.
-     */
-    GTIN14: 14
-} as const;
-
-/**
- * GTIN type.
- */
-export type GTINType = typeof GTINTypes[keyof typeof GTINTypes];
 
 /**
  * Levels at which GTIN is to be validated.
@@ -80,7 +51,7 @@ export interface RCNReference {
 /**
  * GTIN validator.
  */
-export class GTINValidator extends AbstractNumericIdentifierValidator<typeof IdentifierTypes.GTIN> {
+export class GTINValidator extends AbstractNumericIdentifierValidator<GTINDescriptor> {
     /**
      * Validation parameters for optional indicator digit.
      */
@@ -106,26 +77,15 @@ export class GTINValidator extends AbstractNumericIdentifierValidator<typeof Ide
     /**
      * Constructor.
      *
-     * @param gtinType
-     * GTIN type except GTIN-14.
+     * @param gtinBaseType
+     * GTIN base type (all except GTIN-14).
      */
-    constructor(gtinType: Exclude<GTINType, typeof GTINTypes.GTIN14>) {
-        super(IdentifierTypes.GTIN, gtinType, LeaderTypes.IndicatorDigit);
+    constructor(gtinBaseType: GTINBaseType) {
+        const identifierDescriptor = IdentifierDescriptors.GTIN[gtinBaseType];
 
-        // Determine the prefix type based on the GTIN type.
-        switch (gtinType) {
-            case GTINTypes.GTIN13:
-                this._prefixType = PrefixTypes.GS1CompanyPrefix;
-                break;
+        super(identifierDescriptor);
 
-            case GTINTypes.GTIN12:
-                this._prefixType = PrefixTypes.UPCCompanyPrefix;
-                break;
-
-            case GTINTypes.GTIN8:
-                this._prefixType = PrefixTypes.GS18Prefix;
-                break;
-        }
+        this._prefixType = identifierDescriptor.prefixType;
     }
 
     /**
@@ -549,23 +509,27 @@ export class GTINValidator extends AbstractNumericIdentifierValidator<typeof Ide
 /**
  * GTIN-13 validator.
  */
+// Defined here because of circular reference.
 export const GTIN13_VALIDATOR = new GTINValidator(GTINTypes.GTIN13);
 
 /**
  * GTIN-12 validator.
  */
+// Defined here because of circular reference.
 export const GTIN12_VALIDATOR = new GTINValidator(GTINTypes.GTIN12);
 
 /**
  * GTIN-8 validator.
  */
+// Defined here because of circular reference.
 export const GTIN8_VALIDATOR = new GTINValidator(GTINTypes.GTIN8);
 
 /**
  * GTIN validators indexed by prefix type.
  */
-export const GTIN_VALIDATORS: Record<PrefixType, GTINValidator> = {
-    [PrefixTypes.GS1CompanyPrefix]: GTIN13_VALIDATOR,
-    [PrefixTypes.UPCCompanyPrefix]: GTIN12_VALIDATOR,
-    [PrefixTypes.GS18Prefix]: GTIN8_VALIDATOR
+// Defined here because of circular reference.
+export const GTIN_VALIDATORS: Readonly<Record<GTINBaseType, GTINValidator>> = {
+    [GTINTypes.GTIN13]: GTIN13_VALIDATOR,
+    [GTINTypes.GTIN12]: GTIN12_VALIDATOR,
+    [GTINTypes.GTIN8]: GTIN8_VALIDATOR
 };

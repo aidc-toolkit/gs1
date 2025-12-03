@@ -1,19 +1,15 @@
 import { type CharacterSetCreator, NUMERIC_CREATOR } from "@aidc-toolkit/utility";
 import { AI39_CREATOR, AI82_CREATOR } from "./character-set";
-import type { IdentifierType } from "./identifier-type";
-import {
-    type ContentCharacterSet,
-    ContentCharacterSets,
-    type IdentifierValidation,
-    type IdentifierValidator
-} from "./identifier-validator";
-import { type PrefixType, PrefixTypes } from "./prefix-type";
+import { type ContentCharacterSet, ContentCharacterSets } from "./content-character-set";
+import type { IdentifierDescriptor } from "./identifier-descriptor";
+import type { IdentifierValidation, IdentifierValidator } from "./identifier-validator";
+import { PrefixTypes } from "./prefix-type";
 import { PrefixValidator } from "./prefix-validator";
 
 /**
  * Abstract identifier validator. Implements common functionality for an identifier validator.
  */
-export abstract class AbstractIdentifierValidator<TIdentifierType extends IdentifierType, TIdentifierValidation extends IdentifierValidation> implements IdentifierValidator<TIdentifierType, TIdentifierValidation> {
+export abstract class AbstractIdentifierValidator<TIdentifierDescriptor extends IdentifierDescriptor, TIdentifierValidation extends IdentifierValidation> implements IdentifierValidator<TIdentifierDescriptor, TIdentifierValidation> {
     private static readonly CHARACTER_SET_CREATORS: Record<ContentCharacterSet, CharacterSetCreator> = {
         [ContentCharacterSets.Numeric]: NUMERIC_CREATOR,
         [ContentCharacterSets.AI82]: AI82_CREATOR,
@@ -23,7 +19,7 @@ export abstract class AbstractIdentifierValidator<TIdentifierType extends Identi
     /**
      * Identifier type.
      */
-    private readonly _identifierType: TIdentifierType;
+    private readonly _identifierType: TIdentifierDescriptor["identifierType"];
 
     /**
      * Length.
@@ -33,7 +29,7 @@ export abstract class AbstractIdentifierValidator<TIdentifierType extends Identi
     /**
      * Reference character set.
      */
-    private readonly _referenceCharacterSet: ContentCharacterSet;
+    private readonly _referenceCharacterSet: TIdentifierDescriptor["referenceCharacterSet"];
 
     /**
      * Reference creator.
@@ -56,33 +52,27 @@ export abstract class AbstractIdentifierValidator<TIdentifierType extends Identi
     /**
      * Constructor.
      *
-     * @param identifierType
-     * Identifier type.
-     *
-     * @param length
-     * Length.
-     *
-     * @param referenceCharacterSet
-     * Reference character set.
+     * @param identifierDescriptor
+     * Identifier descriptor.
      */
-    protected constructor(identifierType: TIdentifierType, length: number, referenceCharacterSet: ContentCharacterSet) {
-        this._identifierType = identifierType;
-        this._length = length;
-        this._referenceCharacterSet = referenceCharacterSet;
-        this._referenceCreator = AbstractIdentifierValidator.creatorFor(referenceCharacterSet);
+    protected constructor(identifierDescriptor: IdentifierDescriptor) {
+        this._identifierType = identifierDescriptor.identifierType;
+        this._length = identifierDescriptor.length;
+        this._referenceCharacterSet = identifierDescriptor.referenceCharacterSet;
+        this._referenceCreator = AbstractIdentifierValidator.creatorFor(identifierDescriptor.referenceCharacterSet);
     }
 
     /**
      * @inheritDoc
      */
-    get identifierType(): TIdentifierType {
+    get identifierType(): TIdentifierDescriptor["identifierType"] {
         return this._identifierType;
     }
 
     /**
      * @inheritDoc
      */
-    get prefixType(): PrefixType {
+    get prefixType(): TIdentifierDescriptor["prefixType"] {
         // All identifier types except GTIN support only the GS1 Company Prefix.
         return PrefixTypes.GS1CompanyPrefix;
     }
@@ -97,7 +87,7 @@ export abstract class AbstractIdentifierValidator<TIdentifierType extends Identi
     /**
      * @inheritDoc
      */
-    get referenceCharacterSet(): ContentCharacterSet {
+    get referenceCharacterSet(): TIdentifierDescriptor["referenceCharacterSet"] {
         return this._referenceCharacterSet;
     }
 

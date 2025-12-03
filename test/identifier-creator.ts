@@ -33,6 +33,7 @@ export function validateIdentifierCreators(prefixManager: PrefixManager): void {
             break;
     }
 
+    // Validate creator caching.
     expect(prefixManager.gtinCreator).toBe(prefixManager.gtinCreator);
 
     validateGTINValidator(prefixManager.gtinCreator, true, gtinType);

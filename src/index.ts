@@ -15,21 +15,45 @@
  * limitations under the License.
  */
 export * from "./locale/i18n";
+
 export * from "./character-set";
+
 export * from "./check";
+
 export * from "./prefix-type";
 export * from "./prefix-validator";
+
+export * from "./content-character-set";
+
 export * from "./identifier-type";
-export * from "./identifier-validator";
-export * from "./numeric-identifier-validator";
-export * from "./gtin-validator";
+export * from "./numeric-identifier-type";
+export * from "./gtin-type";
+export type * from "./non-gtin-numeric-identifier-type";
+export type * from "./serializable-numeric-identifier-type";
+export type * from "./non-numeric-identifier-type";
+
+export type * from "./identifier-descriptor";
+export type * from "./numeric-identifier-descriptor";
+export type * from "./gtin-descriptor";
+export type * from "./non-gtin-numeric-identifier-descriptor";
+export type * from "./serializable-numeric-identifier-descriptor";
+export type * from "./non-numeric-identifier-descriptor";
+export * from "./descriptors";
+
+export type * from "./identifier-validator";
+export type * from "./numeric-identifier-validator";
+export { GTINLevels, type GTINLevel, type RCNReference, GTINValidator } from "./gtin-validator";
 export * from "./non-gtin-numeric-identifier-validator";
 export * from "./serializable-numeric-identifier-validator";
 export * from "./non-numeric-identifier-validator";
+export * from "./validators";
+
 export type * from "./identifier-creator";
 export type * from "./numeric-identifier-creator";
 export * from "./gtin-creator";
 export * from "./non-gtin-numeric-identifier-creator";
 export * from "./serializable-numeric-identifier-creator";
 export * from "./non-numeric-identifier-creator";
+export * from "./creators";
+
 export * from "./prefix-manager";

@@ -1,5 +1,6 @@
 import { type CharacterSetValidation, NUMERIC_CREATOR } from "@aidc-toolkit/utility";
 import { i18nextGS1 } from "./locale/i18n";
+import type { PrefixProvider } from "./prefix-provider";
 import { type PrefixType, PrefixTypes } from "./prefix-type";
 
 /**
@@ -98,86 +99,6 @@ const GS1_8_PREFIX_VALIDATION: Readonly<PrefixValidation> = {
 };
 
 /**
- * Validate a prefix.
- *
- * @param prefixType
- * Prefix type.
- *
- * @param allowUPCCompanyPrefix
- * If true, a U.P.C. Company Prefix expressed as a GS1 Company Prefix is permitted.
- *
- * @param allowGS18Prefix
- * If true, a GS1-8 Prefix expressed as a GS1 Company Prefix is permitted.
- *
- * @param prefix
- * Prefix.
- *
- * @param isFromIdentifier
- * If true, the prefix is from an identifier and should be trimmed before its character set is validated.
- *
- * @param isNumericIdentifier
- * If true, the prefix is from a numeric identifier and its character set will be validated by the caller.
- *
- * @param positionOffset
- * Position offset within a larger string.
- */
-function validate(prefixType: PrefixType, allowUPCCompanyPrefix: boolean, allowGS18Prefix: boolean, prefix: string, isFromIdentifier = false, isNumericIdentifier = false, positionOffset?: number): void {
-    let baseValidation: PrefixValidation;
-
-    // Validate the prefix type and determine the prefix validation parameters.
-    switch (prefixType) {
-        case PrefixTypes.GS1CompanyPrefix:
-            if (!prefix.startsWith("0")) {
-                baseValidation = GS1_COMPANY_PREFIX_VALIDATION;
-            } else if (!prefix.startsWith("00000")) {
-                if (!allowUPCCompanyPrefix) {
-                    throw new RangeError(i18nextGS1.t("Prefix.gs1CompanyPrefixCantStartWith0"));
-                }
-
-                baseValidation = UPC_COMPANY_PREFIX_AS_GS1_COMPANY_PREFIX_VALIDATION;
-            } else if (!prefix.startsWith("000000")) {
-                if (!allowGS18Prefix) {
-                    throw new RangeError(i18nextGS1.t("Prefix.gs1CompanyPrefixCantStartWith00000"));
-                }
-
-                baseValidation = GS1_8_PREFIX_AS_GS1_COMPANY_PREFIX_VALIDATION;
-            } else {
-                throw new RangeError(i18nextGS1.t("Prefix.gs1CompanyPrefixCantStartWith000000"));
-            }
-            break;
-
-        case PrefixTypes.UPCCompanyPrefix:
-            if (prefix.startsWith("0000")) {
-                throw new RangeError(i18nextGS1.t("Prefix.upcCompanyPrefixCantStartWith0000"));
-            }
-
-            baseValidation = UPC_COMPANY_PREFIX_VALIDATION;
-            break;
-
-        case PrefixTypes.GS18Prefix:
-            if (prefix.startsWith("0")) {
-                throw new RangeError(i18nextGS1.t("Prefix.gs18PrefixCantStartWith0"));
-            }
-
-            baseValidation = GS1_8_PREFIX_VALIDATION;
-            break;
-    }
-
-    const mergedValidation: PrefixValidation = {
-        ...baseValidation,
-        positionOffset
-    };
-
-    // If from key and numeric, key validation will take care of character set validation.
-    if (!isFromIdentifier) {
-        NUMERIC_CREATOR.validate(prefix, mergedValidation);
-    } else if (!isNumericIdentifier) {
-        // Validate only the minimum length, allowing at least one character for the (possibly non-numeric) reference.
-        NUMERIC_CREATOR.validate(prefix.substring(0, Math.min(mergedValidation.minimumLength, prefix.length - 1)), mergedValidation);
-    }
-}
-
-/**
  * Prefix validator.
  */
 export const PrefixValidator = {
@@ -187,5 +108,146 @@ export const PrefixValidator = {
     UPC_COMPANY_PREFIX_MAXIMUM_LENGTH,
     GS1_8_PREFIX_MINIMUM_LENGTH,
     GS1_8_PREFIX_MAXIMUM_LENGTH,
-    validate
+
+    /**
+     * Validate a prefix.
+     *
+     * @param prefixType
+     * Prefix type.
+     *
+     * @param allowUPCCompanyPrefix
+     * If true, a U.P.C. Company Prefix expressed as a GS1 Company Prefix is permitted.
+     *
+     * @param allowGS18Prefix
+     * If true, a GS1-8 Prefix expressed as a GS1 Company Prefix is permitted.
+     *
+     * @param prefix
+     * Prefix.
+     *
+     * @param isFromIdentifier
+     * If true, the prefix is from an identifier and should be trimmed before its character set is validated.
+     *
+     * @param isNumericIdentifier
+     * If true, the prefix is from a numeric identifier and its character set will be validated by the caller.
+     *
+     * @param positionOffset
+     * Position offset within a larger string.
+     */
+    validate(prefixType: PrefixType, allowUPCCompanyPrefix: boolean, allowGS18Prefix: boolean, prefix: string, isFromIdentifier = false, isNumericIdentifier = false, positionOffset?: number): void {
+        let baseValidation: PrefixValidation;
+
+        // Validate the prefix type and determine the prefix validation parameters.
+        switch (prefixType) {
+            case PrefixTypes.GS1CompanyPrefix:
+                if (!prefix.startsWith("0")) {
+                    baseValidation = GS1_COMPANY_PREFIX_VALIDATION;
+                } else if (!prefix.startsWith("00000")) {
+                    if (!allowUPCCompanyPrefix) {
+                        throw new RangeError(i18nextGS1.t("Prefix.gs1CompanyPrefixCantStartWith0"));
+                    }
+
+                    baseValidation = UPC_COMPANY_PREFIX_AS_GS1_COMPANY_PREFIX_VALIDATION;
+                } else if (!prefix.startsWith("000000")) {
+                    if (!allowGS18Prefix) {
+                        throw new RangeError(i18nextGS1.t("Prefix.gs1CompanyPrefixCantStartWith00000"));
+                    }
+
+                    baseValidation = GS1_8_PREFIX_AS_GS1_COMPANY_PREFIX_VALIDATION;
+                } else {
+                    throw new RangeError(i18nextGS1.t("Prefix.gs1CompanyPrefixCantStartWith000000"));
+                }
+                break;
+
+            case PrefixTypes.UPCCompanyPrefix:
+                if (prefix.startsWith("0000")) {
+                    throw new RangeError(i18nextGS1.t("Prefix.upcCompanyPrefixCantStartWith0000"));
+                }
+
+                baseValidation = UPC_COMPANY_PREFIX_VALIDATION;
+                break;
+
+            case PrefixTypes.GS18Prefix:
+                if (prefix.startsWith("0")) {
+                    throw new RangeError(i18nextGS1.t("Prefix.gs18PrefixCantStartWith0"));
+                }
+
+                baseValidation = GS1_8_PREFIX_VALIDATION;
+                break;
+        }
+
+        const mergedValidation: PrefixValidation = {
+            ...baseValidation,
+            positionOffset
+        };
+
+        // If from key and numeric, key validation will take care of character set validation.
+        if (!isFromIdentifier) {
+            NUMERIC_CREATOR.validate(prefix, mergedValidation);
+        } else if (!isNumericIdentifier) {
+            // Validate only the minimum length, allowing at least one character for the (possibly non-numeric) reference.
+            NUMERIC_CREATOR.validate(prefix.substring(0, Math.min(mergedValidation.minimumLength, prefix.length - 1)), mergedValidation);
+        }
+    },
+
+    /**
+     * Normalize a prefix.
+     *
+     * @param prefixType
+     * Prefix type.
+     *
+     * @param prefix
+     * Prefix.
+     *
+     * @returns
+     * Prefix provider with normalized prefix type and prefix.
+     */
+    normalize(prefixType: PrefixType, prefix: string): PrefixProvider {
+        // Validate first.
+        this.validate(prefixType, true, true, prefix);
+
+        let gs1CompanyPrefix: string;
+
+        // First step is to map the prefix to a GS1 Company Prefix.
+        switch (prefixType) {
+            case PrefixTypes.GS1CompanyPrefix:
+                gs1CompanyPrefix = prefix;
+                break;
+
+            case PrefixTypes.UPCCompanyPrefix:
+                gs1CompanyPrefix = "0" + prefix;
+                break;
+
+            case PrefixTypes.GS18Prefix:
+                gs1CompanyPrefix = "00000" + prefix;
+                break;
+        }
+
+        let normalizedPrefixType: PrefixType;
+        let normalizedPrefix: string;
+
+        let upcCompanyPrefix: string | undefined = undefined;
+        let gs18Prefix: string | undefined = undefined;
+
+        // Determine the prefix type and populate the remaining fields.
+        if (!gs1CompanyPrefix.startsWith("0")) {
+            normalizedPrefixType = PrefixTypes.GS1CompanyPrefix;
+            normalizedPrefix = gs1CompanyPrefix;
+        } else if (!gs1CompanyPrefix.startsWith("00000")) {
+            normalizedPrefixType = PrefixTypes.UPCCompanyPrefix;
+            upcCompanyPrefix = gs1CompanyPrefix.substring(1);
+            normalizedPrefix = upcCompanyPrefix;
+        } else {
+            normalizedPrefixType = PrefixTypes.GS18Prefix;
+            gs18Prefix = gs1CompanyPrefix.substring(5);
+            normalizedPrefix = gs18Prefix;
+        }
+
+        return {
+            prefixType: normalizedPrefixType,
+            prefix: normalizedPrefix,
+            gs1CompanyPrefix,
+            upcCompanyPrefix,
+            gs18Prefix
+        };
+    }
 } as const;

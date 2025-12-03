@@ -1,4 +1,4 @@
-import type { IdentifierType } from "./identifier-type";
+import type { IdentifierDescriptor } from "./identifier-descriptor";
 import type { IdentifierValidation, IdentifierValidator } from "./identifier-validator";
 import type { PrefixProvider } from "./prefix-provider";
 
@@ -8,7 +8,7 @@ import type { PrefixProvider } from "./prefix-provider";
  *
  * Keys are created based on a prefix defined in a prefix provider to which the identifier creator is bound.
  */
-export interface IdentifierCreator<TIdentifierType extends IdentifierType, TIdentifierValidation extends IdentifierValidation> extends IdentifierValidator<TIdentifierType, TIdentifierValidation> {
+export interface IdentifierCreator<TIdentifierDescriptor extends IdentifierDescriptor = IdentifierDescriptor, TIdentifierValidation extends IdentifierValidation = IdentifierValidation> extends IdentifierValidator<TIdentifierDescriptor, TIdentifierValidation> {
     /**
      * Get the prefix provider to which this identifier creator is bound.
      */

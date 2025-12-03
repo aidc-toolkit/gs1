@@ -8,18 +8,15 @@ import {
 import { AbstractIdentifierCreator } from "./abstract-identifier-creator";
 import { checkDigit, checkDigitSum } from "./check";
 import type { NumericIdentifierCreator } from "./numeric-identifier-creator";
-import {
-    type LeaderType,
-    LeaderTypes,
-    type NumericIdentifierType,
-    type NumericIdentifierValidation
-} from "./numeric-identifier-validator";
+import type { NumericIdentifierDescriptor } from "./numeric-identifier-descriptor";
+import { type LeaderType, LeaderTypes } from "./numeric-identifier-type";
+import type { NumericIdentifierValidation } from "./numeric-identifier-validator";
 import type { PrefixProvider } from "./prefix-provider";
 
 /**
  * Abstract numeric identifier creator. Implements common functionality for a numeric identifier creator.
  */
-export abstract class AbstractNumericIdentifierCreator<TNumericIdentifierType extends NumericIdentifierType> extends AbstractIdentifierCreator<TNumericIdentifierType, NumericIdentifierValidation> implements NumericIdentifierCreator<TNumericIdentifierType> {
+export abstract class AbstractNumericIdentifierCreator<TNumericIdentifierDescriptor extends NumericIdentifierDescriptor> extends AbstractIdentifierCreator<TNumericIdentifierDescriptor, NumericIdentifierValidation> implements NumericIdentifierCreator<TNumericIdentifierDescriptor> {
     /**
      * Capacity.
      */
@@ -59,14 +56,14 @@ export abstract class AbstractNumericIdentifierCreator<TNumericIdentifierType ex
     }
 
     /**
-     * Get the tweak for sparse creation.
+     * @inheritDoc
      */
     get tweak(): bigint {
         return this._tweak;
     }
 
     /**
-     * Set the tweak for sparse creation.
+     * @inheritDoc
      */
     set tweak(value: bigint) {
         this._tweak = value;

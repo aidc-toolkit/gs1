@@ -1,10 +1,8 @@
 import { describe } from "vitest";
 import { PrefixManager, PrefixTypes } from "../src";
 import { testGTINCreator } from "./gtin-creator";
-import {
-    testNonGTINNumericIdentifierCreator,
-    testNonNumericIdentifierCreator
-} from "./non-gtin-numeric-identifier-creator";
+import { testNonGTINNumericIdentifierCreator } from "./non-gtin-numeric-identifier-creator";
+import { testNonNumericIdentifierCreator } from "./non-numeric-identifier-creator";
 import { testSerializableNumericIdentifierCreator } from "./serializable-numeric-identifier-creator";
 
 describe("Creators", () => {
