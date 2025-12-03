@@ -33,6 +33,21 @@ export type IdentifierTypeCreator<TIdentifierType extends IdentifierType> = TIde
                 IdentifierCreator;
 
 /**
+ * Identifier creators entry type based on identifier type type.
+ *
+ * @template TIdentifierType
+ * Identifier type type.
+ */
+export type IdentifierCreatorsEntry<TIdentifierType extends IdentifierType> = IdentifierTypeCreator<TIdentifierType>;
+
+/**
+ * Identifier creators record type.
+ */
+export type IdentifierCreatorsRecord = {
+    [TIdentifierType in IdentifierType]: IdentifierCreatorsEntry<TIdentifierType>;
+};
+
+/**
  * Determine if identifier creator is a numeric identifier creator.
  *
  * @param identifierCreator

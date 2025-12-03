@@ -74,7 +74,7 @@ const CPID_VALIDATOR = new NonNumericIdentifierValidator(IdentifierTypes.CPID);
 const GMN_VALIDATOR = new NonNumericIdentifierValidator(IdentifierTypes.GMN);
 
 /**
- * Determine the identifier validator type for an identifier type.
+ * Identifier validator type based on identifier type type.
  *
  * @template TIdentifierType
  * Identifier type type.
@@ -90,19 +90,26 @@ export type IdentifierTypeValidator<TIdentifierType extends IdentifierType> = TI
                 IdentifierValidator;
 
 /**
- * Return type for {@linkcode IdentifierValidators.get}.
+ * Identifier validators entry type based on identifier type type.
  *
  * @template TIdentifierType
  * Identifier type type.
  */
-export type GTINValidatorsOrIdentifierValidator<TIdentifierType extends IdentifierType> = TIdentifierType extends typeof IdentifierTypes.GTIN ?
+export type IdentifierValidatorsEntry<TIdentifierType extends IdentifierType> = TIdentifierType extends typeof IdentifierTypes.GTIN ?
     Readonly<Record<GTINBaseType, GTINValidator>> :
     IdentifierTypeValidator<TIdentifierType>;
 
 /**
+ * Identifier validators record type.
+ */
+export type IdentifierValidatorsRecord = {
+    [TIdentifierType in IdentifierType]: IdentifierValidatorsEntry<TIdentifierType>;
+};
+
+/**
  * Identifier validators for all identifier types.
  */
-export const IdentifierValidators = {
+export const IdentifierValidators: IdentifierValidatorsRecord = {
     [IdentifierTypes.GTIN]: GTIN_VALIDATORS,
     [IdentifierTypes.GLN]: GLN_VALIDATOR,
     [IdentifierTypes.SSCC]: SSCC_VALIDATOR,
@@ -114,24 +121,7 @@ export const IdentifierValidators = {
     [IdentifierTypes.GSIN]: GSIN_VALIDATOR,
     [IdentifierTypes.GCN]: GCN_VALIDATOR,
     [IdentifierTypes.CPID]: CPID_VALIDATOR,
-    [IdentifierTypes.GMN]: GMN_VALIDATOR,
-
-    /**
-     * Get identifier validators (GTIN only) or identifier validator (all other identifier types).
-     *
-     * @template TIdentifierType
-     * Identifier type type.
-     *
-     * @param identifierType
-     * Identifier type.
-     *
-     * @returns
-     * Identifier validators or identifier validator.
-     */
-    get<TIdentifierType extends IdentifierType>(identifierType: TIdentifierType): GTINValidatorsOrIdentifierValidator<TIdentifierType> {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Constant maps identifier types to matching validator types.
-        return this[identifierType] as unknown as GTINValidatorsOrIdentifierValidator<TIdentifierType>;
-    }
+    [IdentifierTypes.GMN]: GMN_VALIDATOR
 } as const;
 
 /**
@@ -143,7 +133,7 @@ export const IdentifierValidators = {
  * @returns
  * True if GTIN validators.
  */
-export function isGTINValidators(identifierValidatorsOrValidator: GTINValidatorsOrIdentifierValidator<IdentifierType>): identifierValidatorsOrValidator is Readonly<Record<GTINBaseType, GTINValidator>> {
+export function isGTINValidators(identifierValidatorsOrValidator: IdentifierValidatorsEntry<IdentifierType>): identifierValidatorsOrValidator is Readonly<Record<GTINBaseType, GTINValidator>> {
     return isGTINDescriptors(identifierValidatorsOrValidator);
 }
 

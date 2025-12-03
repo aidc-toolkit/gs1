@@ -183,7 +183,7 @@ const GMN_DESCRIPTOR: NonNumericIdentifierDescriptor = {
 };
 
 /**
- * Determine the identifier descriptor type for an identifier type.
+ * Identifier descriptor type based on identifier type type.
  *
  * @template TIdentifierType
  * Identifier type type.
@@ -199,19 +199,26 @@ export type IdentifierTypeDescriptor<TIdentifierType extends IdentifierType> = T
                 IdentifierDescriptor;
 
 /**
- * Return type for {@linkcode IdentifierDescriptors.get}.
+ * Identifier descriptors entry type based on identifier type type.
  *
  * @template TIdentifierType
  * Identifier type type.
  */
-export type GTINDescriptorsOrIdentifierDescriptor<TIdentifierType extends IdentifierType> = TIdentifierType extends typeof IdentifierTypes.GTIN ?
+export type IdentifierDescriptorsEntry<TIdentifierType extends IdentifierType> = TIdentifierType extends typeof IdentifierTypes.GTIN ?
     Readonly<Record<GTINBaseType, GTINDescriptor>> :
     IdentifierTypeDescriptor<TIdentifierType>;
 
 /**
+ * Identifier descriptors record type.
+ */
+export type IdentifierDescriptorsRecord = {
+    [TIdentifierType in IdentifierType]: IdentifierDescriptorsEntry<TIdentifierType>;
+};
+
+/**
  * Identifier descriptors for all identifier types.
  */
-export const IdentifierDescriptors = {
+export const IdentifierDescriptors: IdentifierDescriptorsRecord = {
     [IdentifierTypes.GTIN]: GTIN_DESCRIPTORS,
     [IdentifierTypes.GLN]: GLN_DESCRIPTOR,
     [IdentifierTypes.SSCC]: SSCC_DESCRIPTOR,
@@ -223,24 +230,7 @@ export const IdentifierDescriptors = {
     [IdentifierTypes.GSIN]: GSIN_DESCRIPTOR,
     [IdentifierTypes.GCN]: GCN_DESCRIPTOR,
     [IdentifierTypes.CPID]: CPID_DESCRIPTOR,
-    [IdentifierTypes.GMN]: GMN_DESCRIPTOR,
-
-    /**
-     * Get identifier descriptors (GTIN only) or identifier descriptor (all other identifier types).
-     *
-     * @template TIdentifierType
-     * Identifier type type.
-     *
-     * @param identifierType
-     * Identifier type.
-     *
-     * @returns
-     * Identifier descriptors or identifier descriptor.
-     */
-    get<TIdentifierType extends IdentifierType>(identifierType: TIdentifierType): GTINDescriptorsOrIdentifierDescriptor<TIdentifierType> {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Constant maps identifier types to matching descriptor types.
-        return this[identifierType] as unknown as GTINDescriptorsOrIdentifierDescriptor<TIdentifierType>;
-    }
+    [IdentifierTypes.GMN]: GMN_DESCRIPTOR
 } as const;
 
 /**
@@ -252,7 +242,7 @@ export const IdentifierDescriptors = {
  * @returns
  * True if GTIN descriptors.
  */
-export function isGTINDescriptors(identifierDescriptorsOrDescriptor: GTINDescriptorsOrIdentifierDescriptor<IdentifierType>): identifierDescriptorsOrDescriptor is Readonly<Record<GTINBaseType, GTINDescriptor>> {
+export function isGTINDescriptors(identifierDescriptorsOrDescriptor: IdentifierDescriptorsEntry<IdentifierType>): identifierDescriptorsOrDescriptor is Readonly<Record<GTINBaseType, GTINDescriptor>> {
     return !("identifierType" in identifierDescriptorsOrDescriptor);
 }
 

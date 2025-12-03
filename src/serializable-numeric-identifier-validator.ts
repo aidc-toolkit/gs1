@@ -39,7 +39,7 @@ export class SerializableNumericIdentifierValidator extends AbstractNumericIdent
      * Identifier type.
      */
     constructor(identifierType: SerializableNumericIdentifierType) {
-        const identifierDescriptor = IdentifierDescriptors.get(identifierType);
+        const identifierDescriptor = IdentifierDescriptors[identifierType];
 
         super(identifierDescriptor);
 

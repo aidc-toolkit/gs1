@@ -15,6 +15,6 @@ export class NonGTINNumericIdentifierValidator extends AbstractNumericIdentifier
      * Identifier type.
      */
     constructor(identifierType: Exclude<NonGTINNumericIdentifierType, SerializableNumericIdentifierType>) {
-        super(IdentifierDescriptors.get(identifierType));
+        super(IdentifierDescriptors[identifierType]);
     }
 }

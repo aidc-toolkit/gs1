@@ -1,4 +1,4 @@
-import { type IdentifierTypeCreator, isNumericIdentifierCreator } from "./creators";
+import { type IdentifierCreatorsRecord, isNumericIdentifierCreator } from "./creators";
 import { GTINCreator } from "./gtin-creator";
 import { GTIN_BASE_TYPES } from "./gtin-type";
 import type { IdentifierCreator } from "./identifier-creator";
@@ -95,7 +95,7 @@ export class PrefixManager implements PrefixProvider {
     /**
      * Cached identifier creators.
      */
-    private readonly _identifierCreators: Partial<Record<IdentifierType, IdentifierCreator>> = {};
+    private readonly _identifierCreators: Partial<IdentifierCreatorsRecord> = {};
 
     /**
      * Constructor.
@@ -245,9 +245,8 @@ export class PrefixManager implements PrefixProvider {
      * @returns
      * Identifier creator.
      */
-    private getIdentifierCreator<TIdentifierType extends IdentifierType, TConstructorParameter>(identifierType: TIdentifierType, constructorParameter: TConstructorParameter, ConstructorCallback: new (prefixProvider: PrefixProvider, constructorParameter: TConstructorParameter) => IdentifierTypeCreator<TIdentifierType>): IdentifierTypeCreator<TIdentifierType> {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type is paired with constructor callback.
-        let creator = this._identifierCreators[identifierType] as IdentifierTypeCreator<TIdentifierType> | undefined;
+    private getIdentifierCreator<TIdentifierType extends IdentifierType, TConstructorParameter>(identifierType: TIdentifierType, constructorParameter: TConstructorParameter, ConstructorCallback: new (prefixProvider: PrefixProvider, constructorParameter: TConstructorParameter) => IdentifierCreatorsRecord[TIdentifierType]): IdentifierCreatorsRecord[TIdentifierType] {
+        let creator: IdentifierCreatorsRecord[TIdentifierType] | undefined = this._identifierCreators[identifierType];
 
         if (creator === undefined) {
             if (this.prefixType === PrefixTypes.GS18Prefix && identifierType !== IdentifierTypes.GTIN) {

@@ -24,7 +24,7 @@ import { validateSerializableNumericIdentifierValidator } from "./serializable-n
 describe("Validators", () => {
     function validateMapping(identifierType: IdentifierType, expectedIdentifierValidatorsOrValidator: Readonly<Record<GTINBaseType, GTINValidator>> | IdentifierValidator, ...isIdentifierValidatorTypes: Array<(validator: IdentifierValidator) => boolean>): void {
         test(identifierType, () => {
-            const validatorsOrValidator = IdentifierValidators.get(identifierType);
+            const validatorsOrValidator = IdentifierValidators[identifierType];
 
             expect(validatorsOrValidator).toBe(expectedIdentifierValidatorsOrValidator);
 

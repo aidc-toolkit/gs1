@@ -45,7 +45,7 @@ export class NonNumericIdentifierValidator extends AbstractIdentifierValidator<N
      * Identifier type.
      */
     constructor(identifierType: NonNumericIdentifierType) {
-        const identifierDescriptor = IdentifierDescriptors.get(identifierType);
+        const identifierDescriptor = IdentifierDescriptors[identifierType];
 
         super(identifierDescriptor);
 
