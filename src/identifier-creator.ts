@@ -7,6 +7,12 @@ import type { PrefixProvider } from "./prefix-provider";
  * https://www.gs1.org/genspecs | GS1 General Specifications}.
  *
  * Keys are created based on a prefix defined in a prefix provider to which the identifier creator is bound.
+ *
+ * @template TIdentifierDescriptor
+ * Identifier descriptor type.
+ *
+ * @template TIdentifierValidation
+ * Identifier validation type.
  */
 export interface IdentifierCreator<TIdentifierDescriptor extends IdentifierDescriptor = IdentifierDescriptor, TIdentifierValidation extends IdentifierValidation = IdentifierValidation> extends IdentifierValidator<TIdentifierDescriptor, TIdentifierValidation> {
     /**

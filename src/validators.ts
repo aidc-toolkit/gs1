@@ -75,6 +75,9 @@ const GMN_VALIDATOR = new NonNumericIdentifierValidator(IdentifierTypes.GMN);
 
 /**
  * Determine the identifier validator type for an identifier type.
+ *
+ * @template TIdentifierType
+ * Identifier type type.
  */
 export type IdentifierTypeValidator<TIdentifierType extends IdentifierType> = TIdentifierType extends NonNumericIdentifierType ?
     NonNumericIdentifierValidator :
@@ -88,6 +91,9 @@ export type IdentifierTypeValidator<TIdentifierType extends IdentifierType> = TI
 
 /**
  * Return type for {@linkcode IdentifierValidators.get}.
+ *
+ * @template TIdentifierType
+ * Identifier type type.
  */
 export type GTINValidatorsOrIdentifierValidator<TIdentifierType extends IdentifierType> = TIdentifierType extends typeof IdentifierTypes.GTIN ?
     Readonly<Record<GTINBaseType, GTINValidator>> :
@@ -112,6 +118,9 @@ export const IdentifierValidators = {
 
     /**
      * Get identifier validators (GTIN only) or identifier validator (all other identifier types).
+     *
+     * @template TIdentifierType
+     * Identifier type type.
      *
      * @param identifierType
      * Identifier type.

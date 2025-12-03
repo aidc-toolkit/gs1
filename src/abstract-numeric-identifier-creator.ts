@@ -15,6 +15,9 @@ import type { PrefixProvider } from "./prefix-provider";
 
 /**
  * Abstract numeric identifier creator. Implements common functionality for a numeric identifier creator.
+ *
+ * @template TNumericIdentifierDescriptor
+ * Numeric identifier descriptor type.
  */
 export abstract class AbstractNumericIdentifierCreator<TNumericIdentifierDescriptor extends NumericIdentifierDescriptor> extends AbstractIdentifierCreator<TNumericIdentifierDescriptor, NumericIdentifierValidation> implements NumericIdentifierCreator<TNumericIdentifierDescriptor> {
     /**

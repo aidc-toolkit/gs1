@@ -7,6 +7,9 @@ import type { NumericIdentifierValidation, NumericIdentifierValidator } from "./
 
 /**
  * Abstract numeric identifier validator.
+ *
+ * @template TNumericIdentifierDescriptor
+ * Numeric identifier descriptor type.
  */
 export abstract class AbstractNumericIdentifierValidator<TNumericIdentifierDescriptor extends NumericIdentifierDescriptor> extends AbstractIdentifierValidator<TNumericIdentifierDescriptor, NumericIdentifierValidation> implements NumericIdentifierValidator<TNumericIdentifierDescriptor> {
     /**

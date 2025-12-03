@@ -8,6 +8,12 @@ import { PrefixValidator } from "./prefix-validator";
 
 /**
  * Abstract identifier validator. Implements common functionality for an identifier validator.
+ *
+ * @template TIdentifierDescriptor
+ * Identifier descriptor type.
+ *
+ * @template TIdentifierValidation
+ * Identifier validation type.
  */
 export abstract class AbstractIdentifierValidator<TIdentifierDescriptor extends IdentifierDescriptor, TIdentifierValidation extends IdentifierValidation> implements IdentifierValidator<TIdentifierDescriptor, TIdentifierValidation> {
     private static readonly CHARACTER_SET_CREATORS: Record<ContentCharacterSet, CharacterSetCreator> = {
@@ -106,7 +112,7 @@ export abstract class AbstractIdentifierValidator<TIdentifierDescriptor extends 
      * Identifier.
      *
      * @param positionOffset
-     * Position offset within a larger string if any.
+     * Position offset within a larger string.
      *
      * @returns
      * Padded identifier.
@@ -123,7 +129,7 @@ export abstract class AbstractIdentifierValidator<TIdentifierDescriptor extends 
      * Partial identifier.
      *
      * @param positionOffset
-     * Position offset within a larger string if any.
+     * Position offset within a larger string.
      */
     protected validatePrefix(partialIdentifier: string, positionOffset?: number): void {
         // Delegate to prefix validator with support for U.P.C. Company Prefix but not GS1-8 Prefix.

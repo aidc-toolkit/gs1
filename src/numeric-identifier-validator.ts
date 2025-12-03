@@ -13,6 +13,9 @@ export interface NumericIdentifierValidation extends IdentifierValidation {
 
 /**
  * Numeric identifier validator.
+ *
+ * @template TNumericIdentifierDescriptor
+ * Numeric identifier descriptor type.
  */
 export interface NumericIdentifierValidator<TNumericIdentifierDescriptor extends NumericIdentifierDescriptor = NumericIdentifierDescriptor> extends IdentifierValidator<TNumericIdentifierDescriptor, NumericIdentifierValidation> {
     /**

@@ -5,6 +5,9 @@ import type { NumericIdentifierValidation, NumericIdentifierValidator } from "./
 
 /**
  * Numeric identifier creator. Creates one or many numeric identifiers.
+ *
+ * @template TNumericIdentifierDescriptor
+ * Numeric identifier descriptor type.
  */
 export interface NumericIdentifierCreator<TNumericIdentifierDescriptor extends NumericIdentifierDescriptor = NumericIdentifierDescriptor> extends NumericIdentifierValidator<TNumericIdentifierDescriptor>, IdentifierCreator<TNumericIdentifierDescriptor, NumericIdentifierValidation> {
     /**

@@ -18,6 +18,9 @@ import type { SerializableNumericIdentifierType } from "./serializable-numeric-i
 
 /**
  * Determine the identifier creator type for an identifier type.
+ *
+ * @template TIdentifierType
+ * Identifier type type.
  */
 export type IdentifierTypeCreator<TIdentifierType extends IdentifierType> = TIdentifierType extends NonNumericIdentifierType ?
     NonNumericIdentifierCreator :

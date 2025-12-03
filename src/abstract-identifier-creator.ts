@@ -7,6 +7,12 @@ import type { PrefixProvider } from "./prefix-provider";
 /**
  * Abstract identifier creator. Implements common functionality for an identifier creator, bound to a
  * {@link PrefixProvider}.
+ *
+ * @template TIdentifierDescriptor
+ * Identifier descriptor type.
+ *
+ * @template TIdentifierValidation
+ * Identifier validation type.
  */
 export abstract class AbstractIdentifierCreator<TIdentifierDescriptor extends IdentifierDescriptor, TIdentifierValidation extends IdentifierValidation> implements IdentifierCreator<TIdentifierDescriptor, TIdentifierValidation> {
     /**

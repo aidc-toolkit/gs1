@@ -184,6 +184,9 @@ const GMN_DESCRIPTOR: NonNumericIdentifierDescriptor = {
 
 /**
  * Determine the identifier descriptor type for an identifier type.
+ *
+ * @template TIdentifierType
+ * Identifier type type.
  */
 export type IdentifierTypeDescriptor<TIdentifierType extends IdentifierType> = TIdentifierType extends NonNumericIdentifierType ?
     NonNumericIdentifierDescriptor :
@@ -197,6 +200,9 @@ export type IdentifierTypeDescriptor<TIdentifierType extends IdentifierType> = T
 
 /**
  * Return type for {@linkcode IdentifierDescriptors.get}.
+ *
+ * @template TIdentifierType
+ * Identifier type type.
  */
 export type GTINDescriptorsOrIdentifierDescriptor<TIdentifierType extends IdentifierType> = TIdentifierType extends typeof IdentifierTypes.GTIN ?
     Readonly<Record<GTINBaseType, GTINDescriptor>> :
@@ -221,6 +227,9 @@ export const IdentifierDescriptors = {
 
     /**
      * Get identifier descriptors (GTIN only) or identifier descriptor (all other identifier types).
+     *
+     * @template TIdentifierType
+     * Identifier type type.
      *
      * @param identifierType
      * Identifier type.

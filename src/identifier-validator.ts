@@ -11,6 +11,9 @@ export interface IdentifierValidation extends StringValidation {
  * Identifier validator. Validates an identifier against its definition in section 3 of the {@link
  * https://www.gs1.org/genspecs | GS1 General Specifications}.
  *
+ * @template TIdentifierDescriptor
+ * Identifier descriptor type.
+ *
  * @template TIdentifierValidation
  * Identifier validation type.
  */
