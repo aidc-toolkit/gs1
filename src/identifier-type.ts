@@ -64,6 +64,11 @@ export const IdentifierTypes = {
 } as const;
 
 /**
+ * Identifier type key.
+ */
+export type IdentifierTypeKey = keyof typeof IdentifierTypes;
+
+/**
  * Identifier type.
  */
-export type IdentifierType = typeof IdentifierTypes[keyof typeof IdentifierTypes];
+export type IdentifierType = typeof IdentifierTypes[IdentifierTypeKey];

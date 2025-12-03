@@ -19,6 +19,11 @@ export const ContentCharacterSets = {
 } as const;
 
 /**
+ * Content character set key.
+ */
+export type ContentCharacterSetKey = keyof typeof ContentCharacterSets;
+
+/**
  * Content character set.
  */
-export type ContentCharacterSet = typeof ContentCharacterSets[keyof typeof ContentCharacterSets];
+export type ContentCharacterSet = typeof ContentCharacterSets[ContentCharacterSetKey];

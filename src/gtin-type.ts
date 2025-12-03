@@ -26,9 +26,14 @@ export const GTINTypes = {
 } as const;
 
 /**
+ * GTIN type key.
+ */
+export type GTINTypeKey = keyof typeof GTINTypes;
+
+/**
  * GTIN type.
  */
-export type GTINType = typeof GTINTypes[keyof typeof GTINTypes];
+export type GTINType = typeof GTINTypes[GTINTypeKey];
 
 /**
  * GTIN base type (all except GTIN-14).

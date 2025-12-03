@@ -34,6 +34,11 @@ export const LeaderTypes = {
 } as const;
 
 /**
+ * Leader type key.
+ */
+export type LeaderTypeKey = keyof typeof LeaderTypes;
+
+/**
  * Leader type.
  */
-export type LeaderType = typeof LeaderTypes[keyof typeof LeaderTypes];
+export type LeaderType = typeof LeaderTypes[LeaderTypeKey];

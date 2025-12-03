@@ -19,6 +19,11 @@ export const PrefixTypes = {
 } as const;
 
 /**
+ * Prefix type key.
+ */
+export type PrefixTypeKey = keyof typeof PrefixTypes;
+
+/**
  * Prefix type.
  */
-export type PrefixType = typeof PrefixTypes[keyof typeof PrefixTypes];
+export type PrefixType = typeof PrefixTypes[PrefixTypeKey];

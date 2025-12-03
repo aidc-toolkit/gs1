@@ -29,9 +29,14 @@ export const GTINLevels = {
 } as const;
 
 /**
+ * GTIN level key.
+ */
+export type GTINLevelKey = keyof typeof GTINLevels;
+
+/**
  * GTIN level.
  */
-export type GTINLevel = typeof GTINLevels[keyof typeof GTINLevels];
+export type GTINLevel = typeof GTINLevels[GTINLevelKey];
 
 /**
  * Restricted Circulation Number reference.
