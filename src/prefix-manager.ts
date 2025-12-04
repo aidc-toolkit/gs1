@@ -1,6 +1,6 @@
 import { type IdentifierCreatorsRecord, isNumericIdentifierCreator } from "./creators";
 import { GTINCreator } from "./gtin-creator";
-import { GTIN_BASE_TYPES } from "./gtin-type";
+import { GTINBaseType, GTINTypes } from "./gtin-type";
 import type { IdentifierCreator } from "./identifier-creator";
 import { type IdentifierType, IdentifierTypes } from "./identifier-type";
 import { i18nextGS1 } from "./locale/i18n";
@@ -54,6 +54,15 @@ export class PrefixManager implements PrefixProvider {
         GDTI: 7333n,
         GSIN: 5623n,
         GCN: 6869n
+    };
+
+    /**
+     * GTIN base types by prefix type.
+     */
+    private static readonly GTIN_BASE_TYPES: Readonly<Record<PrefixType, GTINBaseType>> = {
+        [PrefixTypes.GS1CompanyPrefix]: GTINTypes.GTIN13,
+        [PrefixTypes.UPCCompanyPrefix]: GTINTypes.GTIN12,
+        [PrefixTypes.GS18Prefix]: GTINTypes.GTIN8
     };
 
     /**
@@ -307,7 +316,7 @@ export class PrefixManager implements PrefixProvider {
      * Get GTIN creator.
      */
     get gtinCreator(): GTINCreator {
-        return this.getIdentifierCreator(IdentifierTypes.GTIN, GTIN_BASE_TYPES[this.prefixType], GTINCreator);
+        return this.getIdentifierCreator(IdentifierTypes.GTIN, PrefixManager.GTIN_BASE_TYPES[this.prefixType], GTINCreator);
     }
 
     /**
