@@ -5,7 +5,10 @@
   "type": "module",
   "main": "dist/index.js",
   "homepage": "https://aidc-toolkit.com/",
-  "repository": "aidc-toolkit/gs1",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aidc-toolkit/gs1.git"
+  },
   "bugs": {
     "url": "https://github.com/aidc-toolkit/gs1/issues"
   },
