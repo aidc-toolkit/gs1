@@ -27,8 +27,8 @@
     "vitest": "^4.0.15"
   },
   "dependencies": {
-    "@aidc-toolkit/core": "1.0.25-alpha.202512032320",
-    "@aidc-toolkit/utility": "1.0.25-alpha.202512041430",
+    "@aidc-toolkit/core": "1.0.25-alpha.202512041615",
+    "@aidc-toolkit/utility": "1.0.25-alpha.202512041618",
     "ts-mixer": "^6.0.4"
   }
 }
