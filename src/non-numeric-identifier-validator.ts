@@ -12,7 +12,7 @@ import type { NonNumericIdentifierType } from "./non-numeric-identifier-type";
  */
 export interface NonNumericIdentifierValidation extends IdentifierValidation {
     /**
-     * Exclusion support for reference. Prevents non-numeric identifier from being mistaken for numeric dentifier.
+     * Exclusion support for reference. Prevents non-numeric identifier from being mistaken for numeric identifier.
      */
     exclusion?: typeof Exclusions.None | typeof Exclusions.AllNumeric | undefined;
 }

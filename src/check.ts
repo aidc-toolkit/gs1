@@ -38,8 +38,8 @@ const INVERSE_FIVE_MINUS_WEIGHT_RESULTS: readonly number[] = [
 ];
 
 /**
- * Calculate the check digit sum for a numeric string as per section 7.9.1 of the {@link https://www.gs1.org/genspecs |
- * GS1 General Specifications}.
+ * Calculate the check digit sum for a numeric string as per section 7.9.1 of the {@link
+ * https://ref.gs1.org/standards/genspecs/ | GS1 General Specifications}.
  *
  * @param exchangeWeights
  * If true, start the weights at 1 instead of 3 on the right.
@@ -71,8 +71,8 @@ export function checkDigitSum(exchangeWeights: boolean, s: string): number {
 }
 
 /**
- * Calculate the check digit for a numeric string as per section 7.9.1 of the {@link https://www.gs1.org/genspecs | GS1
- * General Specifications}.
+ * Calculate the check digit for a numeric string as per section 7.9.1 of the {@link
+ * https://ref.gs1.org/standards/genspecs/ | GS1 General Specifications}.
  *
  * @param s
  * Numeric string.
@@ -129,8 +129,8 @@ function priceOrWeightSum(weightsResults: ReadonlyArray<readonly number[]>, s: s
 }
 
 /**
- * Calculate the price or weight check digit for a four-or five-digit numeric string as per section 7.9.3 of the {@link
- * https://www.gs1.org/genspecs | GS1 General Specifications}.
+ * Calculate the price or weight check digit for a four-or five-digit numeric string as per sections 7.9.2-7.9.4 of the
+ * {@link https://ref.gs1.org/standards/genspecs/ | GS1 General Specifications}.
  *
  * @param s
  * Numeric string exactly four or five characters long.
@@ -192,7 +192,7 @@ const CHECK_CHARACTERS = [
 
 /**
  * Calculate the check character for a GS1 AI encodable character set 82 string as per section 7.9.5 of the {@link
- * https://www.gs1.org/genspecs | GS1 General Specifications}.
+ * https://ref.gs1.org/standards/genspecs/ | GS1 General Specifications}.
  *
  * @param s
  * GS1 AI encodable character set 82 string.

@@ -5,8 +5,8 @@ import type { IdentifierValidation } from "./identifier-validator";
 import type { PrefixProvider } from "./prefix-provider";
 
 /**
- * Abstract identifier creator. Implements common functionality for an identifier creator, bound to a
- * {@link PrefixProvider}.
+ * Abstract identifier creator. Implements common functionality for an identifier creator, bound to a {@link
+ * PrefixProvider | prefix provider}.
  *
  * @template TIdentifierDescriptor
  * Identifier descriptor type.

@@ -26,15 +26,14 @@ import type { SerializableNumericIdentifierType } from "./serializable-numeric-i
  * values. For example, the GS1 Company Prefix 0614141 is equivalent to U.P.C. Company Prefix 614141; both result in a
  * prefix manager with prefix type equal to {@linkcode PrefixTypes.UPCCompanyPrefix} and prefix equal to "614141".
  *
- * To support the creation of sparse identifiers, a prefix manager maintains a {@link tweakFactor | tweak
- * factor} which is used, along with a type-specific multiplier, as the tweak when creating numeric identifiers.
- * The default tweak factor is the numeric value of the GS1 Company Prefix representation of the prefix preceded by '1'
- * to ensure uniqueness (i.e., so that prefixes 0 N1 N2 N3... and N1 N2 N3... produce different tweak factors). This is
- * usually sufficient for obfuscation, but as the sparse creation algorithm is reversible and as the GS1 Company Prefix
- * is discoverable via {@link https://www.gs1.org/services/verified-by-gs1 | Verified by GS1}, a user-defined tweak
- * factor should be used if a higher degree of obfuscation is required. When using a tweak factor other than the
- * default, care should be taken to restore it when resuming the application. A tweak factor of 0 creates a straight
- * sequence.
+ * To support the creation of sparse identifiers, a prefix manager maintains a {@link tweakFactor | tweak factor} which
+ * is used, along with a type-specific multiplier, as the tweak when creating numeric identifiers. The default tweak
+ * factor is the numeric value of the GS1 Company Prefix representation of the prefix preceded by '1' to ensure
+ * uniqueness (i.e., so that prefixes 0 N1 N2 N3... and N1 N2 N3... produce different tweak factors). This is usually
+ * sufficient for obfuscation, but as the sparse creation algorithm is reversible and as the GS1 Company Prefix is
+ * discoverable via {@link https://www.gs1.org/services/verified-by-gs1 | Verified by GS1}, a user-defined tweak factor
+ * should be used if a higher degree of obfuscation is required. When using a tweak factor other than the default, care
+ * should be taken to restore it when resuming the application. A tweak factor of 0 creates a straight sequence.
  */
 export class PrefixManager implements PrefixProvider {
     /**
@@ -73,12 +72,12 @@ export class PrefixManager implements PrefixProvider {
     private readonly _gs1CompanyPrefix: string;
 
     /**
-     * U.P.C. Company Prefix if prefix type is {@link PrefixTypes.UPCCompanyPrefix}.
+     * U.P.C. Company Prefix if prefix type is {@linkcode PrefixTypes.UPCCompanyPrefix}.
      */
     private readonly _upcCompanyPrefix: string | undefined;
 
     /**
-     * GS1-8 Prefix if prefix type is {@link PrefixTypes.GS18Prefix}.
+     * GS1-8 Prefix if prefix type is {@linkcode PrefixTypes.GS18Prefix}.
      */
     private readonly _gs18Prefix: string | undefined;
 
@@ -143,14 +142,14 @@ export class PrefixManager implements PrefixProvider {
     }
 
     /**
-     * Get the U.P.C. Company Prefix if prefix type is {@link PrefixTypes.UPCCompanyPrefix} or undefined if not.
+     * Get the U.P.C. Company Prefix if prefix type is {@linkcode PrefixTypes.UPCCompanyPrefix} or undefined if not.
      */
     get upcCompanyPrefix(): string | undefined {
         return this._upcCompanyPrefix;
     }
 
     /**
-     * Get the GS1-8 Prefix if prefix type is {@link PrefixTypes.GS18Prefix} or undefined if not.
+     * Get the GS1-8 Prefix if prefix type is {@linkcode PrefixTypes.GS18Prefix} or undefined if not.
      */
     get gs18Prefix(): string | undefined {
         return this._gs18Prefix;

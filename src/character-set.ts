@@ -1,8 +1,8 @@
 import { CharacterSetCreator, CharacterSetValidator, Exclusions } from "@aidc-toolkit/utility";
 
 /**
- * GS1 AI encodable character set 82 creator as defined in section 7.11 of the {@link https://www.gs1.org/genspecs | GS1
- * General Specifications}. Supports {@linkcode Exclusions.AllNumeric}.
+ * GS1 AI encodable character set 82 creator as defined in section 7.11 of the {@link
+ * https://ref.gs1.org/standards/genspecs/ | GS1 General Specifications}. Supports {@linkcode Exclusions.AllNumeric}.
  */
 export const AI82_CREATOR = new CharacterSetCreator([
     "!", "\"", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/",
@@ -16,14 +16,14 @@ export const AI82_CREATOR = new CharacterSetCreator([
 ], Exclusions.AllNumeric);
 
 /**
- * GS1 AI encodable character set 82 validator as defined in section 7.11 of the {@link https://www.gs1.org/genspecs |
- * GS1 General Specifications}. Supports {@linkcode Exclusions.AllNumeric}.
+ * GS1 AI encodable character set 82 validator as defined in section 7.11 of the {@link
+ * https://ref.gs1.org/standards/genspecs/ | GS1 General Specifications}. Supports {@linkcode Exclusions.AllNumeric}.
  */
 export const AI82_VALIDATOR = AI82_CREATOR as CharacterSetValidator;
 
 /**
- * GS1 AI encodable character set 39 creator as defined in section 7.11 of the {@link https://www.gs1.org/genspecs | GS1
- * General Specifications}. Supports {@linkcode Exclusions.AllNumeric}.
+ * GS1 AI encodable character set 39 creator as defined in section 7.11 of the {@link
+ * https://ref.gs1.org/standards/genspecs/ | GS1 General Specifications}. Supports {@linkcode Exclusions.AllNumeric}.
  */
 export const AI39_CREATOR = new CharacterSetCreator([
     "#", "-", "/",
@@ -33,14 +33,14 @@ export const AI39_CREATOR = new CharacterSetCreator([
 ], Exclusions.AllNumeric);
 
 /**
- * GS1 AI encodable character set 39 validator as defined in section 7.11 of the {@link https://www.gs1.org/genspecs |
- * GS1 General Specifications}. Supports {@linkcode Exclusions.AllNumeric}.
+ * GS1 AI encodable character set 39 validator as defined in section 7.11 of the {@link
+ * https://ref.gs1.org/standards/genspecs/ | GS1 General Specifications}. Supports {@linkcode Exclusions.AllNumeric}.
  */
 export const AI39_VALIDATOR = AI39_CREATOR as CharacterSetValidator;
 
 /**
- * GS1 AI encodable character set 64 validator as defined in section 7.11 of the {@link https://www.gs1.org/genspecs |
- * GS1 General Specifications}. Doesn't support any exclusions.
+ * GS1 AI encodable character set 64 validator as defined in section 7.11 of the {@link
+ * https://ref.gs1.org/standards/genspecs/ | GS1 General Specifications}. Doesn't support any exclusions.
  */
 export const AI64_VALIDATOR = new CharacterSetValidator([
     "-",

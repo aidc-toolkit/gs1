@@ -105,8 +105,8 @@ export abstract class AbstractNumericIdentifierCreator<TNumericIdentifierDescrip
      * Remaining reference length. Initial value is `this.referenceLength`.
      *
      * @param extensionWeight
-     * If this value is not zero, the identifier has an extension digit, this call is setting it, and this value
-     * is applied to the calculation of the check digit.
+     * If this value is not zero, the identifier has an extension digit, this call is setting it, and this value is
+     * applied to the calculation of the check digit.
      *
      * @param weight
      * If the extension weight is zero, this value is applied to the calculation of the check digit.
