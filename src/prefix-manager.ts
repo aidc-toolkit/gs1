@@ -1,6 +1,6 @@
 import { type IdentifierCreatorsRecord, isNumericIdentifierCreator } from "./creators";
 import { GTINCreator } from "./gtin-creator";
-import { GTINBaseType, GTINTypes } from "./gtin-type";
+import { type GTINBaseType, GTINTypes } from "./gtin-type";
 import type { IdentifierCreator } from "./identifier-creator";
 import { type IdentifierType, IdentifierTypes } from "./identifier-type";
 import { i18nextGS1 } from "./locale/i18n";
