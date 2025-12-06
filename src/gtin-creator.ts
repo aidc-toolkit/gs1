@@ -20,7 +20,7 @@ export class GTINCreator extends Mixin(GTINValidator, AbstractNumericIdentifierC
     /**
      * Validation parameters for required indicator digit.
      */
-    private static readonly REQUIRED_INDICATOR_DIGIT_VALIDATION: CharacterSetValidation = {
+    static readonly #REQUIRED_INDICATOR_DIGIT_VALIDATION: CharacterSetValidation = {
         minimumLength: 1,
         maximumLength: 1,
         component: () => i18nextGS1.t("Identifier.indicatorDigit")
@@ -69,7 +69,7 @@ export class GTINCreator extends Mixin(GTINValidator, AbstractNumericIdentifierC
      * GTIN-14(s).
      */
     createGTIN14<TTransformerInput extends TransformerInput<number | bigint>>(indicatorDigit: string, valueOrValues: TTransformerInput, sparse = false): TransformerOutput<TTransformerInput, string> {
-        NUMERIC_CREATOR.validate(indicatorDigit, GTINCreator.REQUIRED_INDICATOR_DIGIT_VALIDATION);
+        NUMERIC_CREATOR.validate(indicatorDigit, GTINCreator.#REQUIRED_INDICATOR_DIGIT_VALIDATION);
 
         return NUMERIC_CREATOR.create(GTINTypes.GTIN13 - this.prefixProvider.gs1CompanyPrefix.length - 1, valueOrValues, Exclusions.None, sparse ? this.tweak : undefined, (reference) => {
             const partialIdentifier = indicatorDigit + this.prefixProvider.gs1CompanyPrefix + reference;

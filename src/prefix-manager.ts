@@ -39,13 +39,13 @@ export class PrefixManager implements PrefixProvider {
     /**
      * Cached prefix managers, keyed by GS1 Company Prefix.
      */
-    private static readonly PREFIX_MANAGERS_MAP = new Map<string, PrefixManager>();
+    static readonly #PREFIX_MANAGERS_MAP = new Map<string, PrefixManager>();
 
     /**
      * Creator tweak factors. Different numeric identifier types have different tweak factors so that sparse creation
      * generates different sequences for each.
      */
-    private static readonly CREATOR_TWEAK_FACTORS: Readonly<Record<NumericIdentifierType, bigint>> = {
+    static readonly #CREATOR_TWEAK_FACTORS: Readonly<Record<NumericIdentifierType, bigint>> = {
         GTIN: 1987n,
         GLN: 4241n,
         SSCC: 8087n,
@@ -59,42 +59,42 @@ export class PrefixManager implements PrefixProvider {
     /**
      * Normalized prefix type.
      */
-    private readonly _prefixType: PrefixType;
+    readonly #prefixType: PrefixType;
 
     /**
      * Normalized prefix.
      */
-    private readonly _prefix: string;
+    readonly #prefix: string;
 
     /**
      * Prefix as GS1 Company Prefix.
      */
-    private readonly _gs1CompanyPrefix: string;
+    readonly #gs1CompanyPrefix: string;
 
     /**
      * U.P.C. Company Prefix if prefix type is {@linkcode PrefixTypes.UPCCompanyPrefix}.
      */
-    private readonly _upcCompanyPrefix: string | undefined;
+    readonly #upcCompanyPrefix: string | undefined;
 
     /**
      * GS1-8 Prefix if prefix type is {@linkcode PrefixTypes.GS18Prefix}.
      */
-    private readonly _gs18Prefix: string | undefined;
+    readonly #gs18Prefix: string | undefined;
 
     /**
      * Default tweak factor.
      */
-    private readonly _defaultTweakFactor: bigint;
+    readonly #defaultTweakFactor: bigint;
 
     /**
      * Tweak factor.
      */
-    private _tweakFactor = 0n;
+    #tweakFactor = 0n;
 
     /**
      * Cached identifier creators.
      */
-    private readonly _identifierCreators: Partial<IdentifierCreatorsRecord> = {};
+    readonly #identifierCreators: Partial<IdentifierCreatorsRecord> = {};
 
     /**
      * Constructor.
@@ -108,14 +108,14 @@ export class PrefixManager implements PrefixProvider {
     constructor(prefixType: PrefixType, prefix: string) {
         const normalizedPrefixProvider = PrefixValidator.normalize(prefixType, prefix);
 
-        this._prefixType = normalizedPrefixProvider.prefixType;
-        this._prefix = normalizedPrefixProvider.prefix;
-        this._gs1CompanyPrefix = normalizedPrefixProvider.gs1CompanyPrefix;
-        this._upcCompanyPrefix = normalizedPrefixProvider.upcCompanyPrefix;
-        this._gs18Prefix = normalizedPrefixProvider.gs18Prefix;
+        this.#prefixType = normalizedPrefixProvider.prefixType;
+        this.#prefix = normalizedPrefixProvider.prefix;
+        this.#gs1CompanyPrefix = normalizedPrefixProvider.gs1CompanyPrefix;
+        this.#upcCompanyPrefix = normalizedPrefixProvider.upcCompanyPrefix;
+        this.#gs18Prefix = normalizedPrefixProvider.gs18Prefix;
 
         // Default tweak factor is the numeric value of the GS1 Company Prefix preceded by '1'.
-        this._defaultTweakFactor = BigInt(`1${this.gs1CompanyPrefix}`);
+        this.#defaultTweakFactor = BigInt(`1${this.gs1CompanyPrefix}`);
 
         this.resetTweakFactor();
     }
@@ -124,35 +124,35 @@ export class PrefixManager implements PrefixProvider {
      * Get the prefix type.
      */
     get prefixType(): PrefixType {
-        return this._prefixType;
+        return this.#prefixType;
     }
 
     /**
      * Get the prefix.
      */
     get prefix(): string {
-        return this._prefix;
+        return this.#prefix;
     }
 
     /**
      * Get the GS1 Company Prefix.
      */
     get gs1CompanyPrefix(): string {
-        return this._gs1CompanyPrefix;
+        return this.#gs1CompanyPrefix;
     }
 
     /**
      * Get the U.P.C. Company Prefix if prefix type is {@linkcode PrefixTypes.UPCCompanyPrefix} or undefined if not.
      */
     get upcCompanyPrefix(): string | undefined {
-        return this._upcCompanyPrefix;
+        return this.#upcCompanyPrefix;
     }
 
     /**
      * Get the GS1-8 Prefix if prefix type is {@linkcode PrefixTypes.GS18Prefix} or undefined if not.
      */
     get gs18Prefix(): string | undefined {
-        return this._gs18Prefix;
+        return this.#gs18Prefix;
     }
 
     /**
@@ -161,10 +161,10 @@ export class PrefixManager implements PrefixProvider {
      * @param identifierCreator
      * Identifier creator.
      */
-    private setCreatorTweak(identifierCreator: IdentifierCreator): void {
+    #setCreatorTweak(identifierCreator: IdentifierCreator): void {
         if (isNumericIdentifierCreator(identifierCreator)) {
             // eslint-disable-next-line no-param-reassign -- Method purpose is to set the tweak.
-            identifierCreator.tweak = this.tweakFactor * PrefixManager.CREATOR_TWEAK_FACTORS[identifierCreator.identifierType];
+            identifierCreator.tweak = this.tweakFactor * PrefixManager.#CREATOR_TWEAK_FACTORS[identifierCreator.identifierType];
         }
     }
 
@@ -172,7 +172,7 @@ export class PrefixManager implements PrefixProvider {
      * Get the tweak factor.
      */
     get tweakFactor(): bigint {
-        return this._tweakFactor;
+        return this.#tweakFactor;
     }
 
     /**
@@ -184,11 +184,11 @@ export class PrefixManager implements PrefixProvider {
     set tweakFactor(value: number | bigint) {
         const tweakFactor = BigInt(value);
 
-        if (this._tweakFactor !== tweakFactor) {
-            this._tweakFactor = tweakFactor;
+        if (this.#tweakFactor !== tweakFactor) {
+            this.#tweakFactor = tweakFactor;
 
-            for (const creator of Object.values(this._identifierCreators)) {
-                this.setCreatorTweak(creator);
+            for (const creator of Object.values(this.#identifierCreators)) {
+                this.#setCreatorTweak(creator);
             }
         }
     }
@@ -197,7 +197,7 @@ export class PrefixManager implements PrefixProvider {
      * Reset the tweak factor to its default (numeric value of the GS1 Company Prefix preceded by '1').
      */
     resetTweakFactor(): void {
-        this.tweakFactor = this._defaultTweakFactor;
+        this.tweakFactor = this.#defaultTweakFactor;
     }
 
     /**
@@ -216,11 +216,11 @@ export class PrefixManager implements PrefixProvider {
         // Normalization will occur in constructor as well, but it's necessary here for the map.
         const normalizedPrefixProvider = PrefixValidator.normalize(prefixType, prefix);
 
-        let prefixManager = PrefixManager.PREFIX_MANAGERS_MAP.get(normalizedPrefixProvider.gs1CompanyPrefix);
+        let prefixManager = PrefixManager.#PREFIX_MANAGERS_MAP.get(normalizedPrefixProvider.gs1CompanyPrefix);
 
         if (prefixManager === undefined) {
             prefixManager = new PrefixManager(normalizedPrefixProvider.prefixType, normalizedPrefixProvider.prefix);
-            PrefixManager.PREFIX_MANAGERS_MAP.set(normalizedPrefixProvider.gs1CompanyPrefix, prefixManager);
+            PrefixManager.#PREFIX_MANAGERS_MAP.set(normalizedPrefixProvider.gs1CompanyPrefix, prefixManager);
         }
 
         return prefixManager;
@@ -244,8 +244,8 @@ export class PrefixManager implements PrefixProvider {
      * @returns
      * Identifier creator.
      */
-    private getIdentifierCreator<TIdentifierType extends IdentifierType, TConstructorParameter>(identifierType: TIdentifierType, constructorParameter: TConstructorParameter, ConstructorCallback: new (prefixProvider: PrefixProvider, constructorParameter: TConstructorParameter) => IdentifierCreatorsRecord[TIdentifierType]): IdentifierCreatorsRecord[TIdentifierType] {
-        let creator: IdentifierCreatorsRecord[TIdentifierType] | undefined = this._identifierCreators[identifierType];
+    #getIdentifierCreator<TIdentifierType extends IdentifierType, TConstructorParameter>(identifierType: TIdentifierType, constructorParameter: TConstructorParameter, ConstructorCallback: new (prefixProvider: PrefixProvider, constructorParameter: TConstructorParameter) => IdentifierCreatorsRecord[TIdentifierType]): IdentifierCreatorsRecord[TIdentifierType] {
+        let creator: IdentifierCreatorsRecord[TIdentifierType] | undefined = this.#identifierCreators[identifierType];
 
         if (creator === undefined) {
             if (this.prefixType === PrefixTypes.GS18Prefix && identifierType !== IdentifierTypes.GTIN) {
@@ -256,9 +256,9 @@ export class PrefixManager implements PrefixProvider {
 
             creator = new ConstructorCallback(this, constructorParameter);
 
-            this.setCreatorTweak(creator);
+            this.#setCreatorTweak(creator);
 
-            this._identifierCreators[identifierType] = creator;
+            this.#identifierCreators[identifierType] = creator;
         }
 
         return creator;
@@ -273,8 +273,8 @@ export class PrefixManager implements PrefixProvider {
      * @returns
      * Identifier creator.
      */
-    private getNonGTINNumericIdentifierCreator(identifierType: Exclude<NonGTINNumericIdentifierType, SerializableNumericIdentifierType>): NonGTINNumericIdentifierCreator {
-        return this.getIdentifierCreator(identifierType, identifierType, NonGTINNumericIdentifierCreator);
+    #getNonGTINNumericIdentifierCreator(identifierType: Exclude<NonGTINNumericIdentifierType, SerializableNumericIdentifierType>): NonGTINNumericIdentifierCreator {
+        return this.#getIdentifierCreator(identifierType, identifierType, NonGTINNumericIdentifierCreator);
     }
 
     /**
@@ -286,8 +286,8 @@ export class PrefixManager implements PrefixProvider {
      * @returns
      * Identifier creator.
      */
-    private getSerializableNumericIdentifierCreator(identifierType: SerializableNumericIdentifierType): SerializableNumericIdentifierCreator {
-        return this.getIdentifierCreator(identifierType, identifierType, SerializableNumericIdentifierCreator);
+    #getSerializableNumericIdentifierCreator(identifierType: SerializableNumericIdentifierType): SerializableNumericIdentifierCreator {
+        return this.#getIdentifierCreator(identifierType, identifierType, SerializableNumericIdentifierCreator);
     }
 
     /**
@@ -299,91 +299,91 @@ export class PrefixManager implements PrefixProvider {
      * @returns
      * Identifier creator.
      */
-    private getNonNumericIdentifierCreator(identifierType: NonNumericIdentifierType): NonNumericIdentifierCreator {
-        return this.getIdentifierCreator(identifierType, identifierType, NonNumericIdentifierCreator);
+    #getNonNumericIdentifierCreator(identifierType: NonNumericIdentifierType): NonNumericIdentifierCreator {
+        return this.#getIdentifierCreator(identifierType, identifierType, NonNumericIdentifierCreator);
     }
 
     /**
      * Get GTIN creator.
      */
     get gtinCreator(): GTINCreator {
-        return this.getIdentifierCreator(IdentifierTypes.GTIN, GTIN_BASE_TYPES[this.prefixType], GTINCreator);
+        return this.#getIdentifierCreator(IdentifierTypes.GTIN, GTIN_BASE_TYPES[this.prefixType], GTINCreator);
     }
 
     /**
      * Get GLN creator.
      */
     get glnCreator(): NonGTINNumericIdentifierCreator {
-        return this.getNonGTINNumericIdentifierCreator(IdentifierTypes.GLN);
+        return this.#getNonGTINNumericIdentifierCreator(IdentifierTypes.GLN);
     }
 
     /**
      * Get SSCC creator.
      */
     get ssccCreator(): NonGTINNumericIdentifierCreator {
-        return this.getNonGTINNumericIdentifierCreator(IdentifierTypes.SSCC);
+        return this.#getNonGTINNumericIdentifierCreator(IdentifierTypes.SSCC);
     }
 
     /**
      * Get GRAI creator.
      */
     get graiCreator(): SerializableNumericIdentifierCreator {
-        return this.getSerializableNumericIdentifierCreator(IdentifierTypes.GRAI);
+        return this.#getSerializableNumericIdentifierCreator(IdentifierTypes.GRAI);
     }
 
     /**
      * Get GIAI creator.
      */
     get giaiCreator(): NonNumericIdentifierCreator {
-        return this.getNonNumericIdentifierCreator(IdentifierTypes.GIAI);
+        return this.#getNonNumericIdentifierCreator(IdentifierTypes.GIAI);
     }
 
     /**
      * Get GSRN creator.
      */
     get gsrnCreator(): NonGTINNumericIdentifierCreator {
-        return this.getNonGTINNumericIdentifierCreator(IdentifierTypes.GSRN);
+        return this.#getNonGTINNumericIdentifierCreator(IdentifierTypes.GSRN);
     }
 
     /**
      * Get GDTI creator.
      */
     get gdtiCreator(): SerializableNumericIdentifierCreator {
-        return this.getSerializableNumericIdentifierCreator(IdentifierTypes.GDTI);
+        return this.#getSerializableNumericIdentifierCreator(IdentifierTypes.GDTI);
     }
 
     /**
      * Get GINC creator.
      */
     get gincCreator(): NonNumericIdentifierCreator {
-        return this.getNonNumericIdentifierCreator(IdentifierTypes.GINC);
+        return this.#getNonNumericIdentifierCreator(IdentifierTypes.GINC);
     }
 
     /**
      * Get GSIN creator.
      */
     get gsinCreator(): NonGTINNumericIdentifierCreator {
-        return this.getNonGTINNumericIdentifierCreator(IdentifierTypes.GSIN);
+        return this.#getNonGTINNumericIdentifierCreator(IdentifierTypes.GSIN);
     }
 
     /**
      * Get GCN creator.
      */
     get gcnCreator(): SerializableNumericIdentifierCreator {
-        return this.getSerializableNumericIdentifierCreator(IdentifierTypes.GCN);
+        return this.#getSerializableNumericIdentifierCreator(IdentifierTypes.GCN);
     }
 
     /**
      * Get CPID creator.
      */
     get cpidCreator(): NonNumericIdentifierCreator {
-        return this.getNonNumericIdentifierCreator(IdentifierTypes.CPID);
+        return this.#getNonNumericIdentifierCreator(IdentifierTypes.CPID);
     }
 
     /**
      * Get GMN creator.
      */
     get gmnCreator(): NonNumericIdentifierCreator {
-        return this.getNonNumericIdentifierCreator(IdentifierTypes.GMN);
+        return this.#getNonNumericIdentifierCreator(IdentifierTypes.GMN);
     }
 }

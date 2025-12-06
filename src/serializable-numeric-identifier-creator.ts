@@ -41,7 +41,7 @@ export class SerializableNumericIdentifierCreator extends Mixin(SerializableNume
      * @returns
      * Serialized identifier(s).
      */
-    private concatenateValidated<TTransformerInput extends TransformerInput<string>>(baseIdentifier: string, serialComponentOrComponents: TTransformerInput): TransformerOutput<TTransformerInput, string> {
+    #concatenateValidated<TTransformerInput extends TransformerInput<string>>(baseIdentifier: string, serialComponentOrComponents: TTransformerInput): TransformerOutput<TTransformerInput, string> {
         // TODO Refactor type when https://github.com/microsoft/TypeScript/pull/56941 released.
         let result: string | Iterable<string>;
 
@@ -93,7 +93,7 @@ export class SerializableNumericIdentifierCreator extends Mixin(SerializableNume
      * Serialized identifiers.
      */
     createSerialized<TTransformerInput extends TransformerInput<string>>(value: number, serialComponentOrComponents: TTransformerInput, sparse?: boolean): TransformerOutput<TTransformerInput, string> {
-        return this.concatenateValidated(this.create(value, sparse), serialComponentOrComponents);
+        return this.#concatenateValidated(this.create(value, sparse), serialComponentOrComponents);
     }
 
     /**
@@ -114,6 +114,6 @@ export class SerializableNumericIdentifierCreator extends Mixin(SerializableNume
     concatenate<TTransformerInput extends TransformerInput<string>>(baseIdentifier: string, serialComponentOrComponents: TTransformerInput): TransformerOutput<TTransformerInput, string> {
         this.validate(baseIdentifier);
 
-        return this.concatenateValidated(baseIdentifier, serialComponentOrComponents);
+        return this.#concatenateValidated(baseIdentifier, serialComponentOrComponents);
     }
 }
