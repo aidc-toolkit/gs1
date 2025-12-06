@@ -1,7 +1,7 @@
 import type { TransformerInput, TransformerOutput } from "@aidc-toolkit/utility";
-import type { IdentifierCreator } from "./identifier-creator";
-import type { NumericIdentifierDescriptor } from "./numeric-identifier-descriptor";
-import type { NumericIdentifierValidation, NumericIdentifierValidator } from "./numeric-identifier-validator";
+import type { IdentifierCreator } from "./identifier-creator.js";
+import type { NumericIdentifierDescriptor } from "./numeric-identifier-descriptor.js";
+import type { NumericIdentifierValidation, NumericIdentifierValidator } from "./numeric-identifier-validator.js";
 
 /**
  * Numeric identifier creator. Creates one or many numeric identifiers.

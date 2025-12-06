@@ -1,5 +1,5 @@
-import type { IdentifierTypes } from "./identifier-type";
-import type { NumericIdentifierType } from "./numeric-identifier-type";
+import type { IdentifierTypes } from "./identifier-type.js";
+import type { NumericIdentifierType } from "./numeric-identifier-type.js";
 
 /**
  * Non-GTIN numeric identifier type.

@@ -1,5 +1,5 @@
 import type { CharacterSetCreator, StringValidation, StringValidator } from "@aidc-toolkit/utility";
-import type { IdentifierDescriptor } from "./identifier-descriptor";
+import type { IdentifierDescriptor } from "./identifier-descriptor.js";
 
 /**
  * Identifier validation parameters.

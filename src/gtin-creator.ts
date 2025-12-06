@@ -6,12 +6,12 @@ import {
     type TransformerOutput
 } from "@aidc-toolkit/utility";
 import { Mixin } from "ts-mixer";
-import { AbstractNumericIdentifierCreator } from "./abstract-numeric-identifier-creator";
-import { checkDigit, priceOrWeightCheckDigit } from "./check";
-import { type GTINBaseType, GTINTypes } from "./gtin-type";
-import { GTINValidator } from "./gtin-validator";
-import { i18nextGS1 } from "./locale/i18n";
-import type { PrefixProvider } from "./prefix-provider";
+import { AbstractNumericIdentifierCreator } from "./abstract-numeric-identifier-creator.js";
+import { checkDigit, priceOrWeightCheckDigit } from "./check.js";
+import { type GTINBaseType, GTINTypes } from "./gtin-type.js";
+import { GTINValidator } from "./gtin-validator.js";
+import { i18nextGS1 } from "./locale/i18n.js";
+import type { PrefixProvider } from "./prefix-provider.js";
 
 /**
  * GTIN creator. Applicable to GTIN-13, GTIN-12, and GTIN-8 types; no applicable to GTIN-14 type.

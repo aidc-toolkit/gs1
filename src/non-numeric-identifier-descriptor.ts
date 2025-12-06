@@ -1,7 +1,7 @@
-import type { ContentCharacterSet, ContentCharacterSets } from "./content-character-set";
-import type { IdentifierDescriptor } from "./identifier-descriptor";
-import type { NonNumericIdentifierType } from "./non-numeric-identifier-type";
-import type { PrefixTypes } from "./prefix-type";
+import type { ContentCharacterSet, ContentCharacterSets } from "./content-character-set.js";
+import type { IdentifierDescriptor } from "./identifier-descriptor.js";
+import type { NonNumericIdentifierType } from "./non-numeric-identifier-type.js";
+import type { PrefixTypes } from "./prefix-type.js";
 
 /**
  * Non-numeric identifier descriptor.

@@ -1,5 +1,5 @@
-import type { IdentifierValidation, IdentifierValidator } from "./identifier-validator";
-import type { NumericIdentifierDescriptor } from "./numeric-identifier-descriptor";
+import type { IdentifierValidation, IdentifierValidator } from "./identifier-validator.js";
+import type { NumericIdentifierDescriptor } from "./numeric-identifier-descriptor.js";
 
 /**
  * Numeric identifier validation parameters.

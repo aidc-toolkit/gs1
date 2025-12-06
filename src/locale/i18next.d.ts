@@ -1,5 +1,5 @@
 import type { UtilityLocaleResources } from "@aidc-toolkit/utility";
-import type { GS1LocaleResources } from "./i18n";
+import type { GS1LocaleResources } from "./i18n.js";
 
 /**
  * Internationalization module.

@@ -1,17 +1,17 @@
-import { ContentCharacterSets } from "./content-character-set";
-import type { GTINDescriptor } from "./gtin-descriptor";
-import { type GTINBaseType, GTINTypes } from "./gtin-type";
-import type { IdentifierDescriptor } from "./identifier-descriptor";
-import { type IdentifierType, IdentifierTypes } from "./identifier-type";
-import type { NonGTINNumericIdentifierDescriptor } from "./non-gtin-numeric-identifier-descriptor";
-import type { NonGTINNumericIdentifierType } from "./non-gtin-numeric-identifier-type";
-import type { NonNumericIdentifierDescriptor } from "./non-numeric-identifier-descriptor";
-import type { NonNumericIdentifierType } from "./non-numeric-identifier-type";
-import type { NumericIdentifierDescriptor } from "./numeric-identifier-descriptor";
-import { LeaderTypes, type NumericIdentifierType } from "./numeric-identifier-type";
-import { PrefixTypes } from "./prefix-type";
-import type { SerializableNumericIdentifierDescriptor } from "./serializable-numeric-identifier-descriptor";
-import type { SerializableNumericIdentifierType } from "./serializable-numeric-identifier-type";
+import { ContentCharacterSets } from "./content-character-set.js";
+import type { GTINDescriptor } from "./gtin-descriptor.js";
+import { type GTINBaseType, GTINTypes } from "./gtin-type.js";
+import type { IdentifierDescriptor } from "./identifier-descriptor.js";
+import { type IdentifierType, IdentifierTypes } from "./identifier-type.js";
+import type { NonGTINNumericIdentifierDescriptor } from "./non-gtin-numeric-identifier-descriptor.js";
+import type { NonGTINNumericIdentifierType } from "./non-gtin-numeric-identifier-type.js";
+import type { NonNumericIdentifierDescriptor } from "./non-numeric-identifier-descriptor.js";
+import type { NonNumericIdentifierType } from "./non-numeric-identifier-type.js";
+import type { NumericIdentifierDescriptor } from "./numeric-identifier-descriptor.js";
+import { LeaderTypes, type NumericIdentifierType } from "./numeric-identifier-type.js";
+import { PrefixTypes } from "./prefix-type.js";
+import type { SerializableNumericIdentifierDescriptor } from "./serializable-numeric-identifier-descriptor.js";
+import type { SerializableNumericIdentifierType } from "./serializable-numeric-identifier-type.js";
 
 /**
  * GTIN-13 descriptor.

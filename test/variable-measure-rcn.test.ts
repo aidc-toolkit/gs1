@@ -5,7 +5,7 @@ import {
     hasValidCheckDigit,
     isValidPriceOrWeightCheckDigit,
     type RCNReference
-} from "../src";
+} from "../src/index.js";
 
 describe("Variable measure RCN", () => {
     test("RCN-12", () => {

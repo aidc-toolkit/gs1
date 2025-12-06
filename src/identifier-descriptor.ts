@@ -1,6 +1,6 @@
-import type { ContentCharacterSet } from "./content-character-set";
-import type { IdentifierType } from "./identifier-type";
-import type { PrefixType } from "./prefix-type";
+import type { ContentCharacterSet } from "./content-character-set.js";
+import type { IdentifierType } from "./identifier-type.js";
+import type { PrefixType } from "./prefix-type.js";
 
 /**
  * Identifier descriptor. Instantiations of this type are used to parameterize validators and creators.

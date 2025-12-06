@@ -7,8 +7,8 @@ import {
     type LeaderType,
     type NumericIdentifierType,
     type PrefixType
-} from "../src";
-import { validateIdentifierValidator } from "./identifier-validator";
+} from "../src/index.js";
+import { validateIdentifierValidator } from "./identifier-validator.js";
 
 export function validateNumericIdentifierValidator<TNumericIdentifierType extends NumericIdentifierType>(validator: IdentifierTypeValidator<TNumericIdentifierType>, identifierType: IdentifierType, prefixType: PrefixType, length: number, leaderType: LeaderType): void {
     validateIdentifierValidator(validator, identifierType, prefixType, length);

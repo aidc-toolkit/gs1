@@ -5,13 +5,13 @@ import {
     type TransformerInput,
     type TransformerOutput
 } from "@aidc-toolkit/utility";
-import { AbstractIdentifierCreator } from "./abstract-identifier-creator";
-import { checkDigit, checkDigitSum } from "./check";
-import type { NumericIdentifierCreator } from "./numeric-identifier-creator";
-import type { NumericIdentifierDescriptor } from "./numeric-identifier-descriptor";
-import { type LeaderType, LeaderTypes } from "./numeric-identifier-type";
-import type { NumericIdentifierValidation } from "./numeric-identifier-validator";
-import type { PrefixProvider } from "./prefix-provider";
+import { AbstractIdentifierCreator } from "./abstract-identifier-creator.js";
+import { checkDigit, checkDigitSum } from "./check.js";
+import type { NumericIdentifierCreator } from "./numeric-identifier-creator.js";
+import type { NumericIdentifierDescriptor } from "./numeric-identifier-descriptor.js";
+import { type LeaderType, LeaderTypes } from "./numeric-identifier-type.js";
+import type { NumericIdentifierValidation } from "./numeric-identifier-validator.js";
+import type { PrefixProvider } from "./prefix-provider.js";
 
 /**
  * Abstract numeric identifier creator. Implements common functionality for a numeric identifier creator.

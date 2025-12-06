@@ -1,10 +1,10 @@
 import { type CharacterSetCreator, NUMERIC_CREATOR } from "@aidc-toolkit/utility";
-import { AI39_CREATOR, AI82_CREATOR } from "./character-set";
-import { type ContentCharacterSet, ContentCharacterSets } from "./content-character-set";
-import type { IdentifierDescriptor } from "./identifier-descriptor";
-import type { IdentifierValidation, IdentifierValidator } from "./identifier-validator";
-import { PrefixTypes } from "./prefix-type";
-import { PrefixValidator } from "./prefix-validator";
+import { AI39_CREATOR, AI82_CREATOR } from "./character-set.js";
+import { type ContentCharacterSet, ContentCharacterSets } from "./content-character-set.js";
+import type { IdentifierDescriptor } from "./identifier-descriptor.js";
+import type { IdentifierValidation, IdentifierValidator } from "./identifier-validator.js";
+import { PrefixTypes } from "./prefix-type.js";
+import { PrefixValidator } from "./prefix-validator.js";
 
 /**
  * Abstract identifier validator. Implements common functionality for an identifier validator.

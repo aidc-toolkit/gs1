@@ -8,7 +8,7 @@ import {
     hasValidCheckDigit,
     isValidPriceOrWeightCheckDigit,
     priceOrWeightCheckDigit
-} from "../src";
+} from "../src/index.js";
 
 describe("Check digit", () => {
     const testNumericString = "1234567890";

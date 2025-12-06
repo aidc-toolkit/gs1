@@ -1,4 +1,4 @@
-import { type PrefixType, PrefixTypes } from "./prefix-type";
+import { type PrefixType, PrefixTypes } from "./prefix-type.js";
 
 /**
  * GTIN types. The numeric values are equal to the lengths of the GTIN types.

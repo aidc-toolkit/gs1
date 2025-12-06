@@ -1,6 +1,6 @@
 import { Exclusions, Sequence } from "@aidc-toolkit/utility";
 import { describe, expect, test } from "vitest";
-import { hasValidCheckCharacterPair, isNonNumericIdentifierCreator, type NonNumericIdentifierCreator } from "../src";
+import { hasValidCheckCharacterPair, isNonNumericIdentifierCreator, type NonNumericIdentifierCreator } from "../src/index.js";
 
 const TEST_REFERENCE_LENGTH = 2;
 

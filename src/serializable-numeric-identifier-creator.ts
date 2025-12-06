@@ -1,9 +1,9 @@
 import { mapIterable, type TransformerInput, type TransformerOutput } from "@aidc-toolkit/utility";
 import { Mixin } from "ts-mixer";
-import { AbstractNumericIdentifierCreator } from "./abstract-numeric-identifier-creator";
-import type { PrefixProvider } from "./prefix-provider";
-import type { SerializableNumericIdentifierType } from "./serializable-numeric-identifier-type";
-import { SerializableNumericIdentifierValidator } from "./serializable-numeric-identifier-validator";
+import { AbstractNumericIdentifierCreator } from "./abstract-numeric-identifier-creator.js";
+import type { PrefixProvider } from "./prefix-provider.js";
+import type { SerializableNumericIdentifierType } from "./serializable-numeric-identifier-type.js";
+import { SerializableNumericIdentifierValidator } from "./serializable-numeric-identifier-validator.js";
 
 /**
  * Serializable numeric identifier creator.

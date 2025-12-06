@@ -1,6 +1,6 @@
-import type { ContentCharacterSets } from "./content-character-set";
-import type { IdentifierDescriptor } from "./identifier-descriptor";
-import type { LeaderType, NumericIdentifierType } from "./numeric-identifier-type";
+import type { ContentCharacterSets } from "./content-character-set.js";
+import type { IdentifierDescriptor } from "./identifier-descriptor.js";
+import type { LeaderType, NumericIdentifierType } from "./numeric-identifier-type.js";
 
 /**
  * Numeric identifier descriptor.

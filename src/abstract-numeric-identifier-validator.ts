@@ -1,9 +1,9 @@
-import { AbstractIdentifierValidator } from "./abstract-identifier-validator";
-import { hasValidCheckDigit } from "./check";
-import { i18nextGS1 } from "./locale/i18n";
-import type { NumericIdentifierDescriptor } from "./numeric-identifier-descriptor";
-import { LeaderTypes } from "./numeric-identifier-type";
-import type { NumericIdentifierValidation, NumericIdentifierValidator } from "./numeric-identifier-validator";
+import { AbstractIdentifierValidator } from "./abstract-identifier-validator.js";
+import { hasValidCheckDigit } from "./check.js";
+import { i18nextGS1 } from "./locale/i18n.js";
+import type { NumericIdentifierDescriptor } from "./numeric-identifier-descriptor.js";
+import { LeaderTypes } from "./numeric-identifier-type.js";
+import type { NumericIdentifierValidation, NumericIdentifierValidator } from "./numeric-identifier-validator.js";
 
 /**
  * Abstract numeric identifier validator.

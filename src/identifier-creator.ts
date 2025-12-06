@@ -1,6 +1,6 @@
-import type { IdentifierDescriptor } from "./identifier-descriptor";
-import type { IdentifierValidation, IdentifierValidator } from "./identifier-validator";
-import type { PrefixProvider } from "./prefix-provider";
+import type { IdentifierDescriptor } from "./identifier-descriptor.js";
+import type { IdentifierValidation, IdentifierValidator } from "./identifier-validator.js";
+import type { PrefixProvider } from "./prefix-provider.js";
 
 /**
  * Identifier creator. Creates an identifier based on its definition in section 3 of the {@link

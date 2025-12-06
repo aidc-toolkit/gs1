@@ -1,12 +1,12 @@
 import { type CharacterSetValidation, NUMERIC_CREATOR } from "@aidc-toolkit/utility";
-import { AbstractNumericIdentifierValidator } from "./abstract-numeric-identifier-validator";
-import { checkDigit, hasValidCheckDigit, isValidPriceOrWeightCheckDigit } from "./check";
-import { IdentifierDescriptors } from "./descriptors";
-import type { GTINDescriptor } from "./gtin-descriptor";
-import { type GTINBaseType, type GTINType, GTINTypes } from "./gtin-type";
-import { i18nextGS1 } from "./locale/i18n";
-import { type PrefixType, PrefixTypes } from "./prefix-type";
-import { PrefixValidator } from "./prefix-validator";
+import { AbstractNumericIdentifierValidator } from "./abstract-numeric-identifier-validator.js";
+import { checkDigit, hasValidCheckDigit, isValidPriceOrWeightCheckDigit } from "./check.js";
+import { IdentifierDescriptors } from "./descriptors.js";
+import type { GTINDescriptor } from "./gtin-descriptor.js";
+import { type GTINBaseType, type GTINType, GTINTypes } from "./gtin-type.js";
+import { i18nextGS1 } from "./locale/i18n.js";
+import { type PrefixType, PrefixTypes } from "./prefix-type.js";
+import { PrefixValidator } from "./prefix-validator.js";
 
 /**
  * Levels at which GTIN is to be validated.

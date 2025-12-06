@@ -1,11 +1,11 @@
 import type { CharacterSetCreator, CharacterSetValidation } from "@aidc-toolkit/utility";
-import { AbstractNumericIdentifierValidator } from "./abstract-numeric-identifier-validator";
-import type { ContentCharacterSet } from "./content-character-set";
-import { IdentifierDescriptors } from "./descriptors";
-import type { IdentifierValidation } from "./identifier-validator";
-import { i18nextGS1 } from "./locale/i18n";
-import type { SerializableNumericIdentifierDescriptor } from "./serializable-numeric-identifier-descriptor";
-import type { SerializableNumericIdentifierType } from "./serializable-numeric-identifier-type";
+import { AbstractNumericIdentifierValidator } from "./abstract-numeric-identifier-validator.js";
+import type { ContentCharacterSet } from "./content-character-set.js";
+import { IdentifierDescriptors } from "./descriptors.js";
+import type { IdentifierValidation } from "./identifier-validator.js";
+import { i18nextGS1 } from "./locale/i18n.js";
+import type { SerializableNumericIdentifierDescriptor } from "./serializable-numeric-identifier-descriptor.js";
+import type { SerializableNumericIdentifierType } from "./serializable-numeric-identifier-type.js";
 
 /**
  * Serializable numeric identifier validator. Validates both serialized and non-serialized forms of numeric identifiers

@@ -1,11 +1,11 @@
 import { Exclusions, RegExpValidator } from "@aidc-toolkit/utility";
-import { AbstractIdentifierValidator } from "./abstract-identifier-validator";
-import { hasValidCheckCharacterPair } from "./check";
-import { IdentifierDescriptors } from "./descriptors";
-import type { IdentifierValidation } from "./identifier-validator";
-import { i18nextGS1 } from "./locale/i18n";
-import type { NonNumericIdentifierDescriptor } from "./non-numeric-identifier-descriptor";
-import type { NonNumericIdentifierType } from "./non-numeric-identifier-type";
+import { AbstractIdentifierValidator } from "./abstract-identifier-validator.js";
+import { hasValidCheckCharacterPair } from "./check.js";
+import { IdentifierDescriptors } from "./descriptors.js";
+import type { IdentifierValidation } from "./identifier-validator.js";
+import { i18nextGS1 } from "./locale/i18n.js";
+import type { NonNumericIdentifierDescriptor } from "./non-numeric-identifier-descriptor.js";
+import type { NonNumericIdentifierType } from "./non-numeric-identifier-type.js";
 
 /**
  * Non-numeric identifier validation parameters.

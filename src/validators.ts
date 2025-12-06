@@ -5,18 +5,18 @@ import {
     isNonNumericIdentifierDescriptor,
     isNumericIdentifierDescriptor,
     isSerializableNumericIdentifierDescriptor
-} from "./descriptors";
-import type { GTINBaseType } from "./gtin-type";
-import { GTIN_VALIDATORS, type GTINValidator } from "./gtin-validator";
-import { type IdentifierType, IdentifierTypes } from "./identifier-type";
-import type { IdentifierValidator } from "./identifier-validator";
-import type { NonGTINNumericIdentifierType } from "./non-gtin-numeric-identifier-type";
-import { NonGTINNumericIdentifierValidator } from "./non-gtin-numeric-identifier-validator";
-import type { NonNumericIdentifierType } from "./non-numeric-identifier-type";
-import { NonNumericIdentifierValidator } from "./non-numeric-identifier-validator";
-import type { NumericIdentifierValidator } from "./numeric-identifier-validator";
-import type { SerializableNumericIdentifierType } from "./serializable-numeric-identifier-type";
-import { SerializableNumericIdentifierValidator } from "./serializable-numeric-identifier-validator";
+} from "./descriptors.js";
+import type { GTINBaseType } from "./gtin-type.js";
+import { GTIN_VALIDATORS, type GTINValidator } from "./gtin-validator.js";
+import { type IdentifierType, IdentifierTypes } from "./identifier-type.js";
+import type { IdentifierValidator } from "./identifier-validator.js";
+import type { NonGTINNumericIdentifierType } from "./non-gtin-numeric-identifier-type.js";
+import { NonGTINNumericIdentifierValidator } from "./non-gtin-numeric-identifier-validator.js";
+import type { NonNumericIdentifierType } from "./non-numeric-identifier-type.js";
+import { NonNumericIdentifierValidator } from "./non-numeric-identifier-validator.js";
+import type { NumericIdentifierValidator } from "./numeric-identifier-validator.js";
+import type { SerializableNumericIdentifierType } from "./serializable-numeric-identifier-type.js";
+import { SerializableNumericIdentifierValidator } from "./serializable-numeric-identifier-validator.js";
 
 /**
  * GLN validator.

@@ -1,5 +1,5 @@
-import type { IdentifierType } from "./identifier-type";
-import type { NumericIdentifierType } from "./numeric-identifier-type";
+import type { IdentifierType } from "./identifier-type.js";
+import type { NumericIdentifierType } from "./numeric-identifier-type.js";
 
 /**
  * Non-numeric identifier type.

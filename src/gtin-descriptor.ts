@@ -1,6 +1,6 @@
-import type { IdentifierTypes } from "./identifier-type";
-import type { NumericIdentifierDescriptor } from "./numeric-identifier-descriptor";
-import type { LeaderTypes } from "./numeric-identifier-type";
+import type { IdentifierTypes } from "./identifier-type.js";
+import type { NumericIdentifierDescriptor } from "./numeric-identifier-descriptor.js";
+import type { LeaderTypes } from "./numeric-identifier-type.js";
 
 /**
  * GTIN descriptor.

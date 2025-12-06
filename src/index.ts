@@ -14,46 +14,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from "./locale/i18n";
+export * from "./locale/i18n.js";
 
-export * from "./character-set";
+export * from "./character-set.js";
 
-export * from "./check";
+export * from "./check.js";
 
-export * from "./prefix-type";
-export * from "./prefix-validator";
+export * from "./prefix-type.js";
+export * from "./prefix-validator.js";
 
-export * from "./content-character-set";
+export * from "./content-character-set.js";
 
-export * from "./identifier-type";
-export * from "./numeric-identifier-type";
-export * from "./gtin-type";
-export type * from "./non-gtin-numeric-identifier-type";
-export type * from "./serializable-numeric-identifier-type";
-export type * from "./non-numeric-identifier-type";
+export * from "./identifier-type.js";
+export * from "./numeric-identifier-type.js";
+export * from "./gtin-type.js";
+export type * from "./non-gtin-numeric-identifier-type.js";
+export type * from "./serializable-numeric-identifier-type.js";
+export type * from "./non-numeric-identifier-type.js";
 
-export type * from "./identifier-descriptor";
-export type * from "./numeric-identifier-descriptor";
-export type * from "./gtin-descriptor";
-export type * from "./non-gtin-numeric-identifier-descriptor";
-export type * from "./serializable-numeric-identifier-descriptor";
-export type * from "./non-numeric-identifier-descriptor";
-export * from "./descriptors";
+export type * from "./identifier-descriptor.js";
+export type * from "./numeric-identifier-descriptor.js";
+export type * from "./gtin-descriptor.js";
+export type * from "./non-gtin-numeric-identifier-descriptor.js";
+export type * from "./serializable-numeric-identifier-descriptor.js";
+export type * from "./non-numeric-identifier-descriptor.js";
+export * from "./descriptors.js";
 
-export type * from "./identifier-validator";
-export type * from "./numeric-identifier-validator";
-export { GTINLevels, type GTINLevel, type RCNReference, GTINValidator } from "./gtin-validator";
-export * from "./non-gtin-numeric-identifier-validator";
-export * from "./serializable-numeric-identifier-validator";
-export * from "./non-numeric-identifier-validator";
-export * from "./validators";
+export type * from "./identifier-validator.js";
+export type * from "./numeric-identifier-validator.js";
+export { GTINLevels, type GTINLevel, type RCNReference, GTINValidator } from "./gtin-validator.js";
+export * from "./non-gtin-numeric-identifier-validator.js";
+export * from "./serializable-numeric-identifier-validator.js";
+export * from "./non-numeric-identifier-validator.js";
+export * from "./validators.js";
 
-export type * from "./identifier-creator";
-export type * from "./numeric-identifier-creator";
-export * from "./gtin-creator";
-export * from "./non-gtin-numeric-identifier-creator";
-export * from "./serializable-numeric-identifier-creator";
-export * from "./non-numeric-identifier-creator";
-export * from "./creators";
+export type * from "./identifier-creator.js";
+export type * from "./numeric-identifier-creator.js";
+export * from "./gtin-creator.js";
+export * from "./non-gtin-numeric-identifier-creator.js";
+export * from "./serializable-numeric-identifier-creator.js";
+export * from "./non-numeric-identifier-creator.js";
+export * from "./creators.js";
 
-export * from "./prefix-manager";
+export * from "./prefix-manager.js";

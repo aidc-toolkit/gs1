@@ -3,8 +3,8 @@ import {
     ContentCharacterSets,
     isSerializableNumericIdentifierCreator,
     type SerializableNumericIdentifierCreator
-} from "../src";
-import { testNonGTINNumericIdentifierCreator } from "./non-gtin-numeric-identifier-creator";
+} from "../src/index.js";
+import { testNonGTINNumericIdentifierCreator } from "./non-gtin-numeric-identifier-creator.js";
 
 export function testSerializableNumericIdentifierCreator(creator: SerializableNumericIdentifierCreator): void {
     testNonGTINNumericIdentifierCreator(creator, () => {

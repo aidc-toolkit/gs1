@@ -1,19 +1,19 @@
-import { type IdentifierCreatorsRecord, isNumericIdentifierCreator } from "./creators";
-import { GTINCreator } from "./gtin-creator";
-import { GTIN_BASE_TYPES } from "./gtin-type";
-import type { IdentifierCreator } from "./identifier-creator";
-import { type IdentifierType, IdentifierTypes } from "./identifier-type";
-import { i18nextGS1 } from "./locale/i18n";
-import { NonGTINNumericIdentifierCreator } from "./non-gtin-numeric-identifier-creator";
-import type { NonGTINNumericIdentifierType } from "./non-gtin-numeric-identifier-type";
-import { NonNumericIdentifierCreator } from "./non-numeric-identifier-creator";
-import type { NonNumericIdentifierType } from "./non-numeric-identifier-type";
-import type { NumericIdentifierType } from "./numeric-identifier-type";
-import type { PrefixProvider } from "./prefix-provider";
-import { type PrefixType, PrefixTypes } from "./prefix-type";
-import { PrefixValidator } from "./prefix-validator";
-import { SerializableNumericIdentifierCreator } from "./serializable-numeric-identifier-creator";
-import type { SerializableNumericIdentifierType } from "./serializable-numeric-identifier-type";
+import { type IdentifierCreatorsRecord, isNumericIdentifierCreator } from "./creators.js";
+import { GTINCreator } from "./gtin-creator.js";
+import { GTIN_BASE_TYPES } from "./gtin-type.js";
+import type { IdentifierCreator } from "./identifier-creator.js";
+import { type IdentifierType, IdentifierTypes } from "./identifier-type.js";
+import { i18nextGS1 } from "./locale/i18n.js";
+import { NonGTINNumericIdentifierCreator } from "./non-gtin-numeric-identifier-creator.js";
+import type { NonGTINNumericIdentifierType } from "./non-gtin-numeric-identifier-type.js";
+import { NonNumericIdentifierCreator } from "./non-numeric-identifier-creator.js";
+import type { NonNumericIdentifierType } from "./non-numeric-identifier-type.js";
+import type { NumericIdentifierType } from "./numeric-identifier-type.js";
+import type { PrefixProvider } from "./prefix-provider.js";
+import { type PrefixType, PrefixTypes } from "./prefix-type.js";
+import { PrefixValidator } from "./prefix-validator.js";
+import { SerializableNumericIdentifierCreator } from "./serializable-numeric-identifier-creator.js";
+import type { SerializableNumericIdentifierType } from "./serializable-numeric-identifier-type.js";
 
 /**
  * Prefix manager. This is the core class for identifier creation.

@@ -1,6 +1,6 @@
 import { Sequence } from "@aidc-toolkit/utility";
 import { describe, expect, test } from "vitest";
-import { PrefixManager, PrefixTypes } from "../src";
+import { PrefixManager, PrefixTypes } from "../src/index.js";
 
 describe("Sparse creation", () => {
     const prefixManager = PrefixManager.get(PrefixTypes.GS1CompanyPrefix, "9521234");

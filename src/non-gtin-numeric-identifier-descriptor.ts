@@ -1,7 +1,7 @@
-import type { NonGTINNumericIdentifierType } from "./non-gtin-numeric-identifier-type";
-import type { NumericIdentifierDescriptor } from "./numeric-identifier-descriptor";
-import type { LeaderType, LeaderTypes } from "./numeric-identifier-type";
-import type { PrefixTypes } from "./prefix-type";
+import type { NonGTINNumericIdentifierType } from "./non-gtin-numeric-identifier-type.js";
+import type { NumericIdentifierDescriptor } from "./numeric-identifier-descriptor.js";
+import type { LeaderType, LeaderTypes } from "./numeric-identifier-type.js";
+import type { PrefixTypes } from "./prefix-type.js";
 
 /**
  * Non-GTIN numeric identifier descriptor.

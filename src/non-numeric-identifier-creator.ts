@@ -5,12 +5,12 @@ import {
     type TransformerOutput
 } from "@aidc-toolkit/utility";
 import { Mixin } from "ts-mixer";
-import { AbstractIdentifierCreator } from "./abstract-identifier-creator";
-import { checkCharacterPair } from "./check";
-import { i18nextGS1 } from "./locale/i18n";
-import type { NonNumericIdentifierType } from "./non-numeric-identifier-type";
-import { NonNumericIdentifierValidator } from "./non-numeric-identifier-validator";
-import type { PrefixProvider } from "./prefix-provider";
+import { AbstractIdentifierCreator } from "./abstract-identifier-creator.js";
+import { checkCharacterPair } from "./check.js";
+import { i18nextGS1 } from "./locale/i18n.js";
+import type { NonNumericIdentifierType } from "./non-numeric-identifier-type.js";
+import { NonNumericIdentifierValidator } from "./non-numeric-identifier-validator.js";
+import type { PrefixProvider } from "./prefix-provider.js";
 
 /**
  * Non-numeric identifier creator.

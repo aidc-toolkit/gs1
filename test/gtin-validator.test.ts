@@ -8,8 +8,8 @@ import {
     LeaderTypes,
     type PrefixType,
     PrefixTypes
-} from "../src";
-import { validateNumericIdentifierValidator } from "./numeric-identifier-validator";
+} from "../src/index.js";
+import { validateNumericIdentifierValidator } from "./numeric-identifier-validator.js";
 
 export function validateGTINValidator(validator: GTINValidator, isCreator: boolean, gtinBaseType: GTINBaseType): void {
     let prefixType: PrefixType;

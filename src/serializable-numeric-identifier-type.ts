@@ -1,4 +1,4 @@
-import type { IdentifierTypes } from "./identifier-type";
+import type { IdentifierTypes } from "./identifier-type.js";
 
 /**
  * Serializable numeric identifier type.

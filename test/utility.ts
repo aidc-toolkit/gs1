@@ -1,5 +1,5 @@
 import { type CharacterSetCreator, NUMERIC_CREATOR } from "@aidc-toolkit/utility";
-import { AI39_CREATOR, AI82_CREATOR, type ContentCharacterSet, ContentCharacterSets } from "../src";
+import { AI39_CREATOR, AI82_CREATOR, type ContentCharacterSet, ContentCharacterSets } from "../src/index.js";
 
 export function creatorFor(characterSet: ContentCharacterSet): CharacterSetCreator {
     let creator: CharacterSetCreator;

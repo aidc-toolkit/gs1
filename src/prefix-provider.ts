@@ -1,4 +1,4 @@
-import type { PrefixType } from "./prefix-type";
+import type { PrefixType } from "./prefix-type.js";
 
 /**
  * Prefix provider.

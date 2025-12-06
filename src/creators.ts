@@ -4,17 +4,17 @@ import {
     isNonNumericIdentifierDescriptor,
     isNumericIdentifierDescriptor,
     isSerializableNumericIdentifierDescriptor
-} from "./descriptors";
-import type { GTINCreator } from "./gtin-creator";
-import type { IdentifierCreator } from "./identifier-creator";
-import type { IdentifierType, IdentifierTypes } from "./identifier-type";
-import type { NonGTINNumericIdentifierCreator } from "./non-gtin-numeric-identifier-creator";
-import type { NonGTINNumericIdentifierType } from "./non-gtin-numeric-identifier-type";
-import type { NonNumericIdentifierCreator } from "./non-numeric-identifier-creator";
-import type { NonNumericIdentifierType } from "./non-numeric-identifier-type";
-import type { NumericIdentifierCreator } from "./numeric-identifier-creator";
-import type { SerializableNumericIdentifierCreator } from "./serializable-numeric-identifier-creator";
-import type { SerializableNumericIdentifierType } from "./serializable-numeric-identifier-type";
+} from "./descriptors.js";
+import type { GTINCreator } from "./gtin-creator.js";
+import type { IdentifierCreator } from "./identifier-creator.js";
+import type { IdentifierType, IdentifierTypes } from "./identifier-type.js";
+import type { NonGTINNumericIdentifierCreator } from "./non-gtin-numeric-identifier-creator.js";
+import type { NonGTINNumericIdentifierType } from "./non-gtin-numeric-identifier-type.js";
+import type { NonNumericIdentifierCreator } from "./non-numeric-identifier-creator.js";
+import type { NonNumericIdentifierType } from "./non-numeric-identifier-type.js";
+import type { NumericIdentifierCreator } from "./numeric-identifier-creator.js";
+import type { SerializableNumericIdentifierCreator } from "./serializable-numeric-identifier-creator.js";
+import type { SerializableNumericIdentifierType } from "./serializable-numeric-identifier-type.js";
 
 /**
  * Determine the identifier creator type for an identifier type.

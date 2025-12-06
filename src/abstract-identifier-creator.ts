@@ -1,8 +1,8 @@
 import type { CharacterSetCreator } from "@aidc-toolkit/utility";
-import type { IdentifierCreator } from "./identifier-creator";
-import type { IdentifierDescriptor } from "./identifier-descriptor";
-import type { IdentifierValidation } from "./identifier-validator";
-import type { PrefixProvider } from "./prefix-provider";
+import type { IdentifierCreator } from "./identifier-creator.js";
+import type { IdentifierDescriptor } from "./identifier-descriptor.js";
+import type { IdentifierValidation } from "./identifier-validator.js";
+import type { PrefixProvider } from "./prefix-provider.js";
 
 /**
  * Abstract identifier creator. Implements common functionality for an identifier creator, bound to a {@link

@@ -6,8 +6,8 @@ import {
     LeaderTypes,
     type NumericIdentifierCreator,
     type NumericIdentifierDescriptor
-} from "../src";
-import { testIdentifierCreatorCallback } from "./identifier-creator";
+} from "../src/index.js";
+import { testIdentifierCreatorCallback } from "./identifier-creator.js";
 
 export function testNumericIdentifierCreator<TNumericIdentifierDescriptor extends NumericIdentifierDescriptor>(creator: NumericIdentifierCreator<TNumericIdentifierDescriptor>, preTestCallback?: () => void, postTestCallback?: () => void): void {
     describe(isGTINCreator(creator) ? `${creator.identifierType}-${creator.length}` : creator.identifierType as string, () => {
