@@ -1,4 +1,5 @@
-import type { TransformerInput, TransformerOutput } from "@aidc-toolkit/utility";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Used in JSDoc.
+import { NUMERIC_CREATOR, type TransformerInput, type TransformerOutput } from "@aidc-toolkit/utility";
 import type { IdentifierCreator } from "./identifier-creator.js";
 import type { NumericIdentifierDescriptor } from "./numeric-identifier-descriptor.js";
 import type { NumericIdentifierValidation, NumericIdentifierValidator } from "./numeric-identifier-validator.js";
@@ -27,7 +28,7 @@ export interface NumericIdentifierCreator<TNumericIdentifierDescriptor extends N
 
     /**
      * Create identifier(s) with reference(s) based on numeric value(s). The value(s) is/are converted to references of
-     * the appropriate length using the numeric creator.
+     * the appropriate length using {@linkcode NUMERIC_CREATOR}.
      *
      * @template TTransformerInput
      * Transformer input type.

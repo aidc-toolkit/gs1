@@ -1,4 +1,5 @@
-import { mapIterable, type TransformerInput, type TransformerOutput } from "@aidc-toolkit/utility";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Used in JSDoc.
+import { mapIterable, NUMERIC_CREATOR, type TransformerInput, type TransformerOutput } from "@aidc-toolkit/utility";
 import { Mixin } from "ts-mixer";
 import { AbstractNumericIdentifierCreator } from "./abstract-numeric-identifier-creator.js";
 import type { PrefixProvider } from "./prefix-provider.js";
@@ -74,7 +75,7 @@ export class SerializableNumericIdentifierCreator extends Mixin(SerializableNume
 
     /**
      * Create serialized identifier(s) with a reference based on a numeric value concatenated with serial component(s).
-     * The value is converted to a reference of the appropriate length using a numeric creator.
+     * The value is converted to a reference of the appropriate length using {@linkcode NUMERIC_CREATOR}.
      *
      * @template TTransformerInput
      * Transformer input type.
