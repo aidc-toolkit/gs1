@@ -212,7 +212,7 @@ export type IdentifierDescriptorsEntry<TIdentifierType extends IdentifierType> =
  * Identifier descriptors record type.
  */
 export type IdentifierDescriptorsRecord = {
-    [TIdentifierType in IdentifierType]: IdentifierDescriptorsEntry<TIdentifierType>;
+    readonly [TIdentifierType in IdentifierType]: IdentifierDescriptorsEntry<TIdentifierType>;
 };
 
 /**

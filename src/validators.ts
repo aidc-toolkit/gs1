@@ -103,7 +103,7 @@ export type IdentifierValidatorsEntry<TIdentifierType extends IdentifierType> = 
  * Identifier validators record type.
  */
 export type IdentifierValidatorsRecord = {
-    [TIdentifierType in IdentifierType]: IdentifierValidatorsEntry<TIdentifierType>;
+    readonly [TIdentifierType in IdentifierType]: IdentifierValidatorsEntry<TIdentifierType>;
 };
 
 /**
