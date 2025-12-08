@@ -68,40 +68,40 @@ describe("Variable measure RCN", () => {
         expect(() => GTINCreator.createVariableMeasureRCN("2IIIIIIIIIIC", 12345, 54321)).toThrow("Invalid variable measure RCN format");
 
         expect(() => {
-            GTINCreator.parseVariableMeasureRCN("3PPPPPIIIIIC", "2543211234540");
+            GTINValidator.parseVariableMeasureRCN("3PPPPPIIIIIC", "2543211234540");
         }).toThrow("RCN length must match format length");
         expect(() => {
-            GTINCreator.parseVariableMeasureRCN("3PPPPPIIIIIC", "25432112345");
+            GTINValidator.parseVariableMeasureRCN("3PPPPPIIIIIC", "25432112345");
         }).toThrow("RCN length must match format length");
         expect(() => {
-            GTINCreator.parseVariableMeasureRCN("3PPPPPIIIIIC", "254321123454");
+            GTINValidator.parseVariableMeasureRCN("3PPPPPIIIIIC", "254321123454");
         }).toThrow("Invalid variable measure RCN format");
         expect(() => {
-            GTINCreator.parseVariableMeasureRCN("20PPPPPIIIIC", "254321123454");
+            GTINValidator.parseVariableMeasureRCN("20PPPPPIIIIC", "254321123454");
         }).toThrow("Invalid variable measure RCN format");
         expect(() => {
-            GTINCreator.parseVariableMeasureRCN("2PPPPPIIIIII", "254321123454");
+            GTINValidator.parseVariableMeasureRCN("2PPPPPIIIIII", "254321123454");
         }).toThrow("Invalid variable measure RCN format");
         expect(() => {
-            GTINCreator.parseVariableMeasureRCN("2PPPPPIIIIKC", "254321123454");
+            GTINValidator.parseVariableMeasureRCN("2PPPPPIIIIKC", "254321123454");
         }).toThrow("Invalid variable measure RCN format");
         expect(() => {
-            GTINCreator.parseVariableMeasureRCN("2PPPPPIIPIIC", "254321123454");
+            GTINValidator.parseVariableMeasureRCN("2PPPPPIIPIIC", "254321123454");
         }).toThrow("Invalid variable measure RCN format");
         expect(() => {
-            GTINCreator.parseVariableMeasureRCN("2PPIPPIIIIIC", "254321123454");
+            GTINValidator.parseVariableMeasureRCN("2PPIPPIIIIIC", "254321123454");
         }).toThrow("Invalid variable measure RCN format");
         expect(() => {
-            GTINCreator.parseVariableMeasureRCN("2PPPPPIIIIC", "25432112345");
+            GTINValidator.parseVariableMeasureRCN("2PPPPPIIIIC", "25432112345");
         }).toThrow("Invalid variable measure RCN format");
         expect(() => {
-            GTINCreator.parseVariableMeasureRCN("2PPPPPIIIIIIC", "2543211234540");
+            GTINValidator.parseVariableMeasureRCN("2PPPPPIIIIIIC", "2543211234540");
         }).toThrow("Invalid variable measure RCN format");
         expect(() => {
-            GTINCreator.parseVariableMeasureRCN("2PPPPPPPPPPC", "254321123454");
+            GTINValidator.parseVariableMeasureRCN("2PPPPPPPPPPC", "254321123454");
         }).toThrow("Invalid variable measure RCN format");
         expect(() => {
-            GTINCreator.parseVariableMeasureRCN("2IIIIIIIIIIC", "254321123454");
+            GTINValidator.parseVariableMeasureRCN("2IIIIIIIIIIC", "254321123454");
         }).toThrow("Invalid variable measure RCN format");
     });
 
@@ -165,37 +165,37 @@ describe("Variable measure RCN", () => {
         expect(() => GTINCreator.createVariableMeasureRCN("27IIIIIIIIIIC", 12345, 54321)).toThrow("Invalid variable measure RCN format");
 
         expect(() => {
-            GTINCreator.parseVariableMeasureRCN("30PPPPPIIIIIC", "27543211234570");
+            GTINValidator.parseVariableMeasureRCN("30PPPPPIIIIIC", "27543211234570");
         }).toThrow("RCN length must match format length");
         expect(() => {
-            GTINCreator.parseVariableMeasureRCN("30PPPPPIIIIIC", "275432112345");
+            GTINValidator.parseVariableMeasureRCN("30PPPPPIIIIIC", "275432112345");
         }).toThrow("RCN length must match format length");
         expect(() => {
-            GTINCreator.parseVariableMeasureRCN("30PPPPPIIIIIC", "2754321123457");
+            GTINValidator.parseVariableMeasureRCN("30PPPPPIIIIIC", "2754321123457");
         }).toThrow("Invalid variable measure RCN format");
         expect(() => {
-            GTINCreator.parseVariableMeasureRCN("20PPPPPIIIIII", "2754321123457");
+            GTINValidator.parseVariableMeasureRCN("20PPPPPIIIIII", "2754321123457");
         }).toThrow("Invalid variable measure RCN format");
         expect(() => {
-            GTINCreator.parseVariableMeasureRCN("21PPPPPIIIIKC", "2754321123457");
+            GTINValidator.parseVariableMeasureRCN("21PPPPPIIIIKC", "2754321123457");
         }).toThrow("Invalid variable measure RCN format");
         expect(() => {
-            GTINCreator.parseVariableMeasureRCN("22PPPPPIIPIIC", "2754321123457");
+            GTINValidator.parseVariableMeasureRCN("22PPPPPIIPIIC", "2754321123457");
         }).toThrow("Invalid variable measure RCN format");
         expect(() => {
-            GTINCreator.parseVariableMeasureRCN("23PPIPPIIIIIC", "2754321123457");
+            GTINValidator.parseVariableMeasureRCN("23PPIPPIIIIIC", "2754321123457");
         }).toThrow("Invalid variable measure RCN format");
         expect(() => {
-            GTINCreator.parseVariableMeasureRCN("24PPPPPIIIIC", "275432112345");
+            GTINValidator.parseVariableMeasureRCN("24PPPPPIIIIC", "275432112345");
         }).toThrow("Invalid variable measure RCN format");
         expect(() => {
-            GTINCreator.parseVariableMeasureRCN("25PPPPPIIIIIIC", "27543211234570");
+            GTINValidator.parseVariableMeasureRCN("25PPPPPIIIIIIC", "27543211234570");
         }).toThrow("Invalid variable measure RCN format");
         expect(() => {
-            GTINCreator.parseVariableMeasureRCN("26PPPPPPPPPPC", "2754321123457");
+            GTINValidator.parseVariableMeasureRCN("26PPPPPPPPPPC", "2754321123457");
         }).toThrow("Invalid variable measure RCN format");
         expect(() => {
-            GTINCreator.parseVariableMeasureRCN("27IIIIIIIIIIC", "2754321123457");
+            GTINValidator.parseVariableMeasureRCN("27IIIIIIIIIIC", "2754321123457");
         }).toThrow("Invalid variable measure RCN format");
     });
 });
