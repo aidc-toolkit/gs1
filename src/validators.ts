@@ -79,15 +79,16 @@ const GMN_VALIDATOR = new NonNumericIdentifierValidator(IdentifierTypes.GMN);
  * @template TIdentifierType
  * Identifier type type.
  */
-export type IdentifierTypeValidator<TIdentifierType extends IdentifierType> = TIdentifierType extends NonNumericIdentifierType ?
-    NonNumericIdentifierValidator :
-    TIdentifierType extends SerializableNumericIdentifierType ?
-        SerializableNumericIdentifierValidator :
-        TIdentifierType extends NonGTINNumericIdentifierType ?
-            NonGTINNumericIdentifierValidator :
-            TIdentifierType extends typeof IdentifierTypes.GTIN ?
-                GTINValidator :
-                IdentifierValidator;
+export type IdentifierTypeValidator<TIdentifierType extends IdentifierType> =
+    TIdentifierType extends NonNumericIdentifierType ?
+        NonNumericIdentifierValidator :
+        TIdentifierType extends SerializableNumericIdentifierType ?
+            SerializableNumericIdentifierValidator :
+            TIdentifierType extends NonGTINNumericIdentifierType ?
+                NonGTINNumericIdentifierValidator :
+                TIdentifierType extends typeof IdentifierTypes.GTIN ?
+                    GTINValidator :
+                    IdentifierValidator;
 
 /**
  * Identifier validators entry type based on identifier type type.

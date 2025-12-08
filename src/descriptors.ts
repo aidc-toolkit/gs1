@@ -188,15 +188,16 @@ const GMN_DESCRIPTOR: NonNumericIdentifierDescriptor = {
  * @template TIdentifierType
  * Identifier type type.
  */
-export type IdentifierTypeDescriptor<TIdentifierType extends IdentifierType> = TIdentifierType extends NonNumericIdentifierType ?
-    NonNumericIdentifierDescriptor :
-    TIdentifierType extends SerializableNumericIdentifierType ?
-        SerializableNumericIdentifierDescriptor :
-        TIdentifierType extends NonGTINNumericIdentifierType ?
-            NonGTINNumericIdentifierDescriptor :
-            TIdentifierType extends typeof IdentifierTypes.GTIN ?
-                GTINDescriptor :
-                IdentifierDescriptor;
+export type IdentifierTypeDescriptor<TIdentifierType extends IdentifierType> =
+    TIdentifierType extends NonNumericIdentifierType ?
+        NonNumericIdentifierDescriptor :
+        TIdentifierType extends SerializableNumericIdentifierType ?
+            SerializableNumericIdentifierDescriptor :
+            TIdentifierType extends NonGTINNumericIdentifierType ?
+                NonGTINNumericIdentifierDescriptor :
+                TIdentifierType extends typeof IdentifierTypes.GTIN ?
+                    GTINDescriptor :
+                    IdentifierDescriptor;
 
 /**
  * Identifier descriptors entry type based on identifier type type.

@@ -22,15 +22,16 @@ import type { SerializableNumericIdentifierType } from "./serializable-numeric-i
  * @template TIdentifierType
  * Identifier type type.
  */
-export type IdentifierTypeCreator<TIdentifierType extends IdentifierType> = TIdentifierType extends NonNumericIdentifierType ?
-    NonNumericIdentifierCreator :
-    TIdentifierType extends SerializableNumericIdentifierType ?
-        SerializableNumericIdentifierCreator :
-        TIdentifierType extends NonGTINNumericIdentifierType ?
-            NonGTINNumericIdentifierCreator :
-            TIdentifierType extends typeof IdentifierTypes.GTIN ?
-                GTINCreator :
-                IdentifierCreator;
+export type IdentifierTypeCreator<TIdentifierType extends IdentifierType> =
+    TIdentifierType extends NonNumericIdentifierType ?
+        NonNumericIdentifierCreator :
+        TIdentifierType extends SerializableNumericIdentifierType ?
+            SerializableNumericIdentifierCreator :
+            TIdentifierType extends NonGTINNumericIdentifierType ?
+                NonGTINNumericIdentifierCreator :
+                TIdentifierType extends typeof IdentifierTypes.GTIN ?
+                    GTINCreator :
+                    IdentifierCreator;
 
 /**
  * Identifier creators entry type based on identifier type type.
