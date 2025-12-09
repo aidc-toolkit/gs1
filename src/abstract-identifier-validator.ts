@@ -16,7 +16,7 @@ import { PrefixValidator } from "./prefix-validator.js";
  * Identifier validation type.
  */
 export abstract class AbstractIdentifierValidator<TIdentifierDescriptor extends IdentifierDescriptor, TIdentifierValidation extends IdentifierValidation> implements IdentifierValidator<TIdentifierDescriptor, TIdentifierValidation> {
-    private static readonly CHARACTER_SET_CREATORS: Record<ContentCharacterSet, CharacterSetCreator> = {
+    static readonly #CHARACTER_SET_CREATORS: Record<ContentCharacterSet, CharacterSetCreator> = {
         [ContentCharacterSets.Numeric]: NUMERIC_CREATOR,
         [ContentCharacterSets.AI82]: AI82_CREATOR,
         [ContentCharacterSets.AI39]: AI39_CREATOR
@@ -25,22 +25,22 @@ export abstract class AbstractIdentifierValidator<TIdentifierDescriptor extends 
     /**
      * Identifier type.
      */
-    private readonly _identifierType: TIdentifierDescriptor["identifierType"];
+    readonly #identifierType: TIdentifierDescriptor["identifierType"];
 
     /**
      * Length.
      */
-    private readonly _length: number;
+    readonly #length: number;
 
     /**
      * Reference character set.
      */
-    private readonly _referenceCharacterSet: TIdentifierDescriptor["referenceCharacterSet"];
+    readonly #referenceCharacterSet: TIdentifierDescriptor["referenceCharacterSet"];
 
     /**
      * Reference creator.
      */
-    private readonly _referenceCreator: CharacterSetCreator;
+    readonly #referenceCreator: CharacterSetCreator;
 
     /**
      * Get the character set creator for a character set.
@@ -52,7 +52,7 @@ export abstract class AbstractIdentifierValidator<TIdentifierDescriptor extends 
      * Character set creator.
      */
     protected static creatorFor(characterSet: ContentCharacterSet): CharacterSetCreator {
-        return AbstractIdentifierValidator.CHARACTER_SET_CREATORS[characterSet];
+        return AbstractIdentifierValidator.#CHARACTER_SET_CREATORS[characterSet];
     }
 
     /**
@@ -62,17 +62,17 @@ export abstract class AbstractIdentifierValidator<TIdentifierDescriptor extends 
      * Identifier descriptor.
      */
     protected constructor(identifierDescriptor: IdentifierDescriptor) {
-        this._identifierType = identifierDescriptor.identifierType;
-        this._length = identifierDescriptor.length;
-        this._referenceCharacterSet = identifierDescriptor.referenceCharacterSet;
-        this._referenceCreator = AbstractIdentifierValidator.creatorFor(identifierDescriptor.referenceCharacterSet);
+        this.#identifierType = identifierDescriptor.identifierType;
+        this.#length = identifierDescriptor.length;
+        this.#referenceCharacterSet = identifierDescriptor.referenceCharacterSet;
+        this.#referenceCreator = AbstractIdentifierValidator.creatorFor(identifierDescriptor.referenceCharacterSet);
     }
 
     /**
      * @inheritDoc
      */
     get identifierType(): TIdentifierDescriptor["identifierType"] {
-        return this._identifierType;
+        return this.#identifierType;
     }
 
     /**
@@ -87,21 +87,21 @@ export abstract class AbstractIdentifierValidator<TIdentifierDescriptor extends 
      * @inheritDoc
      */
     get length(): number {
-        return this._length;
+        return this.#length;
     }
 
     /**
      * @inheritDoc
      */
     get referenceCharacterSet(): TIdentifierDescriptor["referenceCharacterSet"] {
-        return this._referenceCharacterSet;
+        return this.#referenceCharacterSet;
     }
 
     /**
      * @inheritDoc
      */
     get referenceCreator(): CharacterSetCreator {
-        return this._referenceCreator;
+        return this.#referenceCreator;
     }
 
     /**

@@ -5,18 +5,22 @@ import {
     type TransformerInput,
     type TransformerOutput
 } from "@aidc-toolkit/utility";
-import { Mixin } from "ts-mixer";
-import { AbstractNumericIdentifierCreator } from "./abstract-numeric-identifier-creator.js";
 import { checkDigit, priceOrWeightCheckDigit } from "./check.js";
 import { type GTINBaseType, GTINTypes } from "./gtin-type.js";
 import { GTINValidator } from "./gtin-validator.js";
+import type { IdentifierTypes } from "./identifier-type.js";
 import { i18nextGS1 } from "./locale/i18n.js";
+import { MixinNumericIdentifierCreator } from "./mixin-numeric-identifier-creator.js";
 import type { PrefixProvider } from "./prefix-provider.js";
 
 /**
  * GTIN creator. Applicable to GTIN-13, GTIN-12, and GTIN-8 types; no applicable to GTIN-14 type.
  */
-export class GTINCreator extends Mixin(GTINValidator, AbstractNumericIdentifierCreator) {
+export class GTINCreator extends MixinNumericIdentifierCreator<
+    [GTINBaseType],
+    typeof IdentifierTypes.GTIN,
+    typeof GTINValidator
+>(GTINValidator) {
     /**
      * Validation parameters for required indicator digit.
      */
@@ -37,9 +41,7 @@ export class GTINCreator extends Mixin(GTINValidator, AbstractNumericIdentifierC
      * GTIN base type (all except GTIN-14).
      */
     constructor(prefixProvider: PrefixProvider, gtinBaseType: GTINBaseType) {
-        super(gtinBaseType);
-
-        this.init(prefixProvider, prefixProvider.prefix);
+        super(prefixProvider, prefixProvider.prefix, gtinBaseType);
     }
 
     /**

@@ -24,7 +24,7 @@ export class NonNumericIdentifierValidator extends AbstractIdentifierValidator<N
     /**
      * Validator to ensure that an identifier (minus check character pair) is not all numeric.
      */
-    private static readonly NOT_ALL_NUMERIC_VALIDATOR = new class extends RegExpValidator {
+    static readonly #NOT_ALL_NUMERIC_VALIDATOR = new class extends RegExpValidator {
         /**
          * @inheritDoc
          */
@@ -36,7 +36,7 @@ export class NonNumericIdentifierValidator extends AbstractIdentifierValidator<N
     /**
      * True if the identifier requires a check character pair.
      */
-    private readonly _requiresCheckCharacterPair: boolean;
+    readonly #requiresCheckCharacterPair: boolean;
 
     /**
      * Constructor.
@@ -49,14 +49,14 @@ export class NonNumericIdentifierValidator extends AbstractIdentifierValidator<N
 
         super(identifierDescriptor);
 
-        this._requiresCheckCharacterPair = identifierDescriptor.requiresCheckCharacterPair;
+        this.#requiresCheckCharacterPair = identifierDescriptor.requiresCheckCharacterPair;
     }
 
     /**
      * Determine if the identifier requires a check character pair.
      */
     get requiresCheckCharacterPair(): boolean {
-        return this._requiresCheckCharacterPair;
+        return this.#requiresCheckCharacterPair;
     }
 
     /**
@@ -84,7 +84,7 @@ export class NonNumericIdentifierValidator extends AbstractIdentifierValidator<N
 
         // Check for all-numeric identifier (minus check character pair) if excluded.
         if (validation?.exclusion === Exclusions.AllNumeric) {
-            NonNumericIdentifierValidator.NOT_ALL_NUMERIC_VALIDATOR.validate(partialIdentifier);
+            NonNumericIdentifierValidator.#NOT_ALL_NUMERIC_VALIDATOR.validate(partialIdentifier);
         }
     }
 }

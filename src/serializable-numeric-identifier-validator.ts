@@ -15,22 +15,22 @@ export class SerializableNumericIdentifierValidator extends AbstractNumericIdent
     /**
      * Serial component length.
      */
-    private readonly _serialComponentLength: number;
+    readonly #serialComponentLength: number;
 
     /**
      * Serial component character set.
      */
-    private readonly _serialComponentCharacterSet: ContentCharacterSet;
+    readonly #serialComponentCharacterSet: ContentCharacterSet;
 
     /**
      * Serial component validation parameters.
      */
-    private readonly _serialComponentValidation: CharacterSetValidation;
+    readonly #serialComponentValidation: CharacterSetValidation;
 
     /**
      * Serial component creator.
      */
-    private readonly _serialComponentCreator: CharacterSetCreator;
+    readonly #serialComponentCreator: CharacterSetCreator;
 
     /**
      * Constructor.
@@ -43,44 +43,44 @@ export class SerializableNumericIdentifierValidator extends AbstractNumericIdent
 
         super(identifierDescriptor);
 
-        this._serialComponentLength = identifierDescriptor.serialComponentLength;
-        this._serialComponentCharacterSet = identifierDescriptor.serialComponentCharacterSet;
+        this.#serialComponentLength = identifierDescriptor.serialComponentLength;
+        this.#serialComponentCharacterSet = identifierDescriptor.serialComponentCharacterSet;
 
-        this._serialComponentValidation = {
+        this.#serialComponentValidation = {
             minimumLength: 1,
             maximumLength: identifierDescriptor.serialComponentLength,
             component: () => i18nextGS1.t("Identifier.serialComponent")
         };
 
-        this._serialComponentCreator = SerializableNumericIdentifierValidator.creatorFor(identifierDescriptor.serialComponentCharacterSet);
+        this.#serialComponentCreator = SerializableNumericIdentifierValidator.creatorFor(identifierDescriptor.serialComponentCharacterSet);
     }
 
     /**
      * Get the serial component length.
      */
     get serialComponentLength(): number {
-        return this._serialComponentLength;
+        return this.#serialComponentLength;
     }
 
     /**
      * Get the serial component character set.
      */
     get serialComponentCharacterSet(): ContentCharacterSet {
-        return this._serialComponentCharacterSet;
+        return this.#serialComponentCharacterSet;
     }
 
     /**
      * Get the serial component validation parameters.
      */
     protected get serialComponentValidation(): CharacterSetValidation {
-        return this._serialComponentValidation;
+        return this.#serialComponentValidation;
     }
 
     /**
      * Get the serial component creator.
      */
     get serialComponentCreator(): CharacterSetCreator {
-        return this._serialComponentCreator;
+        return this.#serialComponentCreator;
     }
 
     /**
@@ -90,7 +90,7 @@ export class SerializableNumericIdentifierValidator extends AbstractNumericIdent
         super.validate(identifier.substring(0, this.length), validation);
 
         if (identifier.length > this.length) {
-            this.serialComponentCreator.validate(identifier.substring(this.length), this._serialComponentValidation);
+            this.serialComponentCreator.validate(identifier.substring(this.length), this.#serialComponentValidation);
         }
     }
 }

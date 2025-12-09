@@ -235,8 +235,8 @@ export class PrefixManager implements PrefixProvider {
      * @param identifierType
      * Identifier type used to construct identifier creator.
      *
-     * @param constructorParameter
-     * Second constructor parameter passed to constructor callback alongside this.
+     * @param constructorArgument
+     * Second constructor argument passed to constructor callback alongside this.
      *
      * @param ConstructorCallback
      * Constructor callback.
@@ -244,7 +244,7 @@ export class PrefixManager implements PrefixProvider {
      * @returns
      * Identifier creator.
      */
-    #getIdentifierCreator<TIdentifierType extends IdentifierType, TConstructorParameter>(identifierType: TIdentifierType, constructorParameter: TConstructorParameter, ConstructorCallback: new (prefixProvider: PrefixProvider, constructorParameter: TConstructorParameter) => IdentifierCreatorsRecord[TIdentifierType]): IdentifierCreatorsRecord[TIdentifierType] {
+    #getIdentifierCreator<TIdentifierType extends IdentifierType, TConstructorArgument>(identifierType: TIdentifierType, constructorArgument: TConstructorArgument, ConstructorCallback: new (prefixProvider: PrefixProvider, constructorParameter: TConstructorArgument) => IdentifierCreatorsRecord[TIdentifierType]): IdentifierCreatorsRecord[TIdentifierType] {
         let creator: IdentifierCreatorsRecord[TIdentifierType] | undefined = this.#identifierCreators[identifierType];
 
         if (creator === undefined) {
@@ -254,7 +254,7 @@ export class PrefixManager implements PrefixProvider {
                 }));
             }
 
-            creator = new ConstructorCallback(this, constructorParameter);
+            creator = new ConstructorCallback(this, constructorArgument);
 
             this.#setCreatorTweak(creator);
 

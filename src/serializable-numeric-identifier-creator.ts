@@ -1,7 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Used in JSDoc.
 import { mapIterable, NUMERIC_CREATOR, type TransformerInput, type TransformerOutput } from "@aidc-toolkit/utility";
-import { Mixin } from "ts-mixer";
-import { AbstractNumericIdentifierCreator } from "./abstract-numeric-identifier-creator.js";
+import { MixinNumericIdentifierCreator } from "./mixin-numeric-identifier-creator.js";
 import type { PrefixProvider } from "./prefix-provider.js";
 import type { SerializableNumericIdentifierType } from "./serializable-numeric-identifier-type.js";
 import { SerializableNumericIdentifierValidator } from "./serializable-numeric-identifier-validator.js";
@@ -9,7 +8,11 @@ import { SerializableNumericIdentifierValidator } from "./serializable-numeric-i
 /**
  * Serializable numeric identifier creator.
  */
-export class SerializableNumericIdentifierCreator extends Mixin(SerializableNumericIdentifierValidator, AbstractNumericIdentifierCreator) {
+export class SerializableNumericIdentifierCreator extends MixinNumericIdentifierCreator<
+    [SerializableNumericIdentifierType],
+    SerializableNumericIdentifierType,
+    typeof SerializableNumericIdentifierValidator
+>(SerializableNumericIdentifierValidator) {
     /**
      * Constructor. Typically called internally by a prefix manager but may be called by other code with another prefix
      * provider type.
@@ -21,9 +24,7 @@ export class SerializableNumericIdentifierCreator extends Mixin(SerializableNume
      * Identifier type.
      */
     constructor(prefixProvider: PrefixProvider, identifierType: SerializableNumericIdentifierType) {
-        super(identifierType);
-
-        this.init(prefixProvider, prefixProvider.gs1CompanyPrefix);
+        super(prefixProvider, prefixProvider.gs1CompanyPrefix, identifierType);
     }
 
     /**

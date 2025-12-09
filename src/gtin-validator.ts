@@ -60,7 +60,7 @@ export class GTINValidator extends AbstractNumericIdentifierValidator<GTINDescri
     /**
      * Validation parameters for optional indicator digit.
      */
-    private static readonly OPTIONAL_INDICATOR_DIGIT_VALIDATION: CharacterSetValidation = {
+    static readonly #OPTIONAL_INDICATOR_DIGIT_VALIDATION: CharacterSetValidation = {
         minimumLength: 0,
         maximumLength: 1,
         component: () => i18nextGS1.t("Identifier.indicatorDigit")
@@ -69,7 +69,7 @@ export class GTINValidator extends AbstractNumericIdentifierValidator<GTINDescri
     /**
      * Validation parameters for zero-suppressed GTIN-12.
      */
-    private static readonly ZERO_SUPPRESSED_GTIN12_VALIDATION: CharacterSetValidation = {
+    static readonly #ZERO_SUPPRESSED_GTIN12_VALIDATION: CharacterSetValidation = {
         minimumLength: 8,
         maximumLength: 8
     };
@@ -77,7 +77,7 @@ export class GTINValidator extends AbstractNumericIdentifierValidator<GTINDescri
     /**
      * Prefix type.
      */
-    private readonly _prefixType: PrefixType;
+    readonly #prefixType: PrefixType;
 
     /**
      * Constructor.
@@ -90,14 +90,14 @@ export class GTINValidator extends AbstractNumericIdentifierValidator<GTINDescri
 
         super(identifierDescriptor);
 
-        this._prefixType = identifierDescriptor.prefixType;
+        this.#prefixType = identifierDescriptor.prefixType;
     }
 
     /**
      * @inheritDoc
      */
     override get prefixType(): PrefixType {
-        return this._prefixType;
+        return this.#prefixType;
     }
 
     /**
@@ -163,7 +163,7 @@ export class GTINValidator extends AbstractNumericIdentifierValidator<GTINDescri
      * GTIN-12.
      */
     static zeroExpand(zeroSuppressedGTIN12: string): string {
-        NUMERIC_CREATOR.validate(zeroSuppressedGTIN12, GTINValidator.ZERO_SUPPRESSED_GTIN12_VALIDATION);
+        NUMERIC_CREATOR.validate(zeroSuppressedGTIN12, GTINValidator.#ZERO_SUPPRESSED_GTIN12_VALIDATION);
 
         // Convert to individual digits.
         const d = Array.from(zeroSuppressedGTIN12);
@@ -208,7 +208,7 @@ export class GTINValidator extends AbstractNumericIdentifierValidator<GTINDescri
     static convertToGTIN14(indicatorDigit: string, gtin: string): string {
         GTINValidator.validateAny(gtin);
 
-        NUMERIC_CREATOR.validate(indicatorDigit, GTINValidator.OPTIONAL_INDICATOR_DIGIT_VALIDATION);
+        NUMERIC_CREATOR.validate(indicatorDigit, GTINValidator.#OPTIONAL_INDICATOR_DIGIT_VALIDATION);
 
         // Check digit doesn't change by prepending zeros.
         let gtin14 = gtin.padStart(GTINTypes.GTIN14, "0");

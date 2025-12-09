@@ -4,22 +4,30 @@ import {
     type TransformerInput,
     type TransformerOutput
 } from "@aidc-toolkit/utility";
-import { Mixin } from "ts-mixer";
-import { AbstractIdentifierCreator } from "./abstract-identifier-creator.js";
 import { checkCharacterPair } from "./check.js";
+import { IdentifierDescriptors } from "./descriptors.js";
 import { i18nextGS1 } from "./locale/i18n.js";
+import { MixinIdentifierCreator } from "./mixin-identifier-creator.js";
 import type { NonNumericIdentifierType } from "./non-numeric-identifier-type.js";
-import { NonNumericIdentifierValidator } from "./non-numeric-identifier-validator.js";
+import {
+    type NonNumericIdentifierValidation,
+    NonNumericIdentifierValidator
+} from "./non-numeric-identifier-validator.js";
 import type { PrefixProvider } from "./prefix-provider.js";
 
 /**
  * Non-numeric identifier creator.
  */
-export class NonNumericIdentifierCreator extends Mixin(NonNumericIdentifierValidator, AbstractIdentifierCreator) {
+export class NonNumericIdentifierCreator extends MixinIdentifierCreator<
+    [NonNumericIdentifierType],
+    NonNumericIdentifierType,
+    NonNumericIdentifierValidation,
+    typeof NonNumericIdentifierValidator
+>(NonNumericIdentifierValidator) {
     /**
      * Reference validation parameters.
      */
-    private readonly _referenceValidation: CharacterSetValidation;
+    readonly #referenceValidation: CharacterSetValidation;
 
     /**
      * Constructor. Typically called internally by a prefix manager but may be called by other code with another prefix
@@ -32,11 +40,9 @@ export class NonNumericIdentifierCreator extends Mixin(NonNumericIdentifierValid
      * Identifier type.
      */
     constructor(prefixProvider: PrefixProvider, identifierType: NonNumericIdentifierType) {
-        super(identifierType);
+        super(prefixProvider, prefixProvider.gs1CompanyPrefix, 2 * Number(IdentifierDescriptors[identifierType].requiresCheckCharacterPair), identifierType);
 
-        this.init(prefixProvider, prefixProvider.gs1CompanyPrefix, 2 * Number(this.requiresCheckCharacterPair));
-
-        this._referenceValidation = {
+        this.#referenceValidation = {
             minimumLength: 1,
             // Maximum reference length has to account for prefix and check character pair.
             maximumLength: this.referenceLength,
@@ -48,7 +54,7 @@ export class NonNumericIdentifierCreator extends Mixin(NonNumericIdentifierValid
      * Get the reference validation parameters.
      */
     protected get referenceValidation(): CharacterSetValidation {
-        return this._referenceValidation;
+        return this.#referenceValidation;
     }
 
     /**
