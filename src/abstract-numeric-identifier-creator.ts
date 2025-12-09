@@ -5,37 +5,40 @@ import {
     type TransformerInput,
     type TransformerOutput
 } from "@aidc-toolkit/utility";
-import { checkDigit, checkDigitSum } from "./check.js";
-import type { IdentifierTypeDescriptor } from "./descriptors.js";
 import {
     type IdentifierCreatorConstructor,
+    type IdentifierExtensionConstructor,
     type IdentifierValidatorConstructor,
-    MixinIdentifierCreator
-} from "./mixin-identifier-creator.js";
+    MixinAbstractIdentifierCreator
+} from "./abstract-identifier-creator.js";
+import { checkDigit, checkDigitSum } from "./check.js";
+import type { IdentifierTypeValidator } from "./identifier-validators.js";
+import { LeaderTypes } from "./leader-type.js";
 import type { NumericIdentifierCreator } from "./numeric-identifier-creator.js";
-import { LeaderTypes, type NumericIdentifierType } from "./numeric-identifier-type.js";
+import type { NumericIdentifierType } from "./numeric-identifier-type.js";
 import type { NumericIdentifierValidation, NumericIdentifierValidator } from "./numeric-identifier-validator.js";
 import type { PrefixProvider } from "./prefix-provider.js";
 
 /**
- * Identifier creator constructor type, which delegates to an identifier validator constructor. Identifier validator
- * constructor must take a single parameter.
+ * Numeric identifier creator constructor type, which delegates to a numeric identifier validator constructor.
  *
  * @template TConstructorArguments
  * Constructor arguments types.
  *
  * @template TNumericIdentifierType
- * Identifier type type.
+ * Numeric identifier type type.
  *
  * @template TNumericIdentifierValidator
- * Identifier validator type.
+ * Numeric identifier validator type.
  */
-type NumericIdentifierCreatorConstructor<
+export type NumericIdentifierCreatorConstructor<
     TConstructorArguments extends unknown[],
     TNumericIdentifierType extends NumericIdentifierType,
-    TNumericIdentifierValidator extends NumericIdentifierValidator<IdentifierTypeDescriptor<TNumericIdentifierType>>
-> = new (prefixProvider: PrefixProvider, prefix: string, ...args: TConstructorArguments) =>
-    TNumericIdentifierValidator & NumericIdentifierCreator<IdentifierTypeDescriptor<TNumericIdentifierType>>;
+    TNumericIdentifierValidator extends NumericIdentifierValidator<TNumericIdentifierType>
+> = IdentifierExtensionConstructor<
+    [prefixProvider: PrefixProvider, prefix: string, ...args: TConstructorArguments],
+    TNumericIdentifierValidator & NumericIdentifierCreator<TNumericIdentifierType>
+>;
 
 /**
  * Mixin implementation of {@linkcode NumericIdentifierCreator} with an appropriate numeric identifier validator base.
@@ -52,7 +55,7 @@ type NumericIdentifierCreatorConstructor<
  * @returns
  * Numeric identifier creator class.
  */
-export function MixinNumericIdentifierCreator<
+export function MixinAbstractNumericIdentifierCreator<
     TConstructorArguments extends unknown[],
     TNumericIdentifierType extends NumericIdentifierType,
     TNumericIdentifierValidatorConstructor extends IdentifierValidatorConstructor<
@@ -63,15 +66,18 @@ export function MixinNumericIdentifierCreator<
 >(NumericIdentifierValidatorBase: TNumericIdentifierValidatorConstructor): NumericIdentifierCreatorConstructor<
     TConstructorArguments,
     TNumericIdentifierType,
-    InstanceType<TNumericIdentifierValidatorConstructor>
+    IdentifierTypeValidator<TNumericIdentifierType>
 > {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Upcast constructor to type with statically known members for mixin then downcast result.
-    return class NumericIdentifierCreatorMixin extends (MixinIdentifierCreator(NumericIdentifierValidatorBase) as IdentifierCreatorConstructor<
+    /**
+     * Abstract numeric identifier creator. Implements common functionality for a numeric identifier creator, mixed in
+     * with a matching numeric identifier validator.
+     */
+    abstract class AbstractNumericIdentifierCreator extends (MixinAbstractIdentifierCreator(NumericIdentifierValidatorBase) as IdentifierCreatorConstructor<
         TConstructorArguments,
         TNumericIdentifierType,
         NumericIdentifierValidation,
-        NumericIdentifierValidator<IdentifierTypeDescriptor<TNumericIdentifierType>>
-    >) implements NumericIdentifierCreator<IdentifierTypeDescriptor<TNumericIdentifierType>> {
+        NumericIdentifierValidator<TNumericIdentifierType>
+    >) implements NumericIdentifierCreator<TNumericIdentifierType> {
         /**
          * Capacity.
          */
@@ -179,7 +185,7 @@ export function MixinNumericIdentifierCreator<
                 if (extensionWeight !== 0) {
                     // Apply every digit to the extension digit.
                     for (const c of NUMERIC_CREATOR.characterSet) {
-                        yield * NumericIdentifierCreatorMixin.createAllPartial(c + partialIdentifier, nextRemainingReferenceLength, 0, weight, nextPartialCheckDigitSum);
+                        yield * AbstractNumericIdentifierCreator.createAllPartial(c + partialIdentifier, nextRemainingReferenceLength, 0, weight, nextPartialCheckDigitSum);
 
                         nextPartialCheckDigitSum += extensionWeight;
                     }
@@ -188,7 +194,7 @@ export function MixinNumericIdentifierCreator<
 
                     // Apply every digit to the current character in the identifier.
                     for (const c of NUMERIC_CREATOR.characterSet) {
-                        yield * NumericIdentifierCreatorMixin.createAllPartial(partialIdentifier + c, nextRemainingReferenceLength, 0, nextWeight, nextPartialCheckDigitSum);
+                        yield * AbstractNumericIdentifierCreator.createAllPartial(partialIdentifier + c, nextRemainingReferenceLength, 0, nextWeight, nextPartialCheckDigitSum);
 
                         nextPartialCheckDigitSum += weight;
                     }
@@ -211,9 +217,18 @@ export function MixinNumericIdentifierCreator<
             // Returning separate Iterable object makes iteration repeatable.
             return {
                 [Symbol.iterator]() {
-                    return NumericIdentifierCreatorMixin.createAllPartial(prefix, referenceLength, hasExtensionDigit ? 3 - 2 * length % 2 : 0, startWeight, checkDigitSum(startWeight === 3, prefix));
+                    return AbstractNumericIdentifierCreator.createAllPartial(prefix, referenceLength, hasExtensionDigit ? 3 - 2 * length % 2 : 0, startWeight, checkDigitSum(startWeight === 3, prefix));
                 }
             };
         }
-    } as unknown as ReturnType<typeof MixinNumericIdentifierCreator<TConstructorArguments, TNumericIdentifierType, TNumericIdentifierValidatorConstructor>>;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Base class was upcast to type with statically known members for mixin, downcast result.
+    return AbstractNumericIdentifierCreator as IdentifierExtensionConstructor<
+        ConstructorParameters<typeof AbstractNumericIdentifierCreator>,
+        unknown
+    > as IdentifierExtensionConstructor<
+        ConstructorParameters<typeof AbstractNumericIdentifierCreator>,
+        IdentifierTypeValidator<TNumericIdentifierType> & AbstractNumericIdentifierCreator
+    >;
 }

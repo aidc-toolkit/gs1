@@ -1,7 +1,18 @@
-import type { IdentifierTypes } from "./identifier-type.js";
-import type { NumericIdentifierType } from "./numeric-identifier-type.js";
+import { exclude } from "@aidc-toolkit/core";
+import { GTINTypes } from "./gtin-type.js";
+import { NumericIdentifierTypes } from "./numeric-identifier-type.js";
+
+/**
+ * Non-GTIN numeric identifier types.
+ */
+export const NonGTINNumericIdentifierTypes = exclude(NumericIdentifierTypes, GTINTypes);
+
+/**
+ * Non-GTIN numeric identifier type key.
+ */
+export type NonGTINNumericIdentifierTypeKey = keyof typeof NonGTINNumericIdentifierTypes;
 
 /**
  * Non-GTIN numeric identifier type.
  */
-export type NonGTINNumericIdentifierType = Exclude<NumericIdentifierType, typeof IdentifierTypes.GTIN>;
+export type NonGTINNumericIdentifierType = typeof NonGTINNumericIdentifierTypes[NonGTINNumericIdentifierTypeKey];

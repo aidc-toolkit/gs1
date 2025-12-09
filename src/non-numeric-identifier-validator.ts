@@ -1,8 +1,7 @@
 import { Exclusions, RegExpValidator } from "@aidc-toolkit/utility";
-import { AbstractIdentifierValidator } from "./abstract-identifier-validator.js";
 import { hasValidCheckCharacterPair } from "./check.js";
-import { IdentifierDescriptors } from "./descriptors.js";
-import type { IdentifierValidation } from "./identifier-validator.js";
+import { IdentifierDescriptors } from "./identifier-descriptors.js";
+import { type IdentifierValidation, IdentifierValidator } from "./identifier-validator.js";
 import { i18nextGS1 } from "./locale/i18n.js";
 import type { NonNumericIdentifierDescriptor } from "./non-numeric-identifier-descriptor.js";
 import type { NonNumericIdentifierType } from "./non-numeric-identifier-type.js";
@@ -20,7 +19,7 @@ export interface NonNumericIdentifierValidation extends IdentifierValidation {
 /**
  * Non-numeric identifier validator.
  */
-export class NonNumericIdentifierValidator extends AbstractIdentifierValidator<NonNumericIdentifierDescriptor, NonNumericIdentifierValidation> {
+export class NonNumericIdentifierValidator extends IdentifierValidator<NonNumericIdentifierType, NonNumericIdentifierValidation> implements NonNumericIdentifierDescriptor {
     /**
      * Validator to ensure that an identifier (minus check character pair) is not all numeric.
      */

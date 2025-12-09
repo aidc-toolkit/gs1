@@ -1,8 +1,8 @@
 import { describe, expect, test } from "vitest";
 import {
-    type GTINBaseType,
+    type GTINBaseLength,
+    GTINLengths,
     GTINLevels,
-    GTINTypes,
     GTINValidator,
     IdentifierTypes,
     LeaderTypes,
@@ -11,26 +11,24 @@ import {
 } from "../src/index.js";
 import { validateNumericIdentifierValidator } from "./numeric-identifier-validator.js";
 
-export function validateGTINValidator(validator: GTINValidator, isCreator: boolean, gtinBaseType: GTINBaseType): void {
+export function validateGTINValidator(validator: GTINValidator, isCreator: boolean, gtinBaseLength: GTINBaseLength): void {
     let prefixType: PrefixType;
 
-    switch (gtinBaseType) {
-        case GTINTypes.GTIN13:
+    switch (gtinBaseLength) {
+        case GTINLengths.GTIN13:
             prefixType = PrefixTypes.GS1CompanyPrefix;
             break;
 
-        case GTINTypes.GTIN12:
+        case GTINLengths.GTIN12:
             prefixType = PrefixTypes.UPCCompanyPrefix;
             break;
 
-        case GTINTypes.GTIN8:
+        case GTINLengths.GTIN8:
             prefixType = PrefixTypes.GS18Prefix;
             break;
     }
 
-    validateNumericIdentifierValidator(validator, IdentifierTypes.GTIN, prefixType, gtinBaseType, LeaderTypes.IndicatorDigit);
-
-    expect(validator.gtinType).toBe(gtinBaseType);
+    validateNumericIdentifierValidator(validator, IdentifierTypes.GTIN, prefixType, gtinBaseLength, LeaderTypes.IndicatorDigit);
 }
 
 describe("GTIN validation and normalization", () => {

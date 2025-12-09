@@ -1,32 +1,33 @@
-import {
-    isGTINDescriptor,
-    isGTINDescriptors,
-    isNonGTINNumericIdentifierDescriptor,
-    isNonNumericIdentifierDescriptor,
-    isNumericIdentifierDescriptor,
-    isSerializableNumericIdentifierDescriptor
-} from "./descriptors.js";
-import type { GTINBaseType } from "./gtin-type.js";
+import type { GTINBaseLength } from "./gtin-length.js";
+import type { GTINType } from "./gtin-type.js";
 import { GTIN_VALIDATORS, type GTINValidator } from "./gtin-validator.js";
+import { isGTINDescriptors } from "./identifier-descriptors.js";
+import {
+    type IdentifierTypeExtension,
+    isGTINExtension,
+    isNonGTINNumericIdentifierExtension,
+    isNonNumericIdentifierExtension,
+    isNonSerializableNumericIdentifierExtension,
+    isNumericIdentifierExtension,
+    isSerializableNumericIdentifierExtension
+} from "./identifier-extension.js";
 import { type IdentifierType, IdentifierTypes } from "./identifier-type.js";
 import type { IdentifierValidator } from "./identifier-validator.js";
-import type { NonGTINNumericIdentifierType } from "./non-gtin-numeric-identifier-type.js";
-import { NonGTINNumericIdentifierValidator } from "./non-gtin-numeric-identifier-validator.js";
-import type { NonNumericIdentifierType } from "./non-numeric-identifier-type.js";
+import type { NonGTINNumericIdentifierValidator } from "./non-gtin-numeric-identifier-validator.js";
 import { NonNumericIdentifierValidator } from "./non-numeric-identifier-validator.js";
+import { NonSerializableNumericIdentifierValidator } from "./non-serializable-numeric-identifier-validator.js";
 import type { NumericIdentifierValidator } from "./numeric-identifier-validator.js";
-import type { SerializableNumericIdentifierType } from "./serializable-numeric-identifier-type.js";
 import { SerializableNumericIdentifierValidator } from "./serializable-numeric-identifier-validator.js";
 
 /**
  * GLN validator.
  */
-const GLN_VALIDATOR = new NonGTINNumericIdentifierValidator(IdentifierTypes.GLN);
+const GLN_VALIDATOR = new NonSerializableNumericIdentifierValidator(IdentifierTypes.GLN);
 
 /**
  * SSCC validator.
  */
-const SSCC_VALIDATOR = new NonGTINNumericIdentifierValidator(IdentifierTypes.SSCC);
+const SSCC_VALIDATOR = new NonSerializableNumericIdentifierValidator(IdentifierTypes.SSCC);
 
 /**
  * GRAI validator.
@@ -41,7 +42,7 @@ const GIAI_VALIDATOR = new NonNumericIdentifierValidator(IdentifierTypes.GIAI);
 /**
  * GSRN validator.
  */
-const GSRN_VALIDATOR = new NonGTINNumericIdentifierValidator(IdentifierTypes.GSRN);
+const GSRN_VALIDATOR = new NonSerializableNumericIdentifierValidator(IdentifierTypes.GSRN);
 
 /**
  * GDTI validator.
@@ -56,7 +57,7 @@ const GINC_VALIDATOR = new NonNumericIdentifierValidator(IdentifierTypes.GINC);
 /**
  * GSIN validator.
  */
-const GSIN_VALIDATOR = new NonGTINNumericIdentifierValidator(IdentifierTypes.GSIN);
+const GSIN_VALIDATOR = new NonSerializableNumericIdentifierValidator(IdentifierTypes.GSIN);
 
 /**
  * GCN validator.
@@ -79,16 +80,16 @@ const GMN_VALIDATOR = new NonNumericIdentifierValidator(IdentifierTypes.GMN);
  * @template TIdentifierType
  * Identifier type type.
  */
-export type IdentifierTypeValidator<TIdentifierType extends IdentifierType> =
-    TIdentifierType extends NonNumericIdentifierType ?
-        NonNumericIdentifierValidator :
-        TIdentifierType extends SerializableNumericIdentifierType ?
-            SerializableNumericIdentifierValidator :
-            TIdentifierType extends NonGTINNumericIdentifierType ?
-                NonGTINNumericIdentifierValidator :
-                TIdentifierType extends typeof IdentifierTypes.GTIN ?
-                    GTINValidator :
-                    IdentifierValidator;
+export type IdentifierTypeValidator<TIdentifierType extends IdentifierType> = IdentifierTypeExtension<
+    TIdentifierType,
+    IdentifierValidator,
+    NumericIdentifierValidator,
+    GTINValidator,
+    NonGTINNumericIdentifierValidator,
+    NonSerializableNumericIdentifierValidator,
+    SerializableNumericIdentifierValidator,
+    NonNumericIdentifierValidator
+>;
 
 /**
  * Identifier validators entry type based on identifier type type.
@@ -96,8 +97,8 @@ export type IdentifierTypeValidator<TIdentifierType extends IdentifierType> =
  * @template TIdentifierType
  * Identifier type type.
  */
-export type IdentifierValidatorsEntry<TIdentifierType extends IdentifierType> = TIdentifierType extends typeof IdentifierTypes.GTIN ?
-    Readonly<Record<GTINBaseType, GTINValidator>> :
+export type IdentifierValidatorsEntry<TIdentifierType extends IdentifierType> = TIdentifierType extends GTINType ?
+    Readonly<Record<GTINBaseLength, GTINValidator>> :
     IdentifierTypeValidator<TIdentifierType>;
 
 /**
@@ -123,7 +124,7 @@ export const IdentifierValidators: IdentifierValidatorsRecord = {
     [IdentifierTypes.GCN]: GCN_VALIDATOR,
     [IdentifierTypes.CPID]: CPID_VALIDATOR,
     [IdentifierTypes.GMN]: GMN_VALIDATOR
-} as const;
+};
 
 /**
  * Determine if identifier validators or validator is GTIN validators.
@@ -134,7 +135,7 @@ export const IdentifierValidators: IdentifierValidatorsRecord = {
  * @returns
  * True if GTIN validators.
  */
-export function isGTINValidators(identifierValidatorsOrValidator: IdentifierValidatorsEntry<IdentifierType>): identifierValidatorsOrValidator is Readonly<Record<GTINBaseType, GTINValidator>> {
+export function isGTINValidators(identifierValidatorsOrValidator: IdentifierValidatorsEntry<IdentifierType>): identifierValidatorsOrValidator is Readonly<Record<GTINBaseLength, GTINValidator>> {
     return isGTINDescriptors(identifierValidatorsOrValidator);
 }
 
@@ -148,7 +149,7 @@ export function isGTINValidators(identifierValidatorsOrValidator: IdentifierVali
  * True if identifier validator is a numeric identifier validator.
  */
 export function isNumericIdentifierValidator(identifierValidator: IdentifierValidator): identifierValidator is NumericIdentifierValidator {
-    return isNumericIdentifierDescriptor(identifierValidator);
+    return isNumericIdentifierExtension(identifierValidator);
 }
 
 /**
@@ -161,7 +162,7 @@ export function isNumericIdentifierValidator(identifierValidator: IdentifierVali
  * True if identifier validator is a GTIN validator.
  */
 export function isGTINValidator(identifierValidator: IdentifierValidator): identifierValidator is GTINValidator {
-    return isGTINDescriptor(identifierValidator);
+    return isGTINExtension(identifierValidator);
 }
 
 /**
@@ -174,7 +175,20 @@ export function isGTINValidator(identifierValidator: IdentifierValidator): ident
  * True if identifier validator is a non-GTIN numeric identifier validator.
  */
 export function isNonGTINNumericIdentifierValidator(identifierValidator: IdentifierValidator): identifierValidator is NonGTINNumericIdentifierValidator {
-    return isNonGTINNumericIdentifierDescriptor(identifierValidator);
+    return isNonGTINNumericIdentifierExtension(identifierValidator);
+}
+
+/**
+ * Determine if identifier validator is a non-serializable numeric identifier validator.
+ *
+ * @param identifierValidator
+ * Identifier validator.
+ *
+ * @returns
+ * True if identifier validator is a non-serializable numeric identifier validator.
+ */
+export function isNonSerializableNumericIdentifierValidator(identifierValidator: IdentifierValidator): identifierValidator is NonSerializableNumericIdentifierValidator {
+    return isNonSerializableNumericIdentifierExtension(identifierValidator);
 }
 
 /**
@@ -187,7 +201,7 @@ export function isNonGTINNumericIdentifierValidator(identifierValidator: Identif
  * True if identifier validator is a serializable numeric identifier validator.
  */
 export function isSerializableNumericIdentifierValidator(identifierValidator: IdentifierValidator): identifierValidator is SerializableNumericIdentifierValidator {
-    return isSerializableNumericIdentifierDescriptor(identifierValidator);
+    return isSerializableNumericIdentifierExtension(identifierValidator);
 }
 
 /**
@@ -200,5 +214,5 @@ export function isSerializableNumericIdentifierValidator(identifierValidator: Id
  * True if identifier validator is a non-numeric identifier validator.
  */
 export function isNonNumericIdentifierValidator(identifierValidator: IdentifierValidator): identifierValidator is NonNumericIdentifierValidator {
-    return isNonNumericIdentifierDescriptor(identifierValidator);
+    return isNonNumericIdentifierExtension(identifierValidator);
 }

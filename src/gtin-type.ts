@@ -1,29 +1,12 @@
-import { type PrefixType, PrefixTypes } from "./prefix-type.js";
+import { pick } from "@aidc-toolkit/core";
+import { NumericIdentifierTypes } from "./numeric-identifier-type.js";
 
 /**
- * GTIN types. The numeric values are equal to the lengths of the GTIN types.
+ * GTIN types.
  */
-export const GTINTypes = {
-    /**
-     * GTIN-13.
-     */
-    GTIN13: 13,
-
-    /**
-     * GTIN-12.
-     */
-    GTIN12: 12,
-
-    /**
-     * GTIN-8.
-     */
-    GTIN8: 8,
-
-    /**
-     * GTIN-14.
-     */
-    GTIN14: 14
-} as const;
+export const GTINTypes = pick(NumericIdentifierTypes,
+    NumericIdentifierTypes.GTIN
+);
 
 /**
  * GTIN type key.
@@ -34,17 +17,3 @@ export type GTINTypeKey = keyof typeof GTINTypes;
  * GTIN type.
  */
 export type GTINType = typeof GTINTypes[GTINTypeKey];
-
-/**
- * GTIN base type (all except GTIN-14).
- */
-export type GTINBaseType = Exclude<GTINType, typeof GTINTypes.GTIN14>;
-
-/**
- * GTIN base types by prefix type. Used to determine the GTIN type supported by a prefix type.
- */
-export const GTIN_BASE_TYPES: Readonly<Record<PrefixType, GTINBaseType>> = {
-    [PrefixTypes.GS1CompanyPrefix]: GTINTypes.GTIN13,
-    [PrefixTypes.UPCCompanyPrefix]: GTINTypes.GTIN12,
-    [PrefixTypes.GS18Prefix]: GTINTypes.GTIN8
-};

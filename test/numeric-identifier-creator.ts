@@ -3,15 +3,20 @@ import { describe, expect, test } from "vitest";
 import {
     hasValidCheckDigit,
     isGTINCreator,
+    isNumericIdentifierCreator,
     LeaderTypes,
     type NumericIdentifierCreator,
-    type NumericIdentifierDescriptor
+    type NumericIdentifierType
 } from "../src/index.js";
 import { testIdentifierCreatorCallback } from "./identifier-creator.js";
 
-export function testNumericIdentifierCreator<TNumericIdentifierDescriptor extends NumericIdentifierDescriptor>(creator: NumericIdentifierCreator<TNumericIdentifierDescriptor>, preTestCallback?: () => void, postTestCallback?: () => void): void {
+export function testNumericIdentifierCreator<TNumericIdentifierType extends NumericIdentifierType>(creator: NumericIdentifierCreator<TNumericIdentifierType>, preTestCallback?: () => void, postTestCallback?: () => void): void {
     describe(isGTINCreator(creator) ? `${creator.identifierType}-${creator.length}` : creator.identifierType as string, () => {
         testIdentifierCreatorCallback(preTestCallback);
+
+        test("Mapping", () => {
+            expect(isNumericIdentifierCreator(creator)).toBe(true);
+        });
 
         const prefix = creator.prefix;
         const prefixLength = prefix.length;

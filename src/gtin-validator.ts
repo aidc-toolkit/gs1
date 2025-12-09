@@ -1,10 +1,11 @@
 import { type CharacterSetValidation, NUMERIC_CREATOR } from "@aidc-toolkit/utility";
-import { AbstractNumericIdentifierValidator } from "./abstract-numeric-identifier-validator.js";
 import { checkDigit, hasValidCheckDigit, isValidPriceOrWeightCheckDigit } from "./check.js";
-import { IdentifierDescriptors } from "./descriptors.js";
 import type { GTINDescriptor } from "./gtin-descriptor.js";
-import { type GTINBaseType, type GTINType, GTINTypes } from "./gtin-type.js";
+import { type GTINBaseLength, GTINLengths } from "./gtin-length.js";
+import type { GTINType } from "./gtin-type.js";
+import { IdentifierDescriptors } from "./identifier-descriptors.js";
 import { i18nextGS1 } from "./locale/i18n.js";
+import { NumericIdentifierValidator } from "./numeric-identifier-validator.js";
 import { type PrefixType, PrefixTypes } from "./prefix-type.js";
 import { PrefixValidator } from "./prefix-validator.js";
 
@@ -56,7 +57,7 @@ export interface RCNReference {
 /**
  * GTIN validator.
  */
-export class GTINValidator extends AbstractNumericIdentifierValidator<GTINDescriptor> {
+export class GTINValidator extends NumericIdentifierValidator<GTINType> implements GTINDescriptor {
     /**
      * Validation parameters for optional indicator digit.
      */
@@ -82,11 +83,11 @@ export class GTINValidator extends AbstractNumericIdentifierValidator<GTINDescri
     /**
      * Constructor.
      *
-     * @param gtinBaseType
-     * GTIN base type (all except GTIN-14).
+     * @param gtinBaseLength
+     * GTIN base length (all except GTIN-14).
      */
-    constructor(gtinBaseType: GTINBaseType) {
-        const identifierDescriptor = IdentifierDescriptors.GTIN[gtinBaseType];
+    constructor(gtinBaseLength: GTINBaseLength) {
+        const identifierDescriptor = IdentifierDescriptors.GTIN[gtinBaseLength];
 
         super(identifierDescriptor);
 
@@ -98,14 +99,6 @@ export class GTINValidator extends AbstractNumericIdentifierValidator<GTINDescri
      */
     override get prefixType(): PrefixType {
         return this.#prefixType;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    get gtinType(): GTINType {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Length maps to GTIN type.
-        return this.length as GTINType;
     }
 
     /**
@@ -211,11 +204,11 @@ export class GTINValidator extends AbstractNumericIdentifierValidator<GTINDescri
         NUMERIC_CREATOR.validate(indicatorDigit, GTINValidator.#OPTIONAL_INDICATOR_DIGIT_VALIDATION);
 
         // Check digit doesn't change by prepending zeros.
-        let gtin14 = gtin.padStart(GTINTypes.GTIN14, "0");
+        let gtin14 = gtin.padStart(GTINLengths.GTIN14, "0");
 
         // If indicator digit provided and is different, recalculate the check digit.
         if (indicatorDigit.length !== 0 && indicatorDigit !== gtin14.charAt(0)) {
-            const partialGTIN14 = indicatorDigit + gtin14.substring(1, GTINTypes.GTIN14 - 1);
+            const partialGTIN14 = indicatorDigit + gtin14.substring(1, GTINLengths.GTIN14 - 1);
 
             gtin14 = partialGTIN14 + checkDigit(partialGTIN14);
         }
@@ -242,7 +235,7 @@ export class GTINValidator extends AbstractNumericIdentifierValidator<GTINDescri
         let normalizedGTIN: string;
 
         switch (gtinLength) {
-            case GTINTypes.GTIN13 as number:
+            case GTINLengths.GTIN13 as number:
                 if (!gtin.startsWith("0")) {
                     // GTIN is GTIN-13.
                     normalizedGTIN = gtin;
@@ -257,12 +250,12 @@ export class GTINValidator extends AbstractNumericIdentifierValidator<GTINDescri
                 }
                 break;
 
-            case GTINTypes.GTIN12 as number:
+            case GTINLengths.GTIN12 as number:
                 // GTIN is GTIN-12.
                 normalizedGTIN = gtin;
                 break;
 
-            case GTINTypes.GTIN8 as number:
+            case GTINLengths.GTIN8 as number:
                 if (!gtin.startsWith("0")) {
                     // GTIN is GTIN-8.
                     normalizedGTIN = gtin;
@@ -272,7 +265,7 @@ export class GTINValidator extends AbstractNumericIdentifierValidator<GTINDescri
                 }
                 break;
 
-            case GTINTypes.GTIN14 as number:
+            case GTINLengths.GTIN14 as number:
                 if (!gtin.startsWith("0")) {
                     // GTIN is GTIN-14.
                     normalizedGTIN = gtin;
@@ -316,7 +309,7 @@ export class GTINValidator extends AbstractNumericIdentifierValidator<GTINDescri
         let gtinLevelRestriction: GTINLevel;
 
         switch (gtin.length) {
-            case GTINTypes.GTIN13 as number:
+            case GTINLengths.GTIN13 as number:
                 if (gtin.startsWith("0")) {
                     throw new RangeError(i18nextGS1.t("Identifier.invalidGTIN13AtRetail"));
                 }
@@ -327,14 +320,14 @@ export class GTINValidator extends AbstractNumericIdentifierValidator<GTINDescri
                 gtinLevelRestriction = GTINLevels.Any;
                 break;
 
-            case GTINTypes.GTIN12 as number:
+            case GTINLengths.GTIN12 as number:
                 // Validate prefix requiring exact match for prefix type.
                 PrefixValidator.validate(PrefixTypes.UPCCompanyPrefix, false, false, gtin, true, true);
 
                 gtinLevelRestriction = GTINLevels.Any;
                 break;
 
-            case GTINTypes.GTIN8 as number:
+            case GTINLengths.GTIN8 as number:
                 // Zero-suppressed GTIN-12 always starts with 0.
                 if (!gtin.startsWith("0")) {
                     // Validate prefix requiring exact match for prefix type.
@@ -346,7 +339,7 @@ export class GTINValidator extends AbstractNumericIdentifierValidator<GTINDescri
                 gtinLevelRestriction = GTINLevels.RetailConsumer;
                 break;
 
-            case GTINTypes.GTIN14 as number:
+            case GTINLengths.GTIN14 as number:
                 // Validate prefix supporting any prefix type.
                 PrefixValidator.validate(PrefixTypes.GS1CompanyPrefix, true, true, gtin.substring(1), true, true);
 
@@ -375,7 +368,7 @@ export class GTINValidator extends AbstractNumericIdentifierValidator<GTINDescri
      * GTIN-14.
      */
     static validateGTIN14(gtin14: string): void {
-        if (gtin14.length !== GTINTypes.GTIN14) {
+        if (gtin14.length !== GTINLengths.GTIN14) {
             throw new RangeError(i18nextGS1.t("Identifier.invalidGTIN14Length"));
         }
 
@@ -515,26 +508,26 @@ export class GTINValidator extends AbstractNumericIdentifierValidator<GTINDescri
  * GTIN-13 validator.
  */
 // Defined here because of circular reference.
-export const GTIN13_VALIDATOR = new GTINValidator(GTINTypes.GTIN13);
+export const GTIN13_VALIDATOR = new GTINValidator(GTINLengths.GTIN13);
 
 /**
  * GTIN-12 validator.
  */
 // Defined here because of circular reference.
-export const GTIN12_VALIDATOR = new GTINValidator(GTINTypes.GTIN12);
+export const GTIN12_VALIDATOR = new GTINValidator(GTINLengths.GTIN12);
 
 /**
  * GTIN-8 validator.
  */
 // Defined here because of circular reference.
-export const GTIN8_VALIDATOR = new GTINValidator(GTINTypes.GTIN8);
+export const GTIN8_VALIDATOR = new GTINValidator(GTINLengths.GTIN8);
 
 /**
  * GTIN validators indexed by prefix type.
  */
 // Defined here because of circular reference.
-export const GTIN_VALIDATORS: Readonly<Record<GTINBaseType, GTINValidator>> = {
-    [GTINTypes.GTIN13]: GTIN13_VALIDATOR,
-    [GTINTypes.GTIN12]: GTIN12_VALIDATOR,
-    [GTINTypes.GTIN8]: GTIN8_VALIDATOR
+export const GTIN_VALIDATORS: Readonly<Record<GTINBaseLength, GTINValidator>> = {
+    [GTINLengths.GTIN13]: GTIN13_VALIDATOR,
+    [GTINLengths.GTIN12]: GTIN12_VALIDATOR,
+    [GTINLengths.GTIN8]: GTIN8_VALIDATOR
 };

@@ -1,4 +1,4 @@
-import type { IdentifierDescriptor } from "./identifier-descriptor.js";
+import type { IdentifierType } from "./identifier-type.js";
 import type { IdentifierValidation, IdentifierValidator } from "./identifier-validator.js";
 import type { PrefixProvider } from "./prefix-provider.js";
 
@@ -8,13 +8,13 @@ import type { PrefixProvider } from "./prefix-provider.js";
  *
  * Keys are created based on a prefix defined in a prefix provider to which the identifier creator is bound.
  *
- * @template TIdentifierDescriptor
- * Identifier descriptor type.
+ * @template TIdentifierType
+ * Identifier type type.
  *
  * @template TIdentifierValidation
  * Identifier validation type.
  */
-export interface IdentifierCreator<TIdentifierDescriptor extends IdentifierDescriptor = IdentifierDescriptor, TIdentifierValidation extends IdentifierValidation = IdentifierValidation> extends IdentifierValidator<TIdentifierDescriptor, TIdentifierValidation> {
+export interface IdentifierCreator<TIdentifierType extends IdentifierType = IdentifierType, TIdentifierValidation extends IdentifierValidation = IdentifierValidation> extends IdentifierValidator<TIdentifierType, TIdentifierValidation> {
     /**
      * Get the prefix provider to which this identifier creator is bound.
      */

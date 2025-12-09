@@ -1,20 +1,12 @@
-import { AbstractNumericIdentifierValidator } from "./abstract-numeric-identifier-validator.js";
-import { IdentifierDescriptors } from "./descriptors.js";
 import type { NonGTINNumericIdentifierDescriptor } from "./non-gtin-numeric-identifier-descriptor.js";
 import type { NonGTINNumericIdentifierType } from "./non-gtin-numeric-identifier-type.js";
-import type { SerializableNumericIdentifierType } from "./serializable-numeric-identifier-type.js";
+import { NumericIdentifierValidator } from "./numeric-identifier-validator.js";
 
 /**
  * Non-GTIN numeric identifier validator.
+ *
+ * @template TNonGTINNumericIdentifierType
+ * Non-GTIN numeric identifier type type.
  */
-export class NonGTINNumericIdentifierValidator extends AbstractNumericIdentifierValidator<NonGTINNumericIdentifierDescriptor> {
-    /**
-     * Constructor.
-     *
-     * @param identifierType
-     * Identifier type.
-     */
-    constructor(identifierType: Exclude<NonGTINNumericIdentifierType, SerializableNumericIdentifierType>) {
-        super(IdentifierDescriptors[identifierType]);
-    }
+export abstract class NonGTINNumericIdentifierValidator<TNonGTINNumericIdentifierType extends NonGTINNumericIdentifierType = NonGTINNumericIdentifierType> extends NumericIdentifierValidator<TNonGTINNumericIdentifierType> implements NonGTINNumericIdentifierDescriptor {
 }

@@ -1,9 +1,10 @@
 import type { CharacterSetCreator, CharacterSetValidation } from "@aidc-toolkit/utility";
-import { AbstractNumericIdentifierValidator } from "./abstract-numeric-identifier-validator.js";
+import { CONTENT_CHARACTER_SET_CREATORS } from "./content-character-set-creators.js";
 import type { ContentCharacterSet } from "./content-character-set.js";
-import { IdentifierDescriptors } from "./descriptors.js";
+import { IdentifierDescriptors } from "./identifier-descriptors.js";
 import type { IdentifierValidation } from "./identifier-validator.js";
 import { i18nextGS1 } from "./locale/i18n.js";
+import { NonGTINNumericIdentifierValidator } from "./non-gtin-numeric-identifier-validator.js";
 import type { SerializableNumericIdentifierDescriptor } from "./serializable-numeric-identifier-descriptor.js";
 import type { SerializableNumericIdentifierType } from "./serializable-numeric-identifier-type.js";
 
@@ -11,7 +12,7 @@ import type { SerializableNumericIdentifierType } from "./serializable-numeric-i
  * Serializable numeric identifier validator. Validates both serialized and non-serialized forms of numeric identifiers
  * that support serialization.
  */
-export class SerializableNumericIdentifierValidator extends AbstractNumericIdentifierValidator<SerializableNumericIdentifierDescriptor> {
+export class SerializableNumericIdentifierValidator extends NonGTINNumericIdentifierValidator<SerializableNumericIdentifierType> implements SerializableNumericIdentifierDescriptor {
     /**
      * Serial component length.
      */
@@ -52,7 +53,7 @@ export class SerializableNumericIdentifierValidator extends AbstractNumericIdent
             component: () => i18nextGS1.t("Identifier.serialComponent")
         };
 
-        this.#serialComponentCreator = SerializableNumericIdentifierValidator.creatorFor(identifierDescriptor.serialComponentCharacterSet);
+        this.#serialComponentCreator = CONTENT_CHARACTER_SET_CREATORS[identifierDescriptor.serialComponentCharacterSet];
     }
 
     /**

@@ -1,16 +1,16 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Used in JSDoc.
 import { NUMERIC_CREATOR, type TransformerInput, type TransformerOutput } from "@aidc-toolkit/utility";
 import type { IdentifierCreator } from "./identifier-creator.js";
-import type { NumericIdentifierDescriptor } from "./numeric-identifier-descriptor.js";
+import type { NumericIdentifierType } from "./numeric-identifier-type.js";
 import type { NumericIdentifierValidation, NumericIdentifierValidator } from "./numeric-identifier-validator.js";
 
 /**
  * Numeric identifier creator. Creates one or many numeric identifiers.
  *
- * @template TNumericIdentifierDescriptor
- * Numeric identifier descriptor type.
+ * @template TNumericIdentifierType
+ * Numeric identifier type type.
  */
-export interface NumericIdentifierCreator<TNumericIdentifierDescriptor extends NumericIdentifierDescriptor = NumericIdentifierDescriptor> extends NumericIdentifierValidator<TNumericIdentifierDescriptor>, IdentifierCreator<TNumericIdentifierDescriptor, NumericIdentifierValidation> {
+export interface NumericIdentifierCreator<TNumericIdentifierType extends NumericIdentifierType = NumericIdentifierType> extends NumericIdentifierValidator<TNumericIdentifierType>, IdentifierCreator<TNumericIdentifierType, NumericIdentifierValidation> {
     /**
      * Get the capacity (`10**referenceLength`).
      */

@@ -1,37 +1,37 @@
-import {
-    isGTINDescriptor,
-    isNonGTINNumericIdentifierDescriptor,
-    isNonNumericIdentifierDescriptor,
-    isNumericIdentifierDescriptor,
-    isSerializableNumericIdentifierDescriptor
-} from "./descriptors.js";
 import type { GTINCreator } from "./gtin-creator.js";
 import type { IdentifierCreator } from "./identifier-creator.js";
-import type { IdentifierType, IdentifierTypes } from "./identifier-type.js";
+import {
+    type IdentifierTypeExtension,
+    isGTINExtension,
+    isNonGTINNumericIdentifierExtension,
+    isNonNumericIdentifierExtension,
+    isNonSerializableNumericIdentifierExtension,
+    isNumericIdentifierExtension,
+    isSerializableNumericIdentifierExtension
+} from "./identifier-extension.js";
+import type { IdentifierType } from "./identifier-type.js";
 import type { NonGTINNumericIdentifierCreator } from "./non-gtin-numeric-identifier-creator.js";
-import type { NonGTINNumericIdentifierType } from "./non-gtin-numeric-identifier-type.js";
 import type { NonNumericIdentifierCreator } from "./non-numeric-identifier-creator.js";
-import type { NonNumericIdentifierType } from "./non-numeric-identifier-type.js";
+import type { NonSerializableNumericIdentifierCreator } from "./non-serializable-numeric-identifier-creator.js";
 import type { NumericIdentifierCreator } from "./numeric-identifier-creator.js";
 import type { SerializableNumericIdentifierCreator } from "./serializable-numeric-identifier-creator.js";
-import type { SerializableNumericIdentifierType } from "./serializable-numeric-identifier-type.js";
 
 /**
- * Determine the identifier creator type for an identifier type.
+ * Identifier creator type based on identifier type type.
  *
  * @template TIdentifierType
  * Identifier type type.
  */
-export type IdentifierTypeCreator<TIdentifierType extends IdentifierType> =
-    TIdentifierType extends NonNumericIdentifierType ?
-        NonNumericIdentifierCreator :
-        TIdentifierType extends SerializableNumericIdentifierType ?
-            SerializableNumericIdentifierCreator :
-            TIdentifierType extends NonGTINNumericIdentifierType ?
-                NonGTINNumericIdentifierCreator :
-                TIdentifierType extends typeof IdentifierTypes.GTIN ?
-                    GTINCreator :
-                    IdentifierCreator;
+export type IdentifierTypeCreator<TIdentifierType extends IdentifierType> = IdentifierTypeExtension<
+    TIdentifierType,
+    IdentifierCreator,
+    NumericIdentifierCreator,
+    GTINCreator,
+    NonGTINNumericIdentifierCreator,
+    NonSerializableNumericIdentifierCreator,
+    SerializableNumericIdentifierCreator,
+    NonNumericIdentifierCreator
+>;
 
 /**
  * Identifier creators entry type based on identifier type type.
@@ -58,7 +58,7 @@ export type IdentifierCreatorsRecord = {
  * True if identifier creator is a numeric identifier creator.
  */
 export function isNumericIdentifierCreator(identifierCreator: IdentifierCreator): identifierCreator is NumericIdentifierCreator {
-    return isNumericIdentifierDescriptor(identifierCreator);
+    return isNumericIdentifierExtension(identifierCreator);
 }
 
 /**
@@ -71,7 +71,7 @@ export function isNumericIdentifierCreator(identifierCreator: IdentifierCreator)
  * True if identifier creator is a GTIN creator.
  */
 export function isGTINCreator(identifierCreator: IdentifierCreator): identifierCreator is GTINCreator {
-    return isGTINDescriptor(identifierCreator);
+    return isGTINExtension(identifierCreator);
 }
 
 /**
@@ -84,7 +84,20 @@ export function isGTINCreator(identifierCreator: IdentifierCreator): identifierC
  * True if identifier creator is a non-GTIN numeric identifier creator.
  */
 export function isNonGTINNumericIdentifierCreator(identifierCreator: IdentifierCreator): identifierCreator is NonGTINNumericIdentifierCreator {
-    return isNonGTINNumericIdentifierDescriptor(identifierCreator);
+    return isNonGTINNumericIdentifierExtension(identifierCreator);
+}
+
+/**
+ * Determine if identifier creator is a non-serializable numeric identifier creator.
+ *
+ * @param identifierCreator
+ * Identifier creator.
+ *
+ * @returns
+ * True if identifier creator is a non-serializable numeric identifier creator.
+ */
+export function isNonSerializableNumericIdentifierCreator(identifierCreator: IdentifierCreator): identifierCreator is NonSerializableNumericIdentifierCreator {
+    return isNonSerializableNumericIdentifierExtension(identifierCreator);
 }
 
 /**
@@ -97,7 +110,7 @@ export function isNonGTINNumericIdentifierCreator(identifierCreator: IdentifierC
  * True if identifier creator is a serializable numeric identifier creator.
  */
 export function isSerializableNumericIdentifierCreator(identifierCreator: IdentifierCreator): identifierCreator is SerializableNumericIdentifierCreator {
-    return isSerializableNumericIdentifierDescriptor(identifierCreator);
+    return isSerializableNumericIdentifierExtension(identifierCreator);
 }
 
 /**
@@ -110,5 +123,5 @@ export function isSerializableNumericIdentifierCreator(identifierCreator: Identi
  * True if identifier creator is a non-numeric identifier creator.
  */
 export function isNonNumericIdentifierCreator(identifierCreator: IdentifierCreator): identifierCreator is NonNumericIdentifierCreator {
-    return isNonNumericIdentifierDescriptor(identifierCreator);
+    return isNonNumericIdentifierExtension(identifierCreator);
 }

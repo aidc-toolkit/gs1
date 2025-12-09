@@ -1,6 +1,6 @@
 import type { ContentCharacterSet } from "./content-character-set.js";
+import type { LeaderTypes } from "./leader-type.js";
 import type { NonGTINNumericIdentifierDescriptor } from "./non-gtin-numeric-identifier-descriptor.js";
-import type { LeaderTypes } from "./numeric-identifier-type.js";
 import type { SerializableNumericIdentifierType } from "./serializable-numeric-identifier-type.js";
 
 /**

@@ -1,6 +1,13 @@
 import { CharacterSetCreator, Sequence } from "@aidc-toolkit/utility";
 import { expect, test } from "vitest";
-import { type GTINCreator, GTINTypes, GTINValidator, hasValidCheckDigit, isGTINCreator, PrefixTypes } from "../src/index.js";
+import {
+    type GTINCreator,
+    GTINLengths,
+    GTINValidator,
+    hasValidCheckDigit,
+    isGTINCreator,
+    PrefixTypes
+} from "../src/index.js";
 import { testNumericIdentifierCreator } from "./numeric-identifier-creator.js";
 
 export function testGTINCreator(creator: GTINCreator): void {
@@ -111,7 +118,7 @@ export function testGTINCreator(creator: GTINCreator): void {
             expect(Array.from(creator.createGTIN14("5", randomValues, true))).toStrictEqual(identifiers);
         });
 
-        if (creator.gtinType === GTINTypes.GTIN12) {
+        if (creator.length === GTINLengths.GTIN12) {
             test("Zero-suppress GTIN-12 rule 1", () => {
                 expect(GTINValidator.zeroSuppress("012345000058")).toBe("01234558");
                 expect(GTINValidator.zeroSuppress("012345000065")).toBe("01234565");

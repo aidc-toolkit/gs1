@@ -1,17 +1,25 @@
 import { ContentCharacterSets } from "./content-character-set.js";
 import type { GTINDescriptor } from "./gtin-descriptor.js";
-import { type GTINBaseType, GTINTypes } from "./gtin-type.js";
+import { type GTINBaseLength, GTINBaseLengths } from "./gtin-length.js";
+import type { GTINType } from "./gtin-type.js";
 import type { IdentifierDescriptor } from "./identifier-descriptor.js";
+import {
+    type IdentifierTypeExtension,
+    isGTINExtension,
+    isNonGTINNumericIdentifierExtension,
+    isNonNumericIdentifierExtension,
+    isNonSerializableNumericIdentifierExtension,
+    isNumericIdentifierExtension,
+    isSerializableNumericIdentifierExtension
+} from "./identifier-extension.js";
 import { type IdentifierType, IdentifierTypes } from "./identifier-type.js";
+import { LeaderTypes } from "./leader-type.js";
 import type { NonGTINNumericIdentifierDescriptor } from "./non-gtin-numeric-identifier-descriptor.js";
-import type { NonGTINNumericIdentifierType } from "./non-gtin-numeric-identifier-type.js";
 import type { NonNumericIdentifierDescriptor } from "./non-numeric-identifier-descriptor.js";
-import type { NonNumericIdentifierType } from "./non-numeric-identifier-type.js";
+import type { NonSerializableNumericIdentifierDescriptor } from "./non-serializable-numeric-identifier-descriptor.js";
 import type { NumericIdentifierDescriptor } from "./numeric-identifier-descriptor.js";
-import { LeaderTypes, type NumericIdentifierType } from "./numeric-identifier-type.js";
 import { PrefixTypes } from "./prefix-type.js";
 import type { SerializableNumericIdentifierDescriptor } from "./serializable-numeric-identifier-descriptor.js";
-import type { SerializableNumericIdentifierType } from "./serializable-numeric-identifier-type.js";
 
 /**
  * GTIN-13 descriptor.
@@ -19,7 +27,7 @@ import type { SerializableNumericIdentifierType } from "./serializable-numeric-i
 const GTIN13_DESCRIPTOR: GTINDescriptor = {
     identifierType: IdentifierTypes.GTIN,
     prefixType: PrefixTypes.GS1CompanyPrefix,
-    length: GTINTypes.GTIN13,
+    length: GTINBaseLengths.GTIN13,
     referenceCharacterSet: ContentCharacterSets.Numeric,
     leaderType: LeaderTypes.IndicatorDigit
 };
@@ -30,7 +38,7 @@ const GTIN13_DESCRIPTOR: GTINDescriptor = {
 const GTIN12_DESCRIPTOR: GTINDescriptor = {
     identifierType: IdentifierTypes.GTIN,
     prefixType: PrefixTypes.UPCCompanyPrefix,
-    length: GTINTypes.GTIN12,
+    length: GTINBaseLengths.GTIN12,
     referenceCharacterSet: ContentCharacterSets.Numeric,
     leaderType: LeaderTypes.IndicatorDigit
 };
@@ -41,7 +49,7 @@ const GTIN12_DESCRIPTOR: GTINDescriptor = {
 const GTIN8_DESCRIPTOR: GTINDescriptor = {
     identifierType: IdentifierTypes.GTIN,
     prefixType: PrefixTypes.GS18Prefix,
-    length: GTINTypes.GTIN8,
+    length: GTINBaseLengths.GTIN8,
     referenceCharacterSet: ContentCharacterSets.Numeric,
     leaderType: LeaderTypes.IndicatorDigit
 };
@@ -49,16 +57,16 @@ const GTIN8_DESCRIPTOR: GTINDescriptor = {
 /**
  * GTIN descriptors indexed by prefix type.
  */
-const GTIN_DESCRIPTORS: Readonly<Record<GTINBaseType, GTINDescriptor>> = {
-    [GTINTypes.GTIN13]: GTIN13_DESCRIPTOR,
-    [GTINTypes.GTIN12]: GTIN12_DESCRIPTOR,
-    [GTINTypes.GTIN8]: GTIN8_DESCRIPTOR
+const GTIN_DESCRIPTORS: Readonly<Record<GTINBaseLength, GTINDescriptor>> = {
+    [GTINBaseLengths.GTIN13]: GTIN13_DESCRIPTOR,
+    [GTINBaseLengths.GTIN12]: GTIN12_DESCRIPTOR,
+    [GTINBaseLengths.GTIN8]: GTIN8_DESCRIPTOR
 };
 
 /**
  * GLN descriptor.
  */
-const GLN_DESCRIPTOR: NonGTINNumericIdentifierDescriptor = {
+const GLN_DESCRIPTOR: NonSerializableNumericIdentifierDescriptor = {
     identifierType: IdentifierTypes.GLN,
     prefixType: PrefixTypes.GS1CompanyPrefix,
     length: 13,
@@ -69,7 +77,7 @@ const GLN_DESCRIPTOR: NonGTINNumericIdentifierDescriptor = {
 /**
  * SSCC descriptor.
  */
-const SSCC_DESCRIPTOR: NonGTINNumericIdentifierDescriptor = {
+const SSCC_DESCRIPTOR: NonSerializableNumericIdentifierDescriptor = {
     identifierType: IdentifierTypes.SSCC,
     prefixType: PrefixTypes.GS1CompanyPrefix,
     length: 18,
@@ -104,7 +112,7 @@ const GIAI_DESCRIPTOR: NonNumericIdentifierDescriptor = {
 /**
  * GSRN descriptor.
  */
-const GSRN_DESCRIPTOR: NonGTINNumericIdentifierDescriptor = {
+const GSRN_DESCRIPTOR: NonSerializableNumericIdentifierDescriptor = {
     identifierType: IdentifierTypes.GSRN,
     prefixType: PrefixTypes.GS1CompanyPrefix,
     length: 18,
@@ -139,7 +147,7 @@ const GINC_DESCRIPTOR: NonNumericIdentifierDescriptor = {
 /**
  * GSIN descriptor.
  */
-const GSIN_DESCRIPTOR: NonGTINNumericIdentifierDescriptor = {
+const GSIN_DESCRIPTOR: NonSerializableNumericIdentifierDescriptor = {
     identifierType: IdentifierTypes.GSIN,
     prefixType: PrefixTypes.GS1CompanyPrefix,
     length: 17,
@@ -188,16 +196,16 @@ const GMN_DESCRIPTOR: NonNumericIdentifierDescriptor = {
  * @template TIdentifierType
  * Identifier type type.
  */
-export type IdentifierTypeDescriptor<TIdentifierType extends IdentifierType> =
-    TIdentifierType extends NonNumericIdentifierType ?
-        NonNumericIdentifierDescriptor :
-        TIdentifierType extends SerializableNumericIdentifierType ?
-            SerializableNumericIdentifierDescriptor :
-            TIdentifierType extends NonGTINNumericIdentifierType ?
-                NonGTINNumericIdentifierDescriptor :
-                TIdentifierType extends typeof IdentifierTypes.GTIN ?
-                    GTINDescriptor :
-                    IdentifierDescriptor;
+export type IdentifierTypeDescriptor<TIdentifierType extends IdentifierType> = IdentifierTypeExtension<
+    TIdentifierType,
+    IdentifierDescriptor,
+    NumericIdentifierDescriptor,
+    GTINDescriptor,
+    NonGTINNumericIdentifierDescriptor,
+    NonSerializableNumericIdentifierDescriptor,
+    SerializableNumericIdentifierDescriptor,
+    NonNumericIdentifierDescriptor
+>;
 
 /**
  * Identifier descriptors entry type based on identifier type type.
@@ -205,8 +213,8 @@ export type IdentifierTypeDescriptor<TIdentifierType extends IdentifierType> =
  * @template TIdentifierType
  * Identifier type type.
  */
-export type IdentifierDescriptorsEntry<TIdentifierType extends IdentifierType> = TIdentifierType extends typeof IdentifierTypes.GTIN ?
-    Readonly<Record<GTINBaseType, GTINDescriptor>> :
+export type IdentifierDescriptorsEntry<TIdentifierType extends IdentifierType> = TIdentifierType extends GTINType ?
+    Readonly<Record<GTINBaseLength, GTINDescriptor>> :
     IdentifierTypeDescriptor<TIdentifierType>;
 
 /**
@@ -232,7 +240,7 @@ export const IdentifierDescriptors: IdentifierDescriptorsRecord = {
     [IdentifierTypes.GCN]: GCN_DESCRIPTOR,
     [IdentifierTypes.CPID]: CPID_DESCRIPTOR,
     [IdentifierTypes.GMN]: GMN_DESCRIPTOR
-} as const;
+};
 
 /**
  * Determine if identifier descriptors or descriptor is GTIN descriptors.
@@ -243,27 +251,9 @@ export const IdentifierDescriptors: IdentifierDescriptorsRecord = {
  * @returns
  * True if GTIN descriptors.
  */
-export function isGTINDescriptors(identifierDescriptorsOrDescriptor: IdentifierDescriptorsEntry<IdentifierType>): identifierDescriptorsOrDescriptor is Readonly<Record<GTINBaseType, GTINDescriptor>> {
+export function isGTINDescriptors(identifierDescriptorsOrDescriptor: IdentifierDescriptorsEntry<IdentifierType>): identifierDescriptorsOrDescriptor is Readonly<Record<GTINBaseLength, GTINDescriptor>> {
     return !("identifierType" in identifierDescriptorsOrDescriptor);
 }
-
-/**
- * Determine if an array of identifier types includes a given identifier type.
- *
- * @param identifierTypes
- * Identifier types.
- *
- * @param identifierType
- * Identifier type.
- *
- * @returns
- * True if element is included in the array.
- */
-function identifierTypesIncludes(identifierTypes: readonly IdentifierType[], identifierType: IdentifierType): boolean {
-    return identifierTypes.includes(identifierType);
-}
-
-const NUMERIC_IDENTIFIER_TYPES: readonly NumericIdentifierType[] = [IdentifierTypes.GTIN, IdentifierTypes.GLN, IdentifierTypes.SSCC, IdentifierTypes.GRAI, IdentifierTypes.GSRN, IdentifierTypes.GDTI, IdentifierTypes.GSIN, IdentifierTypes.GCN];
 
 /**
  * Determine if identifier descriptor is a numeric identifier descriptor.
@@ -275,7 +265,7 @@ const NUMERIC_IDENTIFIER_TYPES: readonly NumericIdentifierType[] = [IdentifierTy
  * True if identifier descriptor is a numeric identifier descriptor.
  */
 export function isNumericIdentifierDescriptor(identifierDescriptor: IdentifierDescriptor): identifierDescriptor is NumericIdentifierDescriptor {
-    return identifierTypesIncludes(NUMERIC_IDENTIFIER_TYPES, identifierDescriptor.identifierType);
+    return isNumericIdentifierExtension(identifierDescriptor);
 }
 
 /**
@@ -288,7 +278,7 @@ export function isNumericIdentifierDescriptor(identifierDescriptor: IdentifierDe
  * True if identifier descriptor is a GTIN descriptor.
  */
 export function isGTINDescriptor(identifierDescriptor: IdentifierDescriptor): identifierDescriptor is GTINDescriptor {
-    return identifierDescriptor.identifierType === IdentifierTypes.GTIN;
+    return isGTINExtension(identifierDescriptor);
 }
 
 /**
@@ -301,10 +291,21 @@ export function isGTINDescriptor(identifierDescriptor: IdentifierDescriptor): id
  * True if identifier descriptor is a non-GTIN numeric identifier descriptor.
  */
 export function isNonGTINNumericIdentifierDescriptor(identifierDescriptor: IdentifierDescriptor): identifierDescriptor is NonGTINNumericIdentifierDescriptor {
-    return isNumericIdentifierDescriptor(identifierDescriptor) && !isGTINDescriptor(identifierDescriptor);
+    return isNonGTINNumericIdentifierExtension(identifierDescriptor);
 }
 
-const SERIALIZABLE_NUMERIC_IDENTIFIER_TYPES: readonly SerializableNumericIdentifierType[] = [IdentifierTypes.GRAI, IdentifierTypes.GDTI, IdentifierTypes.GCN];
+/**
+ * Determine if identifier descriptor is a non-serializable numeric identifier descriptor.
+ *
+ * @param identifierDescriptor
+ * Identifier descriptor.
+ *
+ * @returns
+ * True if identifier descriptor is a non-serializable numeric identifier descriptor.
+ */
+export function isNonSerializableNumericIdentifierDescriptor(identifierDescriptor: IdentifierDescriptor): identifierDescriptor is NonSerializableNumericIdentifierDescriptor {
+    return isNonSerializableNumericIdentifierExtension(identifierDescriptor);
+}
 
 /**
  * Determine if identifier descriptor is a serializable numeric identifier descriptor.
@@ -316,7 +317,7 @@ const SERIALIZABLE_NUMERIC_IDENTIFIER_TYPES: readonly SerializableNumericIdentif
  * True if identifier descriptor is a serializable numeric identifier descriptor.
  */
 export function isSerializableNumericIdentifierDescriptor(identifierDescriptor: IdentifierDescriptor): identifierDescriptor is SerializableNumericIdentifierDescriptor {
-    return identifierTypesIncludes(SERIALIZABLE_NUMERIC_IDENTIFIER_TYPES, identifierDescriptor.identifierType);
+    return isSerializableNumericIdentifierExtension(identifierDescriptor);
 }
 
 /**
@@ -329,5 +330,5 @@ export function isSerializableNumericIdentifierDescriptor(identifierDescriptor: 
  * True if identifier descriptor is a non-numeric identifier descriptor.
  */
 export function isNonNumericIdentifierDescriptor(identifierDescriptor: IdentifierDescriptor): identifierDescriptor is NonNumericIdentifierDescriptor {
-    return !isNumericIdentifierDescriptor(identifierDescriptor);
+    return isNonNumericIdentifierExtension(identifierDescriptor);
 }

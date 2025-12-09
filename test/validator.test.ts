@@ -1,8 +1,8 @@
 import { describe, expect, test } from "vitest";
 import {
     ContentCharacterSets,
-    type GTINBaseType,
-    GTINTypes,
+    type GTINBaseLength,
+    GTINLengths,
     type GTINValidator,
     type IdentifierType,
     IdentifierTypes,
@@ -12,6 +12,7 @@ import {
     isGTINValidators,
     isNonGTINNumericIdentifierValidator,
     isNonNumericIdentifierValidator,
+    isNonSerializableNumericIdentifierValidator,
     isNumericIdentifierValidator,
     isSerializableNumericIdentifierValidator,
     LeaderTypes
@@ -22,7 +23,7 @@ import { validateNonNumericIdentifierValidator } from "./non-numeric-identifier-
 import { validateSerializableNumericIdentifierValidator } from "./serializable-numeric-identifier-validator.js";
 
 describe("Validators", () => {
-    function validateMapping(identifierType: IdentifierType, expectedIdentifierValidatorsOrValidator: Readonly<Record<GTINBaseType, GTINValidator>> | IdentifierValidator, ...isIdentifierValidatorTypes: Array<(validator: IdentifierValidator) => boolean>): void {
+    function validateMapping(identifierType: IdentifierType, expectedIdentifierValidatorsOrValidator: Readonly<Record<GTINBaseLength, GTINValidator>> | IdentifierValidator, ...isIdentifierValidatorTypes: Array<(validator: IdentifierValidator) => boolean>): void {
         test(identifierType, () => {
             const validatorsOrValidator = IdentifierValidators[identifierType];
 
@@ -44,23 +45,23 @@ describe("Validators", () => {
 
     describe("Mapping", () => {
         validateMapping(IdentifierTypes.GTIN, IdentifierValidators.GTIN, isNumericIdentifierValidator, isGTINValidator);
-        validateMapping(IdentifierTypes.GLN, IdentifierValidators.GLN, isNumericIdentifierValidator, isNonGTINNumericIdentifierValidator);
-        validateMapping(IdentifierTypes.SSCC, IdentifierValidators.SSCC, isNumericIdentifierValidator, isNonGTINNumericIdentifierValidator);
+        validateMapping(IdentifierTypes.GLN, IdentifierValidators.GLN, isNumericIdentifierValidator, isNonGTINNumericIdentifierValidator, isNonSerializableNumericIdentifierValidator);
+        validateMapping(IdentifierTypes.SSCC, IdentifierValidators.SSCC, isNumericIdentifierValidator, isNonGTINNumericIdentifierValidator, isNonSerializableNumericIdentifierValidator);
         validateMapping(IdentifierTypes.GRAI, IdentifierValidators.GRAI, isNumericIdentifierValidator, isNonGTINNumericIdentifierValidator, isSerializableNumericIdentifierValidator);
         validateMapping(IdentifierTypes.GIAI, IdentifierValidators.GIAI, isNonNumericIdentifierValidator);
-        validateMapping(IdentifierTypes.GSRN, IdentifierValidators.GSRN, isNumericIdentifierValidator, isNonGTINNumericIdentifierValidator);
+        validateMapping(IdentifierTypes.GSRN, IdentifierValidators.GSRN, isNumericIdentifierValidator, isNonGTINNumericIdentifierValidator, isNonSerializableNumericIdentifierValidator);
         validateMapping(IdentifierTypes.GDTI, IdentifierValidators.GDTI, isNumericIdentifierValidator, isNonGTINNumericIdentifierValidator, isSerializableNumericIdentifierValidator);
         validateMapping(IdentifierTypes.GINC, IdentifierValidators.GINC, isNonNumericIdentifierValidator);
-        validateMapping(IdentifierTypes.GSIN, IdentifierValidators.GSIN, isNumericIdentifierValidator, isNonGTINNumericIdentifierValidator);
+        validateMapping(IdentifierTypes.GSIN, IdentifierValidators.GSIN, isNumericIdentifierValidator, isNonGTINNumericIdentifierValidator, isNonSerializableNumericIdentifierValidator);
         validateMapping(IdentifierTypes.GCN, IdentifierValidators.GCN, isNumericIdentifierValidator, isNonGTINNumericIdentifierValidator, isSerializableNumericIdentifierValidator);
         validateMapping(IdentifierTypes.CPID, IdentifierValidators.CPID, isNonNumericIdentifierValidator);
         validateMapping(IdentifierTypes.GMN, IdentifierValidators.GMN, isNonNumericIdentifierValidator);
     });
 
     test("Structure", () => {
-        validateGTINValidator(IdentifierValidators.GTIN[GTINTypes.GTIN13], false, GTINTypes.GTIN13);
-        validateGTINValidator(IdentifierValidators.GTIN[GTINTypes.GTIN12], false, GTINTypes.GTIN12);
-        validateGTINValidator(IdentifierValidators.GTIN[GTINTypes.GTIN8], false, GTINTypes.GTIN8);
+        validateGTINValidator(IdentifierValidators.GTIN[GTINLengths.GTIN13], false, GTINLengths.GTIN13);
+        validateGTINValidator(IdentifierValidators.GTIN[GTINLengths.GTIN12], false, GTINLengths.GTIN12);
+        validateGTINValidator(IdentifierValidators.GTIN[GTINLengths.GTIN8], false, GTINLengths.GTIN8);
         validateNonGTINNumericIdentifierValidator(IdentifierValidators.GLN, false, IdentifierTypes.GLN, 13, LeaderTypes.None);
         validateNonGTINNumericIdentifierValidator(IdentifierValidators.SSCC, false, IdentifierTypes.SSCC, 18, LeaderTypes.ExtensionDigit);
         validateSerializableNumericIdentifierValidator(IdentifierValidators.GRAI, false, IdentifierTypes.GRAI, 13, LeaderTypes.None, 16, ContentCharacterSets.AI82);

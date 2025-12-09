@@ -1,6 +1,7 @@
-import type { IdentifierTypes } from "./identifier-type.js";
+import type { GTINBaseLength } from "./gtin-length.js";
+import type { GTINType } from "./gtin-type.js";
+import type { LeaderTypes } from "./leader-type.js";
 import type { NumericIdentifierDescriptor } from "./numeric-identifier-descriptor.js";
-import type { LeaderTypes } from "./numeric-identifier-type.js";
 
 /**
  * GTIN descriptor.
@@ -9,7 +10,12 @@ export interface GTINDescriptor extends NumericIdentifierDescriptor {
     /**
      * @inheritDoc
      */
-    readonly identifierType: typeof IdentifierTypes.GTIN;
+    readonly identifierType: GTINType;
+
+    /**
+     * @inheritDoc
+     */
+    readonly length: GTINBaseLength;
 
     /**
      * @inheritDoc

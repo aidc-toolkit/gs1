@@ -4,10 +4,10 @@ import {
     type TransformerInput,
     type TransformerOutput
 } from "@aidc-toolkit/utility";
+import { MixinAbstractIdentifierCreator } from "./abstract-identifier-creator.js";
 import { checkCharacterPair } from "./check.js";
-import { IdentifierDescriptors } from "./descriptors.js";
+import { IdentifierDescriptors } from "./identifier-descriptors.js";
 import { i18nextGS1 } from "./locale/i18n.js";
-import { MixinIdentifierCreator } from "./mixin-identifier-creator.js";
 import type { NonNumericIdentifierType } from "./non-numeric-identifier-type.js";
 import {
     type NonNumericIdentifierValidation,
@@ -18,7 +18,7 @@ import type { PrefixProvider } from "./prefix-provider.js";
 /**
  * Non-numeric identifier creator.
  */
-export class NonNumericIdentifierCreator extends MixinIdentifierCreator<
+export class NonNumericIdentifierCreator extends MixinAbstractIdentifierCreator<
     [NonNumericIdentifierType],
     NonNumericIdentifierType,
     NonNumericIdentifierValidation,

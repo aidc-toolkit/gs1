@@ -1,6 +1,6 @@
+import type { LeaderType, LeaderTypes } from "./leader-type.js";
 import type { NonGTINNumericIdentifierType } from "./non-gtin-numeric-identifier-type.js";
 import type { NumericIdentifierDescriptor } from "./numeric-identifier-descriptor.js";
-import type { LeaderType, LeaderTypes } from "./numeric-identifier-type.js";
 import type { PrefixTypes } from "./prefix-type.js";
 
 /**

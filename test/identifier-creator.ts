@@ -1,8 +1,8 @@
 import { expect } from "vitest";
 import {
     ContentCharacterSets,
-    type GTINType,
-    GTINTypes,
+    type GTINLength,
+    GTINLengths,
     IdentifierTypes,
     LeaderTypes,
     type PrefixManager,
@@ -14,29 +14,29 @@ import { validateNonNumericIdentifierValidator } from "./non-numeric-identifier-
 import { validateSerializableNumericIdentifierValidator } from "./serializable-numeric-identifier-validator.js";
 
 export function validateIdentifierCreators(prefixManager: PrefixManager): void {
-    let gtinType: GTINType;
+    let gtinLength: GTINLength;
 
     switch (prefixManager.prefixType) {
         case PrefixTypes.GS1CompanyPrefix:
             expect(prefixManager.prefix).toBe(prefixManager.gs1CompanyPrefix);
-            gtinType = GTINTypes.GTIN13;
+            gtinLength = GTINLengths.GTIN13;
             break;
 
         case PrefixTypes.UPCCompanyPrefix:
             expect(prefixManager.prefix).toBe(prefixManager.upcCompanyPrefix);
-            gtinType = GTINTypes.GTIN12;
+            gtinLength = GTINLengths.GTIN12;
             break;
 
         case PrefixTypes.GS18Prefix:
             expect(prefixManager.prefix).toBe(prefixManager.gs18Prefix);
-            gtinType = GTINTypes.GTIN8;
+            gtinLength = GTINLengths.GTIN8;
             break;
     }
 
     // Validate creator caching.
     expect(prefixManager.gtinCreator).toBe(prefixManager.gtinCreator);
 
-    validateGTINValidator(prefixManager.gtinCreator, true, gtinType);
+    validateGTINValidator(prefixManager.gtinCreator, true, gtinLength);
 
     if (prefixManager.prefixType !== PrefixTypes.GS18Prefix) {
         // Validate creator caching.

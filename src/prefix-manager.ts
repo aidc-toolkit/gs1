@@ -1,13 +1,13 @@
-import { type IdentifierCreatorsRecord, isNumericIdentifierCreator } from "./creators.js";
 import { GTINCreator } from "./gtin-creator.js";
-import { GTIN_BASE_TYPES } from "./gtin-type.js";
+import { GTIN_BASE_TYPES } from "./gtin-length.js";
 import type { IdentifierCreator } from "./identifier-creator.js";
+import { type IdentifierCreatorsRecord, isNumericIdentifierCreator } from "./identifier-creators.js";
 import { type IdentifierType, IdentifierTypes } from "./identifier-type.js";
 import { i18nextGS1 } from "./locale/i18n.js";
-import { NonGTINNumericIdentifierCreator } from "./non-gtin-numeric-identifier-creator.js";
-import type { NonGTINNumericIdentifierType } from "./non-gtin-numeric-identifier-type.js";
 import { NonNumericIdentifierCreator } from "./non-numeric-identifier-creator.js";
 import type { NonNumericIdentifierType } from "./non-numeric-identifier-type.js";
+import { NonSerializableNumericIdentifierCreator } from "./non-serializable-numeric-identifier-creator.js";
+import type { NonSerializableNumericIdentifierType } from "./non-serializable-numeric-identifier-type.js";
 import type { NumericIdentifierType } from "./numeric-identifier-type.js";
 import type { PrefixProvider } from "./prefix-provider.js";
 import { type PrefixType, PrefixTypes } from "./prefix-type.js";
@@ -273,8 +273,8 @@ export class PrefixManager implements PrefixProvider {
      * @returns
      * Identifier creator.
      */
-    #getNonGTINNumericIdentifierCreator(identifierType: Exclude<NonGTINNumericIdentifierType, SerializableNumericIdentifierType>): NonGTINNumericIdentifierCreator {
-        return this.#getIdentifierCreator(identifierType, identifierType, NonGTINNumericIdentifierCreator);
+    #getNonGTINNumericIdentifierCreator(identifierType: NonSerializableNumericIdentifierType): NonSerializableNumericIdentifierCreator {
+        return this.#getIdentifierCreator(identifierType, identifierType, NonSerializableNumericIdentifierCreator);
     }
 
     /**
@@ -313,14 +313,14 @@ export class PrefixManager implements PrefixProvider {
     /**
      * Get GLN creator.
      */
-    get glnCreator(): NonGTINNumericIdentifierCreator {
+    get glnCreator(): NonSerializableNumericIdentifierCreator {
         return this.#getNonGTINNumericIdentifierCreator(IdentifierTypes.GLN);
     }
 
     /**
      * Get SSCC creator.
      */
-    get ssccCreator(): NonGTINNumericIdentifierCreator {
+    get ssccCreator(): NonSerializableNumericIdentifierCreator {
         return this.#getNonGTINNumericIdentifierCreator(IdentifierTypes.SSCC);
     }
 
@@ -341,7 +341,7 @@ export class PrefixManager implements PrefixProvider {
     /**
      * Get GSRN creator.
      */
-    get gsrnCreator(): NonGTINNumericIdentifierCreator {
+    get gsrnCreator(): NonSerializableNumericIdentifierCreator {
         return this.#getNonGTINNumericIdentifierCreator(IdentifierTypes.GSRN);
     }
 
@@ -362,7 +362,7 @@ export class PrefixManager implements PrefixProvider {
     /**
      * Get GSIN creator.
      */
-    get gsinCreator(): NonGTINNumericIdentifierCreator {
+    get gsinCreator(): NonSerializableNumericIdentifierCreator {
         return this.#getNonGTINNumericIdentifierCreator(IdentifierTypes.GSIN);
     }
 

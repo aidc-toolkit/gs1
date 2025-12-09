@@ -1,28 +1,12 @@
-import { MixinNumericIdentifierCreator } from "./mixin-numeric-identifier-creator.js";
 import type { NonGTINNumericIdentifierType } from "./non-gtin-numeric-identifier-type.js";
-import { NonGTINNumericIdentifierValidator } from "./non-gtin-numeric-identifier-validator.js";
-import type { PrefixProvider } from "./prefix-provider.js";
-import type { SerializableNumericIdentifierType } from "./serializable-numeric-identifier-type.js";
+import type { NonGTINNumericIdentifierValidator } from "./non-gtin-numeric-identifier-validator.js";
+import type { NumericIdentifierCreator } from "./numeric-identifier-creator.js";
 
 /**
- * Non-GTIN numeric identifier creator.
+ * Non-GTIN numeric identifier creator. Creates one or many non-GTIN numeric identifiers.
+ *
+ * @template TNonGTINNumericIdentifierType
+ * Non-GTIN numeric identifier type type.
  */
-export class NonGTINNumericIdentifierCreator extends MixinNumericIdentifierCreator<
-    [Exclude<NonGTINNumericIdentifierType, SerializableNumericIdentifierType>],
-    Exclude<NonGTINNumericIdentifierType, SerializableNumericIdentifierType>,
-    typeof NonGTINNumericIdentifierValidator
->(NonGTINNumericIdentifierValidator) {
-    /**
-     * Constructor. Typically called internally by a prefix manager but may be called by other code with another prefix
-     * provider type.
-     *
-     * @param prefixProvider
-     * Prefix provider.
-     *
-     * @param identifierType
-     * Identifier type.
-     */
-    constructor(prefixProvider: PrefixProvider, identifierType: Exclude<NonGTINNumericIdentifierType, SerializableNumericIdentifierType>) {
-        super(prefixProvider, prefixProvider.gs1CompanyPrefix, identifierType);
-    }
+export interface NonGTINNumericIdentifierCreator<TNonGTINNumericIdentifierType extends NonGTINNumericIdentifierType = NonGTINNumericIdentifierType> extends NonGTINNumericIdentifierValidator<TNonGTINNumericIdentifierType>, NumericIdentifierCreator<TNonGTINNumericIdentifierType> {
 }

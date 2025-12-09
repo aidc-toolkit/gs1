@@ -1,32 +1,16 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Used in JSDoc.
 import { mapIterable, NUMERIC_CREATOR, type TransformerInput, type TransformerOutput } from "@aidc-toolkit/utility";
-import { MixinNumericIdentifierCreator } from "./mixin-numeric-identifier-creator.js";
-import type { PrefixProvider } from "./prefix-provider.js";
+import { MixinAbstractNonGTINNumericIdentifierCreator } from "./abstract-non-gtin-numeric-identifier-creator.js";
 import type { SerializableNumericIdentifierType } from "./serializable-numeric-identifier-type.js";
 import { SerializableNumericIdentifierValidator } from "./serializable-numeric-identifier-validator.js";
 
 /**
  * Serializable numeric identifier creator.
  */
-export class SerializableNumericIdentifierCreator extends MixinNumericIdentifierCreator<
-    [SerializableNumericIdentifierType],
+export class SerializableNumericIdentifierCreator extends MixinAbstractNonGTINNumericIdentifierCreator<
     SerializableNumericIdentifierType,
     typeof SerializableNumericIdentifierValidator
 >(SerializableNumericIdentifierValidator) {
-    /**
-     * Constructor. Typically called internally by a prefix manager but may be called by other code with another prefix
-     * provider type.
-     *
-     * @param prefixProvider
-     * Prefix provider.
-     *
-     * @param identifierType
-     * Identifier type.
-     */
-    constructor(prefixProvider: PrefixProvider, identifierType: SerializableNumericIdentifierType) {
-        super(prefixProvider, prefixProvider.gs1CompanyPrefix, identifierType);
-    }
-
     /**
      * Concatenate a validated base identifier with serial component(s).
      *

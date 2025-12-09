@@ -1,44 +1,26 @@
-import type { IdentifierTypes } from "./identifier-type.js";
+import { pick } from "@aidc-toolkit/core";
+import { IdentifierTypes } from "./identifier-type.js";
+
+/**
+ * Numeric identifier types.
+ */
+export const NumericIdentifierTypes = pick(IdentifierTypes,
+    IdentifierTypes.GTIN,
+    IdentifierTypes.GLN,
+    IdentifierTypes.SSCC,
+    IdentifierTypes.GRAI,
+    IdentifierTypes.GSRN,
+    IdentifierTypes.GDTI,
+    IdentifierTypes.GSIN,
+    IdentifierTypes.GCN
+);
+
+/**
+ * Numeric identifier type key.
+ */
+export type NumericIdentifierTypeKey = keyof typeof NumericIdentifierTypes;
 
 /**
  * Numeric identifier type.
  */
-export type NumericIdentifierType =
-    typeof IdentifierTypes.GTIN |
-    typeof IdentifierTypes.GLN |
-    typeof IdentifierTypes.SSCC |
-    typeof IdentifierTypes.GRAI |
-    typeof IdentifierTypes.GSRN |
-    typeof IdentifierTypes.GDTI |
-    typeof IdentifierTypes.GSIN |
-    typeof IdentifierTypes.GCN;
-
-/**
- * Leader type.
- */
-export const LeaderTypes = {
-    /**
-     * No leader.
-     */
-    None: "None",
-
-    /**
-     * Indicator digit (GTIN only).
-     */
-    IndicatorDigit: "Indicator digit",
-
-    /**
-     * Extension digit (SSCC only).
-     */
-    ExtensionDigit: "Extension digit"
-} as const;
-
-/**
- * Leader type key.
- */
-export type LeaderTypeKey = keyof typeof LeaderTypes;
-
-/**
- * Leader type.
- */
-export type LeaderType = typeof LeaderTypes[LeaderTypeKey];
+export type NumericIdentifierType = typeof NumericIdentifierTypes[NumericIdentifierTypeKey];
