@@ -49,6 +49,9 @@ export type NumericIdentifierCreatorConstructor<
  * @template TNumericIdentifierType
  * Numeric identifier type type.
  *
+ * @template TNumericIdentifierValidatorConstructor
+ * Numeric identifier validator constructor type.
+ *
  * @param NumericIdentifierValidatorBase
  * Numeric identifier validator base.
  *

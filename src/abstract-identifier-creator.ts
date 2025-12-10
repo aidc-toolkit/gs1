@@ -80,6 +80,9 @@ export type IdentifierCreatorConstructor<
  * @template TIdentifierValidation
  * Identifier validation type.
  *
+ * @template TIdentifierValidatorConstructor
+ * Identifier validator constructor type.
+ *
  * @param IdentifierValidatorBase
  * Identifier validator base.
  *

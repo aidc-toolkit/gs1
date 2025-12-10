@@ -30,8 +30,7 @@ export class NonNumericIdentifierCreator extends MixinAbstractIdentifierCreator<
     readonly #referenceValidation: CharacterSetValidation;
 
     /**
-     * Constructor. Typically called internally by a prefix manager but may be called by other code with another prefix
-     * provider type.
+     * Constructor.
      *
      * @param prefixProvider
      * Prefix provider.

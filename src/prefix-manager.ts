@@ -232,6 +232,9 @@ export class PrefixManager implements PrefixProvider {
      * @template TIdentifierType
      * Identifier type type.
      *
+     * @template TConstructorArgument
+     * Second constructor argument type.
+     *
      * @param identifierType
      * Identifier type used to construct identifier creator.
      *

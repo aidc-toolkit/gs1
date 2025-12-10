@@ -31,8 +31,7 @@ export class GTINCreator extends MixinAbstractNumericIdentifierCreator<
     };
 
     /**
-     * Constructor. Typically called internally by a prefix manager but may be called by other code with another prefix
-     * provider type.
+     * Constructor.
      *
      * @param prefixProvider
      * Prefix provider.

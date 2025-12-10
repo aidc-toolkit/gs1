@@ -17,7 +17,7 @@ import type { PrefixProvider } from "./prefix-provider.js";
  * @template TNonGTINNumericIdentifierType
  * Non-GTIN numeric identifier type type.
  *
- * @template TNumericIdentifierValidator
+ * @template TNonGTINNumericIdentifierValidator
  * Non-GTIN numeric identifier validator type.
  */
 type NonGTINNumericIdentifierCreatorConstructor<
@@ -34,6 +34,9 @@ type NonGTINNumericIdentifierCreatorConstructor<
  *
  * @template TNonGTINNumericIdentifierType
  * Non-GTIN numeric identifier type type.
+ *
+ * @template TNonGTINNumericIdentifierValidatorConstructor
+ * Non-GTIN numeric identifier validator constructor type.
  *
  * @param NonGTINNumericIdentifierValidatorBase
  * Non-GTIN numeric identifier validator base.
@@ -62,8 +65,7 @@ export function MixinAbstractNonGTINNumericIdentifierCreator<
         NonGTINNumericIdentifierValidator<TNonGTINNumericIdentifierType>
     >) implements NonGTINNumericIdentifierCreator<TNonGTINNumericIdentifierType> {
         /**
-         * Constructor. Typically called internally by a prefix manager but may be called by other code with another prefix
-         * provider type.
+         * Constructor.
          *
          * @param prefixProvider
          * Prefix provider.
