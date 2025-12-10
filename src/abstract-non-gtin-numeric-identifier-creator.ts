@@ -1,13 +1,12 @@
-import type { IdentifierExtensionConstructor, IdentifierValidatorConstructor } from "./abstract-identifier-creator.js";
+import type { TypedConstructor } from "@aidc-toolkit/core";
 import {
     MixinAbstractNumericIdentifierCreator,
     type NumericIdentifierCreatorConstructor
 } from "./abstract-numeric-identifier-creator.js";
-import type { IdentifierTypeValidator } from "./identifier-validators.js";
+import type { IdentifierTypeValidator, IdentifierValidatorConstructorsEntry } from "./identifier-validators.js";
 import type { NonGTINNumericIdentifierCreator } from "./non-gtin-numeric-identifier-creator.js";
 import type { NonGTINNumericIdentifierType } from "./non-gtin-numeric-identifier-type.js";
 import type { NonGTINNumericIdentifierValidator } from "./non-gtin-numeric-identifier-validator.js";
-import type { NumericIdentifierValidation } from "./numeric-identifier-validator.js";
 import type { PrefixProvider } from "./prefix-provider.js";
 
 /**
@@ -23,8 +22,8 @@ import type { PrefixProvider } from "./prefix-provider.js";
 type NonGTINNumericIdentifierCreatorConstructor<
     TNonGTINNumericIdentifierType extends NonGTINNumericIdentifierType,
     TNonGTINNumericIdentifierValidator extends NonGTINNumericIdentifierValidator<TNonGTINNumericIdentifierType>
-> = IdentifierExtensionConstructor<
-    [prefixProvider: PrefixProvider, identifierType: TNonGTINNumericIdentifierType],
+> = TypedConstructor<
+    [prefixProvider: PrefixProvider, ...args: ConstructorParameters<IdentifierValidatorConstructorsEntry<TNonGTINNumericIdentifierType>>],
     TNonGTINNumericIdentifierValidator & NonGTINNumericIdentifierCreator<TNonGTINNumericIdentifierType>
 >;
 
@@ -35,23 +34,18 @@ type NonGTINNumericIdentifierCreatorConstructor<
  * @template TNonGTINNumericIdentifierType
  * Non-GTIN numeric identifier type type.
  *
- * @template TNonGTINNumericIdentifierValidatorConstructor
- * Non-GTIN numeric identifier validator constructor type.
- *
- * @param NonGTINNumericIdentifierValidatorBase
- * Non-GTIN numeric identifier validator base.
+ * @param NonGTINNumericIdentifierValidatorConstructor
+ * Non-GTIN numeric identifier validator constructor.
  *
  * @returns
  * Non-GTIN numeric identifier creator class.
  */
 export function MixinAbstractNonGTINNumericIdentifierCreator<
-    TNonGTINNumericIdentifierType extends NonGTINNumericIdentifierType,
-    TNonGTINNumericIdentifierValidatorConstructor extends IdentifierValidatorConstructor<
-        [TNonGTINNumericIdentifierType],
-        TNonGTINNumericIdentifierType,
-        NumericIdentifierValidation
-    >
->(NonGTINNumericIdentifierValidatorBase: TNonGTINNumericIdentifierValidatorConstructor): NonGTINNumericIdentifierCreatorConstructor<
+    TNonGTINNumericIdentifierType extends NonGTINNumericIdentifierType
+>(NonGTINNumericIdentifierValidatorConstructor: TypedConstructor<
+    ConstructorParameters<IdentifierValidatorConstructorsEntry<TNonGTINNumericIdentifierType>>,
+    IdentifierTypeValidator<TNonGTINNumericIdentifierType>
+>): NonGTINNumericIdentifierCreatorConstructor<
     TNonGTINNumericIdentifierType,
     IdentifierTypeValidator<TNonGTINNumericIdentifierType>
 > {
@@ -59,27 +53,28 @@ export function MixinAbstractNonGTINNumericIdentifierCreator<
      * Abstract non-GTIN numeric identifier creator. Implements common functionality for a non-GTIN numeric identifier
      * creator, mixed in with a matching non-GTIN numeric identifier validator.
      */
-    abstract class AbstractNonGTINNumericIdentifierCreator extends (MixinAbstractNumericIdentifierCreator(NonGTINNumericIdentifierValidatorBase) as NumericIdentifierCreatorConstructor<
-        [TNonGTINNumericIdentifierType],
-        TNonGTINNumericIdentifierType,
-        NonGTINNumericIdentifierValidator<TNonGTINNumericIdentifierType>
-    >) implements NonGTINNumericIdentifierCreator<TNonGTINNumericIdentifierType> {
+    abstract class AbstractNonGTINNumericIdentifierCreator extends (
+        MixinAbstractNumericIdentifierCreator(NonGTINNumericIdentifierValidatorConstructor) as NumericIdentifierCreatorConstructor<
+            TNonGTINNumericIdentifierType,
+            NonGTINNumericIdentifierValidator<TNonGTINNumericIdentifierType>
+        >
+    ) implements NonGTINNumericIdentifierCreator<TNonGTINNumericIdentifierType> {
         /**
          * Constructor.
          *
          * @param prefixProvider
          * Prefix provider.
          *
-         * @param identifierType
-         * Identifier type.
+         * @param args
+         * Originating constructor arguments.
          */
-        constructor(prefixProvider: PrefixProvider, identifierType: TNonGTINNumericIdentifierType) {
-            super(prefixProvider, prefixProvider.gs1CompanyPrefix, identifierType);
+        constructor(prefixProvider: PrefixProvider, ...args: ConstructorParameters<IdentifierValidatorConstructorsEntry<TNonGTINNumericIdentifierType>>) {
+            super(prefixProvider, prefixProvider.gs1CompanyPrefix, ...args);
         }
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Base class was upcast to type with statically known members for mixin, downcast result.
-    return AbstractNonGTINNumericIdentifierCreator as IdentifierExtensionConstructor<
+    return AbstractNonGTINNumericIdentifierCreator as TypedConstructor<
         ConstructorParameters<typeof AbstractNonGTINNumericIdentifierCreator>,
         IdentifierTypeValidator<TNonGTINNumericIdentifierType> & AbstractNonGTINNumericIdentifierCreator
     >;

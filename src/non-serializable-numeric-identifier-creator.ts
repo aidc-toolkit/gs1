@@ -6,7 +6,6 @@ import { NonSerializableNumericIdentifierValidator } from "./non-serializable-nu
  * Non-serializable numeric identifier creator.
  */
 export class NonSerializableNumericIdentifierCreator extends MixinAbstractNonGTINNumericIdentifierCreator<
-    NonSerializableNumericIdentifierType,
-    typeof NonSerializableNumericIdentifierValidator
+    NonSerializableNumericIdentifierType
 >(NonSerializableNumericIdentifierValidator) {
 }

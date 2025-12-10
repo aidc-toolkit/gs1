@@ -1,6 +1,6 @@
 import type { GTINBaseLength } from "./gtin-length.js";
 import type { GTINType } from "./gtin-type.js";
-import { GTIN_VALIDATORS, type GTINValidator } from "./gtin-validator.js";
+import { GTIN_VALIDATORS, GTINValidator } from "./gtin-validator.js";
 import { isGTINDescriptors } from "./identifier-descriptors.js";
 import {
     type IdentifierTypeExtension,
@@ -105,13 +105,13 @@ export type IdentifierValidatorsEntry<TIdentifierType extends IdentifierType> = 
  * Identifier validators record type.
  */
 export type IdentifierValidatorsRecord = {
-    readonly [TIdentifierType in IdentifierType]: IdentifierValidatorsEntry<TIdentifierType>;
+    [TIdentifierType in IdentifierType]: IdentifierValidatorsEntry<TIdentifierType>;
 };
 
 /**
  * Identifier validators for all identifier types.
  */
-export const IdentifierValidators: IdentifierValidatorsRecord = {
+export const IdentifierValidators: Readonly<IdentifierValidatorsRecord> = {
     [IdentifierTypes.GTIN]: GTIN_VALIDATORS,
     [IdentifierTypes.GLN]: GLN_VALIDATOR,
     [IdentifierTypes.SSCC]: SSCC_VALIDATOR,
@@ -124,6 +124,53 @@ export const IdentifierValidators: IdentifierValidatorsRecord = {
     [IdentifierTypes.GCN]: GCN_VALIDATOR,
     [IdentifierTypes.CPID]: CPID_VALIDATOR,
     [IdentifierTypes.GMN]: GMN_VALIDATOR
+};
+
+/**
+ * GTIN validator constructor type.
+ */
+export type GTINValidatorConstructor =
+    new (gtinBaseLength: GTINBaseLength) => GTINValidator;
+
+/**
+ * Non-GTIN validator constructor type.
+ *
+ * @template TIdentifierType
+ * Identifier type type.
+ */
+export type NonGTINValidatorConstructor<TIdentifierType extends Exclude<IdentifierType, GTINType>> =
+    new (identifierType: TIdentifierType) => IdentifierValidatorsRecord[TIdentifierType];
+
+/**
+ * Identifier validator constructors entry type based on identifier type type.
+ *
+ * @template TIdentifierType
+ * Identifier type type.
+ */
+export type IdentifierValidatorConstructorsEntry<TIdentifierType extends IdentifierType> = TIdentifierType extends GTINType ?
+    GTINValidatorConstructor :
+    NonGTINValidatorConstructor<Exclude<TIdentifierType, GTINType>>;
+
+/**
+ * Identifier validator constructors record type.
+ */
+export type IdentifierValidatorConstructorsRecord = {
+    readonly [TIdentifierType in IdentifierType]: IdentifierValidatorConstructorsEntry<TIdentifierType>;
+};
+
+export const IdentifierValidatorConstructors: IdentifierValidatorConstructorsRecord = {
+    GTIN: GTINValidator,
+    GLN: NonSerializableNumericIdentifierValidator,
+    SSCC: NonSerializableNumericIdentifierValidator,
+    GRAI: SerializableNumericIdentifierValidator,
+    GIAI: NonNumericIdentifierValidator,
+    GSRN: NonSerializableNumericIdentifierValidator,
+    GDTI: SerializableNumericIdentifierValidator,
+    GINC: NonNumericIdentifierValidator,
+    GSIN: NonSerializableNumericIdentifierValidator,
+    GCN: SerializableNumericIdentifierValidator,
+    CPID: NonNumericIdentifierValidator,
+    GMN: NonNumericIdentifierValidator
 };
 
 /**

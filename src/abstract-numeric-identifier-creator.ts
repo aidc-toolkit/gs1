@@ -1,3 +1,4 @@
+import type { TypedConstructor } from "@aidc-toolkit/core";
 import {
     CharacterSetCreator,
     Exclusions,
@@ -5,14 +6,9 @@ import {
     type TransformerInput,
     type TransformerOutput
 } from "@aidc-toolkit/utility";
-import {
-    type IdentifierCreatorConstructor,
-    type IdentifierExtensionConstructor,
-    type IdentifierValidatorConstructor,
-    MixinAbstractIdentifierCreator
-} from "./abstract-identifier-creator.js";
+import { type IdentifierCreatorConstructor, MixinAbstractIdentifierCreator } from "./abstract-identifier-creator.js";
 import { checkDigit, checkDigitSum } from "./check.js";
-import type { IdentifierTypeValidator } from "./identifier-validators.js";
+import type { IdentifierTypeValidator, IdentifierValidatorConstructorsEntry } from "./identifier-validators.js";
 import { LeaderTypes } from "./leader-type.js";
 import type { NumericIdentifierCreator } from "./numeric-identifier-creator.js";
 import type { NumericIdentifierType } from "./numeric-identifier-type.js";
@@ -22,9 +18,6 @@ import type { PrefixProvider } from "./prefix-provider.js";
 /**
  * Numeric identifier creator constructor type, which delegates to a numeric identifier validator constructor.
  *
- * @template TConstructorArguments
- * Constructor arguments types.
- *
  * @template TNumericIdentifierType
  * Numeric identifier type type.
  *
@@ -32,42 +25,31 @@ import type { PrefixProvider } from "./prefix-provider.js";
  * Numeric identifier validator type.
  */
 export type NumericIdentifierCreatorConstructor<
-    TConstructorArguments extends unknown[],
     TNumericIdentifierType extends NumericIdentifierType,
     TNumericIdentifierValidator extends NumericIdentifierValidator<TNumericIdentifierType>
-> = IdentifierExtensionConstructor<
-    [prefixProvider: PrefixProvider, prefix: string, ...args: TConstructorArguments],
+> = TypedConstructor<
+    [prefixProvider: PrefixProvider, prefix: string, ...args: ConstructorParameters<IdentifierValidatorConstructorsEntry<TNumericIdentifierType>>],
     TNumericIdentifierValidator & NumericIdentifierCreator<TNumericIdentifierType>
 >;
 
 /**
  * Mixin implementation of {@linkcode NumericIdentifierCreator} with an appropriate numeric identifier validator base.
  *
- * @template TConstructorArguments
- * Constructor arguments types.
- *
  * @template TNumericIdentifierType
  * Numeric identifier type type.
  *
- * @template TNumericIdentifierValidatorConstructor
- * Numeric identifier validator constructor type.
- *
- * @param NumericIdentifierValidatorBase
+ * @param NumericIdentifierValidatorConstructor
  * Numeric identifier validator base.
  *
  * @returns
  * Numeric identifier creator class.
  */
 export function MixinAbstractNumericIdentifierCreator<
-    TConstructorArguments extends unknown[],
-    TNumericIdentifierType extends NumericIdentifierType,
-    TNumericIdentifierValidatorConstructor extends IdentifierValidatorConstructor<
-        TConstructorArguments,
-        TNumericIdentifierType,
-        NumericIdentifierValidation
-    >
->(NumericIdentifierValidatorBase: TNumericIdentifierValidatorConstructor): NumericIdentifierCreatorConstructor<
-    TConstructorArguments,
+    TNumericIdentifierType extends NumericIdentifierType
+>(NumericIdentifierValidatorConstructor: TypedConstructor<
+    ConstructorParameters<IdentifierValidatorConstructorsEntry<TNumericIdentifierType>>,
+    IdentifierTypeValidator<TNumericIdentifierType>
+>): NumericIdentifierCreatorConstructor<
     TNumericIdentifierType,
     IdentifierTypeValidator<TNumericIdentifierType>
 > {
@@ -75,12 +57,13 @@ export function MixinAbstractNumericIdentifierCreator<
      * Abstract numeric identifier creator. Implements common functionality for a numeric identifier creator, mixed in
      * with a matching numeric identifier validator.
      */
-    abstract class AbstractNumericIdentifierCreator extends (MixinAbstractIdentifierCreator(NumericIdentifierValidatorBase) as IdentifierCreatorConstructor<
-        TConstructorArguments,
-        TNumericIdentifierType,
-        NumericIdentifierValidation,
-        NumericIdentifierValidator<TNumericIdentifierType>
-    >) implements NumericIdentifierCreator<TNumericIdentifierType> {
+    abstract class AbstractNumericIdentifierCreator extends (
+        MixinAbstractIdentifierCreator(NumericIdentifierValidatorConstructor) as IdentifierCreatorConstructor<
+            TNumericIdentifierType,
+            NumericIdentifierValidation,
+            NumericIdentifierValidator<TNumericIdentifierType>
+        >
+    ) implements NumericIdentifierCreator<TNumericIdentifierType> {
         /**
          * Capacity.
          */
@@ -103,7 +86,7 @@ export function MixinAbstractNumericIdentifierCreator<
          * @param args
          * Originating constructor arguments.
          */
-        constructor(prefixProvider: PrefixProvider, prefix: string, ...args: TConstructorArguments) {
+        constructor(prefixProvider: PrefixProvider, prefix: string, ...args: ConstructorParameters<IdentifierValidatorConstructorsEntry<TNumericIdentifierType>>) {
             super(prefixProvider, prefix, 1, ...args);
 
             // Capacity is always in number range.
@@ -227,10 +210,10 @@ export function MixinAbstractNumericIdentifierCreator<
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Base class was upcast to type with statically known members for mixin, downcast result.
-    return AbstractNumericIdentifierCreator as IdentifierExtensionConstructor<
+    return AbstractNumericIdentifierCreator as TypedConstructor<
         ConstructorParameters<typeof AbstractNumericIdentifierCreator>,
         unknown
-    > as IdentifierExtensionConstructor<
+    > as TypedConstructor<
         ConstructorParameters<typeof AbstractNumericIdentifierCreator>,
         IdentifierTypeValidator<TNumericIdentifierType> & AbstractNumericIdentifierCreator
     >;

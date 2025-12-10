@@ -8,8 +8,7 @@ import { SerializableNumericIdentifierValidator } from "./serializable-numeric-i
  * Serializable numeric identifier creator.
  */
 export class SerializableNumericIdentifierCreator extends MixinAbstractNonGTINNumericIdentifierCreator<
-    SerializableNumericIdentifierType,
-    typeof SerializableNumericIdentifierValidator
+    SerializableNumericIdentifierType
 >(SerializableNumericIdentifierValidator) {
     /**
      * Concatenate a validated base identifier with serial component(s).

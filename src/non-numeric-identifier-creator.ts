@@ -19,10 +19,8 @@ import type { PrefixProvider } from "./prefix-provider.js";
  * Non-numeric identifier creator.
  */
 export class NonNumericIdentifierCreator extends MixinAbstractIdentifierCreator<
-    [NonNumericIdentifierType],
     NonNumericIdentifierType,
-    NonNumericIdentifierValidation,
-    typeof NonNumericIdentifierValidator
+    NonNumericIdentifierValidation
 >(NonNumericIdentifierValidator) {
     /**
      * Reference validation parameters.

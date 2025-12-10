@@ -14,12 +14,10 @@ import { i18nextGS1 } from "./locale/i18n.js";
 import type { PrefixProvider } from "./prefix-provider.js";
 
 /**
- * GTIN creator. Applicable to GTIN-13, GTIN-12, and GTIN-8 types; no applicable to GTIN-14 type.
+ * GTIN creator. Applicable to GTIN-13, GTIN-12, and GTIN-8 types; not applicable to GTIN-14 type.
  */
 export class GTINCreator extends MixinAbstractNumericIdentifierCreator<
-    [GTINBaseLength],
-    GTINType,
-    typeof GTINValidator
+    GTINType
 >(GTINValidator) {
     /**
      * Validation parameters for required indicator digit.
