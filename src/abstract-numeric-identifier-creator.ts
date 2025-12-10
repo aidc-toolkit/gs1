@@ -1,4 +1,4 @@
-import type { TypedConstructor } from "@aidc-toolkit/core";
+import type { AbstractConstructor } from "@aidc-toolkit/core";
 import {
     CharacterSetCreator,
     Exclusions,
@@ -27,7 +27,7 @@ import type { PrefixProvider } from "./prefix-provider.js";
 export type NumericIdentifierCreatorConstructor<
     TNumericIdentifierType extends NumericIdentifierType,
     TNumericIdentifierValidator extends NumericIdentifierValidator<TNumericIdentifierType>
-> = TypedConstructor<
+> = AbstractConstructor<
     [prefixProvider: PrefixProvider, prefix: string, ...args: ConstructorParameters<IdentifierValidatorConstructorsEntry<TNumericIdentifierType>>],
     TNumericIdentifierValidator & NumericIdentifierCreator<TNumericIdentifierType>
 >;
@@ -46,7 +46,7 @@ export type NumericIdentifierCreatorConstructor<
  */
 export function MixinAbstractNumericIdentifierCreator<
     TNumericIdentifierType extends NumericIdentifierType
->(NumericIdentifierValidatorConstructor: TypedConstructor<
+>(NumericIdentifierValidatorConstructor: AbstractConstructor<
     ConstructorParameters<IdentifierValidatorConstructorsEntry<TNumericIdentifierType>>,
     IdentifierTypeValidator<TNumericIdentifierType>
 >): NumericIdentifierCreatorConstructor<
@@ -210,10 +210,10 @@ export function MixinAbstractNumericIdentifierCreator<
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Base class was upcast to type with statically known members for mixin, downcast result.
-    return AbstractNumericIdentifierCreator as TypedConstructor<
+    return AbstractNumericIdentifierCreator as AbstractConstructor<
         ConstructorParameters<typeof AbstractNumericIdentifierCreator>,
         unknown
-    > as TypedConstructor<
+    > as AbstractConstructor<
         ConstructorParameters<typeof AbstractNumericIdentifierCreator>,
         IdentifierTypeValidator<TNumericIdentifierType> & AbstractNumericIdentifierCreator
     >;

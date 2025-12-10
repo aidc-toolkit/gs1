@@ -1,4 +1,4 @@
-import type { TypedConstructor } from "@aidc-toolkit/core";
+import type { AbstractConstructor } from "@aidc-toolkit/core";
 import type { IdentifierCreator } from "./identifier-creator.js";
 import type { IdentifierType } from "./identifier-type.js";
 import type { IdentifierValidation, IdentifierValidator } from "./identifier-validator.js";
@@ -21,7 +21,7 @@ export type IdentifierCreatorConstructor<
     TIdentifierType extends IdentifierType,
     TIdentifierValidation extends IdentifierValidation,
     TIdentifierValidator extends IdentifierValidator<TIdentifierType, TIdentifierValidation>
-> = TypedConstructor<
+> = AbstractConstructor<
     [prefixProvider: PrefixProvider, prefix: string, checkAllowance: number, ...args: ConstructorParameters<IdentifierValidatorConstructorsEntry<TIdentifierType>>],
     TIdentifierValidator & IdentifierCreator<TIdentifierType, TIdentifierValidation>
 >;
@@ -44,7 +44,7 @@ export type IdentifierCreatorConstructor<
 export function MixinAbstractIdentifierCreator<
     TIdentifierType extends IdentifierType,
     TIdentifierValidation extends IdentifierValidation
->(IdentifierValidatorConstructor: TypedConstructor<
+>(IdentifierValidatorConstructor: AbstractConstructor<
     ConstructorParameters<IdentifierValidatorConstructorsEntry<TIdentifierType>>,
     IdentifierTypeValidator<TIdentifierType>
 >): IdentifierCreatorConstructor<
@@ -57,7 +57,7 @@ export function MixinAbstractIdentifierCreator<
      * with a matching numeric identifier validator.
      */
     abstract class AbstractIdentifierCreator extends (
-        IdentifierValidatorConstructor as TypedConstructor<
+        IdentifierValidatorConstructor as AbstractConstructor<
             ConstructorParameters<IdentifierValidatorConstructorsEntry<TIdentifierType>>,
             IdentifierValidator<TIdentifierType>
         >
@@ -119,7 +119,7 @@ export function MixinAbstractIdentifierCreator<
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Base class was upcast to type with statically known members for mixin, downcast result.
-    return AbstractIdentifierCreator as TypedConstructor<
+    return AbstractIdentifierCreator as AbstractConstructor<
         ConstructorParameters<typeof AbstractIdentifierCreator>,
         IdentifierTypeValidator<TIdentifierType> & AbstractIdentifierCreator
     >;
