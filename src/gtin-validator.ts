@@ -235,7 +235,7 @@ export class GTINValidator extends NumericIdentifierValidator<GTINType> implemen
         let normalizedGTIN: string;
 
         switch (gtinLength) {
-            case GTINLengths.GTIN13 as number:
+            case GTINLengths.GTIN13 :
                 if (!gtin.startsWith("0")) {
                     // GTIN is GTIN-13.
                     normalizedGTIN = gtin;
@@ -250,12 +250,12 @@ export class GTINValidator extends NumericIdentifierValidator<GTINType> implemen
                 }
                 break;
 
-            case GTINLengths.GTIN12 as number:
+            case GTINLengths.GTIN12 :
                 // GTIN is GTIN-12.
                 normalizedGTIN = gtin;
                 break;
 
-            case GTINLengths.GTIN8 as number:
+            case GTINLengths.GTIN8 :
                 if (!gtin.startsWith("0")) {
                     // GTIN is GTIN-8.
                     normalizedGTIN = gtin;
@@ -265,7 +265,7 @@ export class GTINValidator extends NumericIdentifierValidator<GTINType> implemen
                 }
                 break;
 
-            case GTINLengths.GTIN14 as number:
+            case GTINLengths.GTIN14 :
                 if (!gtin.startsWith("0")) {
                     // GTIN is GTIN-14.
                     normalizedGTIN = gtin;
@@ -309,7 +309,7 @@ export class GTINValidator extends NumericIdentifierValidator<GTINType> implemen
         let gtinLevelRestriction: GTINLevel;
 
         switch (gtin.length) {
-            case GTINLengths.GTIN13 as number:
+            case GTINLengths.GTIN13 :
                 if (gtin.startsWith("0")) {
                     throw new RangeError(i18nextGS1.t("Identifier.invalidGTIN13AtRetail"));
                 }
@@ -320,14 +320,14 @@ export class GTINValidator extends NumericIdentifierValidator<GTINType> implemen
                 gtinLevelRestriction = GTINLevels.Any;
                 break;
 
-            case GTINLengths.GTIN12 as number:
+            case GTINLengths.GTIN12 :
                 // Validate prefix requiring exact match for prefix type.
                 PrefixValidator.validate(PrefixTypes.UPCCompanyPrefix, false, false, gtin, true, true);
 
                 gtinLevelRestriction = GTINLevels.Any;
                 break;
 
-            case GTINLengths.GTIN8 as number:
+            case GTINLengths.GTIN8 :
                 // Zero-suppressed GTIN-12 always starts with 0.
                 if (!gtin.startsWith("0")) {
                     // Validate prefix requiring exact match for prefix type.
@@ -339,7 +339,7 @@ export class GTINValidator extends NumericIdentifierValidator<GTINType> implemen
                 gtinLevelRestriction = GTINLevels.RetailConsumer;
                 break;
 
-            case GTINLengths.GTIN14 as number:
+            case GTINLengths.GTIN14 :
                 // Validate prefix supporting any prefix type.
                 PrefixValidator.validate(PrefixTypes.GS1CompanyPrefix, true, true, gtin.substring(1), true, true);
 
