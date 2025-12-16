@@ -54,6 +54,8 @@ export * from "./serializable-numeric-identifier-validator.js";
 export * from "./non-numeric-identifier-validator.js";
 export * from "./identifier-validators.js";
 
+export * from "./verified-by-gs1.js";
+
 export type * from "./identifier-creator.js";
 export type * from "./numeric-identifier-creator.js";
 export * from "./gtin-creator.js";
