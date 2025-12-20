@@ -1,4 +1,4 @@
-import type { Hyperlink } from "@aidc-toolkit/utility";
+import type { Hyperlink } from "@aidc-toolkit/core";
 import { GTINValidator } from "./gtin-validator.js";
 import { type IdentifierType, IdentifierTypes } from "./identifier-type.js";
 import { IdentifierValidators } from "./identifier-validators.js";
