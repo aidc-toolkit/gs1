@@ -65,4 +65,5 @@ export * from "./serializable-numeric-identifier-creator.js";
 export * from "./non-numeric-identifier-creator.js";
 export * from "./identifier-creators.js";
 
+export * from "./gcp-length-cache.js";
 export * from "./prefix-manager.js";

@@ -96,8 +96,8 @@ describe("Prefix manager", () => {
 
         expect(() => PrefixManager.get(PrefixTypes.GS1CompanyPrefix, "952123A56789")).toThrow("Invalid character 'A' at position 7 of GS1 Company Prefix");
 
-        expect(() => PrefixManager.get(PrefixTypes.UPCCompanyPrefix, "61414")).toThrow("Length 5 of U.P.C. Company Prefix must be greater than or equal to 6");
-        expect(() => PrefixManager.get(PrefixTypes.UPCCompanyPrefix, "614141")).not.toThrow(RangeError);
+        expect(() => PrefixManager.get(PrefixTypes.UPCCompanyPrefix, "6141")).toThrow("Length 4 of U.P.C. Company Prefix must be greater than or equal to 5");
+        expect(() => PrefixManager.get(PrefixTypes.UPCCompanyPrefix, "61414")).not.toThrow(RangeError);
         expect(() => PrefixManager.get(PrefixTypes.UPCCompanyPrefix, "61414112345")).not.toThrow(RangeError);
         expect(() => PrefixManager.get(PrefixTypes.UPCCompanyPrefix, "614141123456")).toThrow("Length 12 of U.P.C. Company Prefix must be less than or equal to 11");
         expect(() => PrefixManager.get(PrefixTypes.UPCCompanyPrefix, "000614")).not.toThrow(RangeError);

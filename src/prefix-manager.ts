@@ -1,3 +1,4 @@
+import * as GCPLength from "./gcp-length.js";
 import type { GTINCreator } from "./gtin-creator.js";
 import { GTIN_BASE_TYPES } from "./gtin-length.js";
 import type { GTINType } from "./gtin-type.js";
@@ -17,6 +18,7 @@ import type { PrefixProvider } from "./prefix-provider.js";
 import { type PrefixType, PrefixTypes } from "./prefix-type.js";
 import { PrefixValidator } from "./prefix-validator.js";
 import type { SerializableNumericIdentifierCreator } from "./serializable-numeric-identifier-creator.js";
+import type { GCPLengthCache } from "./gcp-length-cache.js";
 
 /**
  * Prefix manager. This is the core class for identifier creation.
@@ -98,6 +100,11 @@ export class PrefixManager implements PrefixProvider {
      * Cached identifier creators.
      */
     readonly #identifierCreators: Partial<IdentifierCreatorsRecord> = {};
+
+    /**
+     * GS1 Company Prefix length root.
+     */
+    static #gcpLengthRoot: GCPLength.Root | undefined = undefined;
 
     /**
      * Constructor.
@@ -349,5 +356,49 @@ export class PrefixManager implements PrefixProvider {
      */
     get gmnCreator(): NonNumericIdentifierCreator {
         return this.getIdentifierCreator(IdentifierTypes.GMN);
+    }
+
+    /**
+     * Load GS1 Company Prefix length data.
+     *
+     * @param gcpLengthCache
+     * GS1 Company Prefix length cache.
+     */
+    static async loadGCPLengthData(gcpLengthCache: GCPLengthCache): Promise<void> {
+        PrefixManager.#gcpLengthRoot = await GCPLength.loadData(gcpLengthCache);
+    }
+
+    /**
+     * Get the length of a GS1 Company Prefix for an identifier.
+     *
+     * @param identifierType
+     * Identifier type.
+     *
+     * @param identifier
+     * Identifier.
+     *
+     * @returns
+     * Length of GS1 Company Prefix, 0 if not a GS1 Company Prefix, or -1 if not found.
+     */
+    static getGCPLengthFor(identifierType: IdentifierType, identifier: string): number {
+        if (PrefixManager.#gcpLengthRoot === undefined) {
+            throw new RangeError(i18nextGS1.t("Prefix.gs1CompanyPrefixLengthDataNotLoaded"));
+        }
+
+        return GCPLength.getFor(PrefixManager.#gcpLengthRoot, identifierType, identifier);
+    }
+
+    /**
+     * Get the date/time the GS1 Company Prefix length data was last updated.
+     *
+     * @returns
+     * Date/time the GS1 Company Prefix length data was last updated.
+     */
+    static getGCPLengthDateTime(): Date {
+        if (PrefixManager.#gcpLengthRoot === undefined) {
+            throw new RangeError(i18nextGS1.t("Prefix.gs1CompanyPrefixLengthDataNotLoaded"));
+        }
+
+        return PrefixManager.#gcpLengthRoot.dateTime;
     }
 }

@@ -36,7 +36,7 @@ const GS1_COMPANY_PREFIX_MAXIMUM_LENGTH = 12;
 /**
  * U.P.C. Company Prefix minimum length.
  */
-const UPC_COMPANY_PREFIX_MINIMUM_LENGTH = 6;
+const UPC_COMPANY_PREFIX_MINIMUM_LENGTH = 5;
 
 /**
  * U.P.C. Company Prefix maximum length.
