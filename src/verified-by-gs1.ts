@@ -23,7 +23,8 @@ const VERIFIED_BY_GS1_REFERENCE_BASE = "https://www.gs1.org/services/verified-by
  * @returns
  * Verified by GS1 hyperlink.
  */
-export function verifiedByGS1(identifierType: IdentifierType, identifier: string, text: string | undefined = undefined, details: string | undefined = undefined): Hyperlink {
+// eslint-disable-next-line @typescript-eslint/no-useless-default-assignment -- Undefined is necessary to allow bypass of text.
+export function verifiedByGS1(identifierType: IdentifierType, identifier: string, text: string | undefined = undefined, details?: string): Hyperlink {
     let normalizedIdentifier: string;
     let useKeyTypeParameter: boolean;
 

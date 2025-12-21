@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest";
 import { type IdentifierType, IdentifierTypes, verifiedByGS1 } from "../src/index.js";
 
 describe("Verified by GS1", () => {
-    function testVerifiedByGS1(identifierType: IdentifierType, identifier: string, normalizedIdentifier: string, useKeyTypeParameter: boolean, text: string, details: string | undefined = undefined): void {
+    function testVerifiedByGS1(identifierType: IdentifierType, identifier: string, normalizedIdentifier: string, useKeyTypeParameter: boolean, text: string, details?: string): void {
         expect(verifiedByGS1(identifierType, identifier, text, details)).toEqual({
             reference: `https://www.gs1.org/services/verified-by-gs1/results?${!useKeyTypeParameter ? identifierType.toLowerCase() : "key"}=${normalizedIdentifier}${!useKeyTypeParameter ? "" : `&key_type=${identifierType.toLowerCase()}`}`,
             text,
