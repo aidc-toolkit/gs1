@@ -3,7 +3,14 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { describe, expect, test } from "vitest";
 import * as GCPLength from "../src/gcp-length.js";
-import { type GCPLengthCache, IdentifierTypes, PrefixManager, PrefixTypes, PrefixValidator } from "../src/index.js";
+import {
+    type GCPLengthCache,
+    IdentifierTypes,
+    PrefixManager,
+    PrefixTypes,
+    PrefixValidator,
+    RemoteGCPLengthCache
+} from "../src/index.js";
 
 interface ReadonlyStorage<T> {
     read: () => Promisable<T>;
@@ -283,8 +290,6 @@ describe("GS1 Company Prefix length", () => {
 
         const json = await json1DataStorage.read();
 
-        expect(json).not.toBeUndefined();
-
         const root = await GCPLength.loadData(createGCPLengthCache(emptyStorage, emptyStorage, emptyStorage, json1DateTimeStorage, json1DataStorage));
 
         const gcpLengthJSON = JSON.parse(json) as GCPLengthJSON;
@@ -318,5 +323,47 @@ describe("GS1 Company Prefix length", () => {
                 }
             }
         }
+    });
+
+    test("Remote", async () => {
+        const gcpLengthCache = new class extends RemoteGCPLengthCache {
+            #nextCheckDateTime: Date | undefined = undefined;
+
+            #cacheDateTime: Date | undefined = undefined;
+
+            #cacheData: Uint8Array | undefined = undefined;
+
+            override getNextCheckDateTime(): Date | undefined {
+                return this.#nextCheckDateTime;
+            }
+
+            override setNextCheckDateTime(nextCheckDateTime: Date): void {
+                this.#nextCheckDateTime = nextCheckDateTime;
+            }
+
+            override getCacheDateTime(): Date | undefined {
+                return this.#cacheDateTime;
+            }
+
+            override setCacheDateTime(cacheDateTime: Date): void {
+                this.#cacheDateTime = cacheDateTime;
+            }
+
+            override getCacheData(): Uint8Array | undefined {
+                return this.#cacheData;
+            }
+
+            override setCacheData(cacheData: Uint8Array): void {
+                this.#cacheData = cacheData;
+            }
+        }();
+
+        await expect((async () => {
+            await GCPLength.loadData(gcpLengthCache);
+        })()).resolves.not.toThrowError(RangeError);
+
+        expect(gcpLengthCache.getNextCheckDateTime()).not.toBeUndefined();
+        expect(gcpLengthCache.getCacheDateTime()).not.toBeUndefined();
+        expect(gcpLengthCache.getCacheData()).not.toBeUndefined();
     });
 });
