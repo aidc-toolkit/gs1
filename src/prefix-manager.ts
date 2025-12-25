@@ -380,7 +380,7 @@ export class PrefixManager implements PrefixProvider {
      * @returns
      * Length of GS1 Company Prefix, 0 if not a GS1 Company Prefix, or -1 if not found.
      */
-    static gcpLengthOf(identifierType: IdentifierType, identifier: string): number {
+    static gcpLength(identifierType: IdentifierType, identifier: string): number {
         if (PrefixManager.#gcpLengthRoot === undefined) {
             throw new RangeError(i18nextGS1.t("Prefix.gs1CompanyPrefixLengthDataNotLoaded"));
         }
