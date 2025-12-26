@@ -266,7 +266,10 @@ function toBinary(binaryData: Uint8Array, branch: Branch, startIndex: number): n
  * New date.
  */
 function addDays(date: Date, days: number): Date {
-    return new Date(date.getTime() + days * 24 * 60 * 60 * 1000);
+    const futureDate = new Date(date);
+    futureDate.setDate(futureDate.getDate() + days);
+
+    return futureDate;
 }
 
 /**
