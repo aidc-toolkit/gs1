@@ -329,13 +329,13 @@ export async function loadData(gcpLengthCache: GCPLengthCache): Promise<Root> {
             await gcpLengthCache.setCacheData(cacheData);
             await gcpLengthCache.setCacheDateTime(cacheDateTime);
 
-            // Next check date/time is a week from source date/time or tomorrow, whichever is later..
-            nextCheckDateTime = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+            // Next check date/time is a week from source date/time or tomorrow, whichever is later.
+            nextCheckDateTime = addDays(sourceDateTime, 7);
             if (nextCheckDateTime.getTime() < tomorrow.getTime()) {
                 nextCheckDateTime = tomorrow;
             }
         } else {
-            // Next check date/time is a day from now.
+            // Next check date/time is tomorrow.
             nextCheckDateTime = tomorrow;
         }
 
