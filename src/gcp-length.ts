@@ -281,21 +281,22 @@ function addDays(date: Date, days: number): Date {
  * @returns
  * Root of tree.
  */
-export async function loadData(gcpLengthCache: GCPLengthCache): Promise<Root> {
+export async function loadData(gcpLengthCache: GCPLengthCache): Promise<Root | undefined> {
     let root: Root | undefined = undefined;
 
-    let nextCheckDateTime = await gcpLengthCache.getNextCheckDateTime();
-    let cacheDateTime = await gcpLengthCache.getCacheDateTime();
-    let cacheData = await gcpLengthCache.getCacheData();
+    let nextCheckDateTime = await gcpLengthCache.nextCheckDateTime;
+    let cacheDateTime = await gcpLengthCache.cacheDateTime;
 
     const now = new Date();
     const tomorrow = addDays(now, 1);
 
-    if (nextCheckDateTime === undefined || nextCheckDateTime.getTime() <= now.getTime() || cacheDateTime === undefined || cacheData === undefined) {
-        const sourceDateTime = await gcpLengthCache.getSourceDateTime();
+    if (nextCheckDateTime === undefined || nextCheckDateTime.getTime() <= now.getTime()) {
+        const sourceDateTime = await gcpLengthCache.sourceDateTime;
 
-        if (cacheDateTime === undefined || cacheData === undefined || cacheDateTime.getTime() < sourceDateTime.getTime()) {
-            const sourceData = await gcpLengthCache.getSourceData();
+        if (cacheDateTime === undefined || cacheDateTime.getTime() < sourceDateTime.getTime()) {
+            const sourceData = await gcpLengthCache.sourceData;
+
+            let cacheData: Uint8Array;
 
             if (typeof sourceData !== "string") {
                 root = {
@@ -321,38 +322,35 @@ export async function loadData(gcpLengthCache: GCPLengthCache): Promise<Root> {
                     branchesAdded += addEntry(root, entry.prefix, entry.gcpLength);
                 }
 
-                // Each branch has ten (possibly undefined) entries, two per byte.
+                // Each branch has ten (some possibly undefined) entries, two per byte.
                 cacheData = new Uint8Array(branchesAdded * 5);
 
                 toBinary(cacheData, root, 0);
             }
-            
-            cacheDateTime = sourceDateTime;
-
-            await gcpLengthCache.setCacheData(cacheData);
-            await gcpLengthCache.setCacheDateTime(cacheDateTime);
 
             // Next check date/time is a week from source date/time or tomorrow, whichever is later.
             nextCheckDateTime = addDays(sourceDateTime, 7);
             if (nextCheckDateTime.getTime() < tomorrow.getTime()) {
                 nextCheckDateTime = tomorrow;
             }
+
+            cacheDateTime = sourceDateTime;
+
+            await gcpLengthCache.update(nextCheckDateTime, cacheDateTime, cacheData);
         } else {
             // Next check date/time is tomorrow.
-            nextCheckDateTime = tomorrow;
+            await gcpLengthCache.update(tomorrow);
         }
-
-        await gcpLengthCache.setNextCheckDateTime(nextCheckDateTime);
     }
 
-    // Root is undefined if cached data is still valid.
-    if (root === undefined) {
+    // Root is undefined if cache data is still valid or retrying after prior failure.
+    if (root === undefined && cacheDateTime !== undefined) {
         root = {
             dateTime: cacheDateTime,
             childNodes: []
         };
 
-        fromBinary(cacheData, root.childNodes, 0);
+        fromBinary(await gcpLengthCache.cacheData, root.childNodes, 0);
     }
 
     return root;

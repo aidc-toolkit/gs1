@@ -1,15 +1,16 @@
-import type { Cache, Promisable } from "@aidc-toolkit/core";
+import { Cache } from "@aidc-toolkit/core";
 import { i18nextGS1 } from "./locale/i18n.js";
 
 /**
  * GS1 Company Prefix length cache.
  */
-export type GCPLengthCache = Cache<Uint8Array, Uint8Array | string>;
+export abstract class GCPLengthCache extends Cache<Uint8Array, Uint8Array | string> {
+}
 
 /**
  * GS1 Company Prefix length cache with remote source.
  */
-export abstract class RemoteGCPLengthCache implements GCPLengthCache {
+export abstract class RemoteGCPLengthCache extends GCPLengthCache {
     /**
      * Default base URL pointing to AIDC Toolkit website data directory.
      */
@@ -38,41 +39,14 @@ export abstract class RemoteGCPLengthCache implements GCPLengthCache {
      * {@linkcode SOURCE_DATA_FILE_NAME} files.
      */
     constructor(baseURL: string = RemoteGCPLengthCache.DEFAULT_BASE_URL) {
+        super();
+
         this.#baseURL = baseURL;
     }
 
     /**
-     * @inheritDoc
-     */
-    abstract getNextCheckDateTime(): Promisable<Date | undefined>;
-
-    /**
-     * @inheritDoc
-     */
-    abstract setNextCheckDateTime(nextCheckDateTime: Date): Promisable<void>;
-
-    /**
-     * @inheritDoc
-     */
-    abstract getCacheDateTime(): Promisable<Date | undefined>;
-
-    /**
-     * @inheritDoc
-     */
-    abstract setCacheDateTime(cacheDateTime: Date): Promisable<void>;
-
-    /**
-     * @inheritDoc
-     */
-    abstract getCacheData(): Promisable<Uint8Array | undefined>;
-
-    /**
-     * @inheritDoc
-     */
-    abstract setCacheData(cacheData: Uint8Array): Promisable<void>;
-
-    /**
-     * Get a remote file.
+     * Get a remote file. If an exception is thrown, retrying is delayed for ten minutes to prevent repeated network
+     * calls.
      *
      * @param fileName
      * File name relative to base URL.
@@ -80,23 +54,31 @@ export abstract class RemoteGCPLengthCache implements GCPLengthCache {
      * @returns
      * Response.
      */
-    private async getRemoteFile(fileName: string): Promise<Response> {
-        const response = await fetch(`${this.#baseURL}${fileName}`);
+    async #getRemoteFile(fileName: string): Promise<Response> {
+        return fetch(`${this.#baseURL}${fileName}`).then((response) => {
+            if (!response.ok) {
+                throw new RangeError(i18nextGS1.t("Prefix.gs1CompanyPrefixLengthDataHTTPError", {
+                    status: response.status
+                }));
+            }
 
-        if (!response.ok) {
-            throw new RangeError(i18nextGS1.t("Prefix.gs1CompanyPrefixLengthDataHTTPError", {
-                status: response.status
-            }));
-        }
+            return response;
+        }).catch(async (e: unknown) => {
+            // Try again in ten minutes.
+            const nowPlus10Minutes = new Date();
+            nowPlus10Minutes.setMinutes(nowPlus10Minutes.getMinutes() + 10);
 
-        return response;
+            await this.update(nowPlus10Minutes);
+
+            throw e;
+        });
     }
 
     /**
      * @inheritDoc
      */
-    async getSourceDateTime(): Promise<Date> {
-        return this.getRemoteFile(RemoteGCPLengthCache.SOURCE_DATE_TIME_FILE_NAME).then(async response =>
+    get sourceDateTime(): Promise<Date> {
+        return this.#getRemoteFile(RemoteGCPLengthCache.SOURCE_DATE_TIME_FILE_NAME).then(async response =>
             await response.text()
         ).then(s =>
             new Date(s)
@@ -106,8 +88,8 @@ export abstract class RemoteGCPLengthCache implements GCPLengthCache {
     /**
      * @inheritDoc
      */
-    async getSourceData(): Promise<string | Uint8Array> {
-        return this.getRemoteFile(RemoteGCPLengthCache.SOURCE_DATA_FILE_NAME).then(async response =>
+    get sourceData(): Promise<Uint8Array> {
+        return this.#getRemoteFile(RemoteGCPLengthCache.SOURCE_DATA_FILE_NAME).then(async response =>
             await response.arrayBuffer()
         ).then(a =>
             new Uint8Array(a)
