@@ -1,7 +1,7 @@
 import { describe } from "vitest";
 import { PrefixManager, PrefixTypes } from "../src/index.js";
 import { testGTINCreator } from "./gtin-creator.js";
-import { testNonGTINNumericIdentifierCreator } from "./non-gtin-numeric-identifier-creator.js";
+import { testNonSerializableNumericIdentifierCreator } from "./non-serializable-numeric-identifier-creator.js";
 import { testNonNumericIdentifierCreator } from "./non-numeric-identifier-creator.js";
 import { testSerializableNumericIdentifierCreator } from "./serializable-numeric-identifier-creator.js";
 
@@ -14,14 +14,14 @@ describe("Creators", () => {
     const shortPrefixManager = PrefixManager.get(PrefixTypes.GS1CompanyPrefix, "952123456");
     const longPrefixManager = PrefixManager.get(PrefixTypes.GS1CompanyPrefix, "952123456789");
 
-    testNonGTINNumericIdentifierCreator(shortPrefixManager.glnCreator);
-    testNonGTINNumericIdentifierCreator(longPrefixManager.ssccCreator);
+    testNonSerializableNumericIdentifierCreator(shortPrefixManager.glnCreator);
+    testNonSerializableNumericIdentifierCreator(longPrefixManager.ssccCreator);
     testSerializableNumericIdentifierCreator(shortPrefixManager.graiCreator);
     testNonNumericIdentifierCreator(shortPrefixManager.giaiCreator);
-    testNonGTINNumericIdentifierCreator(longPrefixManager.gsrnCreator);
+    testNonSerializableNumericIdentifierCreator(longPrefixManager.gsrnCreator);
     testSerializableNumericIdentifierCreator(shortPrefixManager.gdtiCreator);
     testNonNumericIdentifierCreator(shortPrefixManager.gincCreator);
-    testNonGTINNumericIdentifierCreator(longPrefixManager.gsinCreator);
+    testNonSerializableNumericIdentifierCreator(longPrefixManager.gsinCreator);
     testSerializableNumericIdentifierCreator(shortPrefixManager.gcnCreator);
     testNonNumericIdentifierCreator(shortPrefixManager.cpidCreator);
     testNonNumericIdentifierCreator(shortPrefixManager.gmnCreator);

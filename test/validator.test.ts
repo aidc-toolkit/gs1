@@ -18,8 +18,8 @@ import {
     LeaderTypes
 } from "../src/index.js";
 import { validateGTINValidator } from "./gtin-validator.test.js";
-import { validateNonGTINNumericIdentifierValidator } from "./non-gtin-numeric-identifier-validator.js";
 import { validateNonNumericIdentifierValidator } from "./non-numeric-identifier-validator.js";
+import { validateNonSerializableNumericIdentifierValidator } from "./non-serializable-numeric-identifier-validator.js";
 import { validateSerializableNumericIdentifierValidator } from "./serializable-numeric-identifier-validator.js";
 
 describe("Validators", () => {
@@ -62,14 +62,14 @@ describe("Validators", () => {
         validateGTINValidator(IdentifierValidators.GTIN[GTINLengths.GTIN13], false, GTINLengths.GTIN13);
         validateGTINValidator(IdentifierValidators.GTIN[GTINLengths.GTIN12], false, GTINLengths.GTIN12);
         validateGTINValidator(IdentifierValidators.GTIN[GTINLengths.GTIN8], false, GTINLengths.GTIN8);
-        validateNonGTINNumericIdentifierValidator(IdentifierValidators.GLN, false, IdentifierTypes.GLN, 13, LeaderTypes.None);
-        validateNonGTINNumericIdentifierValidator(IdentifierValidators.SSCC, false, IdentifierTypes.SSCC, 18, LeaderTypes.ExtensionDigit);
+        validateNonSerializableNumericIdentifierValidator(IdentifierValidators.GLN, false, IdentifierTypes.GLN, 13, LeaderTypes.None);
+        validateNonSerializableNumericIdentifierValidator(IdentifierValidators.SSCC, false, IdentifierTypes.SSCC, 18, LeaderTypes.ExtensionDigit);
         validateSerializableNumericIdentifierValidator(IdentifierValidators.GRAI, false, IdentifierTypes.GRAI, 13, LeaderTypes.None, 16, ContentCharacterSets.AI82);
         validateNonNumericIdentifierValidator(IdentifierValidators.GIAI, false, IdentifierTypes.GIAI, 30, ContentCharacterSets.AI82, false);
-        validateNonGTINNumericIdentifierValidator(IdentifierValidators.GSRN, false, IdentifierTypes.GSRN, 18, LeaderTypes.None);
+        validateNonSerializableNumericIdentifierValidator(IdentifierValidators.GSRN, false, IdentifierTypes.GSRN, 18, LeaderTypes.None);
         validateSerializableNumericIdentifierValidator(IdentifierValidators.GDTI, false, IdentifierTypes.GDTI, 13, LeaderTypes.None, 17, ContentCharacterSets.AI82);
         validateNonNumericIdentifierValidator(IdentifierValidators.GINC, false, IdentifierTypes.GINC, 30, ContentCharacterSets.AI82, false);
-        validateNonGTINNumericIdentifierValidator(IdentifierValidators.GSIN, false, IdentifierTypes.GSIN, 17, LeaderTypes.None);
+        validateNonSerializableNumericIdentifierValidator(IdentifierValidators.GSIN, false, IdentifierTypes.GSIN, 17, LeaderTypes.None);
         validateSerializableNumericIdentifierValidator(IdentifierValidators.GCN, false, IdentifierTypes.GCN, 13, LeaderTypes.None, 12, ContentCharacterSets.Numeric);
         validateNonNumericIdentifierValidator(IdentifierValidators.CPID, false, IdentifierTypes.CPID, 30, ContentCharacterSets.AI39, false);
         validateNonNumericIdentifierValidator(IdentifierValidators.GMN, false, IdentifierTypes.GMN, 25, ContentCharacterSets.AI82, true);

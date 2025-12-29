@@ -9,8 +9,8 @@ import {
     PrefixTypes
 } from "../src/index.js";
 import { validateGTINValidator } from "./gtin-validator.test.js";
-import { validateNonGTINNumericIdentifierValidator } from "./non-gtin-numeric-identifier-validator.js";
 import { validateNonNumericIdentifierValidator } from "./non-numeric-identifier-validator.js";
+import { validateNonSerializableNumericIdentifierValidator } from "./non-serializable-numeric-identifier-validator.js";
 import { validateSerializableNumericIdentifierValidator } from "./serializable-numeric-identifier-validator.js";
 
 export function validateIdentifierCreators(prefixManager: PrefixManager): void {
@@ -52,14 +52,14 @@ export function validateIdentifierCreators(prefixManager: PrefixManager): void {
         expect(prefixManager.cpidCreator).toBe(prefixManager.cpidCreator);
         expect(prefixManager.gmnCreator).toBe(prefixManager.gmnCreator);
 
-        validateNonGTINNumericIdentifierValidator(prefixManager.glnCreator, true, IdentifierTypes.GLN, 13, LeaderTypes.None);
-        validateNonGTINNumericIdentifierValidator(prefixManager.ssccCreator, true, IdentifierTypes.SSCC, 18, LeaderTypes.ExtensionDigit);
+        validateNonSerializableNumericIdentifierValidator(prefixManager.glnCreator, true, IdentifierTypes.GLN, 13, LeaderTypes.None);
+        validateNonSerializableNumericIdentifierValidator(prefixManager.ssccCreator, true, IdentifierTypes.SSCC, 18, LeaderTypes.ExtensionDigit);
         validateSerializableNumericIdentifierValidator(prefixManager.graiCreator, true, IdentifierTypes.GRAI, 13, LeaderTypes.None, 16, ContentCharacterSets.AI82);
         validateNonNumericIdentifierValidator(prefixManager.giaiCreator, true, IdentifierTypes.GIAI, 30, ContentCharacterSets.AI82, false);
-        validateNonGTINNumericIdentifierValidator(prefixManager.gsrnCreator, true, IdentifierTypes.GSRN, 18, LeaderTypes.None);
+        validateNonSerializableNumericIdentifierValidator(prefixManager.gsrnCreator, true, IdentifierTypes.GSRN, 18, LeaderTypes.None);
         validateSerializableNumericIdentifierValidator(prefixManager.gdtiCreator, true, IdentifierTypes.GDTI, 13, LeaderTypes.None, 17, ContentCharacterSets.AI82);
         validateNonNumericIdentifierValidator(prefixManager.gincCreator, true, IdentifierTypes.GINC, 30, ContentCharacterSets.AI82, false);
-        validateNonGTINNumericIdentifierValidator(prefixManager.gsinCreator, true, IdentifierTypes.GSIN, 17, LeaderTypes.None);
+        validateNonSerializableNumericIdentifierValidator(prefixManager.gsinCreator, true, IdentifierTypes.GSIN, 17, LeaderTypes.None);
         validateSerializableNumericIdentifierValidator(prefixManager.gcnCreator, true, IdentifierTypes.GCN, 13, LeaderTypes.None, 12, ContentCharacterSets.Numeric);
         validateNonNumericIdentifierValidator(prefixManager.cpidCreator, true, IdentifierTypes.CPID, 30, ContentCharacterSets.AI39, false);
         validateNonNumericIdentifierValidator(prefixManager.gmnCreator, true, IdentifierTypes.GMN, 25, ContentCharacterSets.AI82, true);

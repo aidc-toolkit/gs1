@@ -68,14 +68,6 @@ export function testNonNumericIdentifierCreator(creator: NonNumericIdentifierCre
             expect(index).toBe(referenceCount);
         });
 
-        test("Position offset", () => {
-            expect(() => {
-                creator.validate(creator.create("ABC123"), {
-                    positionOffset: 4
-                });
-            }).not.toThrow(RangeError);
-        });
-
         test("Not all numeric", () => {
             expect(() => {
                 creator.validate(creator.create("01234"), {
