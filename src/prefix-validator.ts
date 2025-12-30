@@ -2,6 +2,7 @@ import { type CharacterSetValidation, NUMERIC_CREATOR } from "@aidc-toolkit/util
 import { i18nextGS1 } from "./locale/i18n.js";
 import type { PrefixProvider } from "./prefix-provider.js";
 import { type PrefixType, PrefixTypes } from "./prefix-type.js";
+import type { ParseKeys } from "i18next";
 
 /**
  * Prefix validation parameters.
@@ -130,31 +131,31 @@ export const PrefixValidator = {
      * @param isNumericIdentifier
      * If true, the prefix is from a numeric identifier and its character set will be validated by the caller.
      *
-     * @param positionOffset
-     * Position offset within a larger string.
+     * @param errorMessageParseKey
+     * Parse key for error message when validating GS1 Company Prefix type.
      */
-    validate(prefixType: PrefixType, allowUPCCompanyPrefix: boolean, allowGS18Prefix: boolean, prefix: string, isFromIdentifier = false, isNumericIdentifier = false, positionOffset?: number): void {
-        let baseValidation: PrefixValidation;
+    validate(prefixType: PrefixType, allowUPCCompanyPrefix: boolean, allowGS18Prefix: boolean, prefix: string, isFromIdentifier = false, isNumericIdentifier = false, errorMessageParseKey?: ParseKeys): void {
+        let validation: PrefixValidation;
 
         // Validate the prefix type and determine the prefix validation parameters.
         switch (prefixType) {
             case PrefixTypes.GS1CompanyPrefix:
                 if (!prefix.startsWith("0")) {
-                    baseValidation = GS1_COMPANY_PREFIX_VALIDATION;
+                    validation = GS1_COMPANY_PREFIX_VALIDATION;
                 } else if (!prefix.startsWith("00000")) {
                     if (!allowUPCCompanyPrefix) {
-                        throw new RangeError(i18nextGS1.t("Prefix.gs1CompanyPrefixCantStartWith0"));
+                        throw new RangeError(i18nextGS1.t(errorMessageParseKey ?? "Prefix.gs1CompanyPrefixCantStartWith0"));
                     }
 
-                    baseValidation = UPC_COMPANY_PREFIX_AS_GS1_COMPANY_PREFIX_VALIDATION;
+                    validation = UPC_COMPANY_PREFIX_AS_GS1_COMPANY_PREFIX_VALIDATION;
                 } else if (!prefix.startsWith("000000")) {
                     if (!allowGS18Prefix) {
-                        throw new RangeError(i18nextGS1.t("Prefix.gs1CompanyPrefixCantStartWith00000"));
+                        throw new RangeError(i18nextGS1.t(errorMessageParseKey ?? "Prefix.gs1CompanyPrefixCantStartWith00000"));
                     }
 
-                    baseValidation = GS1_8_PREFIX_AS_GS1_COMPANY_PREFIX_VALIDATION;
+                    validation = GS1_8_PREFIX_AS_GS1_COMPANY_PREFIX_VALIDATION;
                 } else {
-                    throw new RangeError(i18nextGS1.t("Prefix.gs1CompanyPrefixCantStartWith000000"));
+                    throw new RangeError(i18nextGS1.t(errorMessageParseKey ?? "Prefix.gs1CompanyPrefixCantStartWith000000"));
                 }
                 break;
 
@@ -163,7 +164,7 @@ export const PrefixValidator = {
                     throw new RangeError(i18nextGS1.t("Prefix.upcCompanyPrefixCantStartWith0000"));
                 }
 
-                baseValidation = UPC_COMPANY_PREFIX_VALIDATION;
+                validation = UPC_COMPANY_PREFIX_VALIDATION;
                 break;
 
             case PrefixTypes.GS18Prefix:
@@ -171,21 +172,16 @@ export const PrefixValidator = {
                     throw new RangeError(i18nextGS1.t("Prefix.gs18PrefixCantStartWith0"));
                 }
 
-                baseValidation = GS1_8_PREFIX_VALIDATION;
+                validation = GS1_8_PREFIX_VALIDATION;
                 break;
         }
 
-        const mergedValidation: PrefixValidation = {
-            ...baseValidation,
-            positionOffset
-        };
-
-        // If from key and numeric, key validation will take care of character set validation.
+        // If from identifier and numeric, identifier validation will take care of character set validation.
         if (!isFromIdentifier) {
-            NUMERIC_CREATOR.validate(prefix, mergedValidation);
+            NUMERIC_CREATOR.validate(prefix, validation);
         } else if (!isNumericIdentifier) {
             // Validate only the minimum length, allowing at least one character for the (possibly non-numeric) reference.
-            NUMERIC_CREATOR.validate(prefix.substring(0, Math.min(mergedValidation.minimumLength, prefix.length - 1)), mergedValidation);
+            NUMERIC_CREATOR.validate(prefix.substring(0, Math.min(validation.minimumLength, prefix.length - 1)), validation);
         }
     },
 

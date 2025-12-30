@@ -120,13 +120,10 @@ export abstract class IdentifierValidator<TIdentifierType extends IdentifierType
      *
      * @param partialIdentifier
      * Partial identifier.
-     *
-     * @param positionOffset
-     * Position offset within a larger string.
      */
-    protected validatePrefix(partialIdentifier: string, positionOffset?: number): void {
+    protected validatePrefix(partialIdentifier: string): void {
         // Delegate to prefix validator with support for U.P.C. Company Prefix but not GS1-8 Prefix.
-        PrefixValidator.validate(this.prefixType, true, false, partialIdentifier, true, this.referenceCharacterSet === ContentCharacterSets.Numeric, positionOffset);
+        PrefixValidator.validate(this.prefixType, true, false, partialIdentifier, true, this.referenceCharacterSet === ContentCharacterSets.Numeric);
     }
 
     /**

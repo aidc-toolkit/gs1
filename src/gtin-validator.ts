@@ -1,4 +1,5 @@
 import { type CharacterSetValidation, NUMERIC_CREATOR } from "@aidc-toolkit/utility";
+import type { ParseKeys } from "i18next";
 import { checkDigit, hasValidCheckDigit, isValidPriceOrWeightCheckDigit } from "./check.js";
 import type { GTINDescriptor } from "./gtin-descriptor.js";
 import { type GTINBaseLength, GTINLengths } from "./gtin-length.js";
@@ -75,6 +76,12 @@ export class GTINValidator extends NumericIdentifierValidator<GTINType> implemen
         maximumLength: 8
     };
 
+    static readonly #ERROR_MESSAGE_PARSE_KEYS: Record<GTINLevel, ParseKeys | undefined> = {
+        [GTINLevels.Any]: undefined,
+        [GTINLevels.RetailConsumer]: "Identifier.invalidGTINAtRetail",
+        [GTINLevels.OtherThanRetailConsumer]: "Identifier.invalidGTINAtOtherThanRetail"
+    };
+
     /**
      * Prefix type.
      */
@@ -104,9 +111,9 @@ export class GTINValidator extends NumericIdentifierValidator<GTINType> implemen
     /**
      * @inheritDoc
      */
-    protected override validatePrefix(partialIdentifier: string, positionOffset?: number): void {
+    protected override validatePrefix(partialIdentifier: string): void {
         // Delegate to prefix validator requiring exact match for prefix type.
-        PrefixValidator.validate(this.prefixType, false, false, partialIdentifier, true, true, positionOffset);
+        PrefixValidator.validate(this.prefixType, false, false, partialIdentifier, true, true);
     }
 
     /**
@@ -235,7 +242,7 @@ export class GTINValidator extends NumericIdentifierValidator<GTINType> implemen
         let normalizedGTIN: string;
 
         switch (gtinLength) {
-            case GTINLengths.GTIN13 :
+            case GTINLengths.GTIN13:
                 if (!gtin.startsWith("0")) {
                     // GTIN is GTIN-13.
                     normalizedGTIN = gtin;
@@ -250,12 +257,12 @@ export class GTINValidator extends NumericIdentifierValidator<GTINType> implemen
                 }
                 break;
 
-            case GTINLengths.GTIN12 :
+            case GTINLengths.GTIN12:
                 // GTIN is GTIN-12.
                 normalizedGTIN = gtin;
                 break;
 
-            case GTINLengths.GTIN8 :
+            case GTINLengths.GTIN8:
                 if (!gtin.startsWith("0")) {
                     // GTIN is GTIN-8.
                     normalizedGTIN = gtin;
@@ -265,7 +272,7 @@ export class GTINValidator extends NumericIdentifierValidator<GTINType> implemen
                 }
                 break;
 
-            case GTINLengths.GTIN14 :
+            case GTINLengths.GTIN14:
                 if (!gtin.startsWith("0")) {
                     // GTIN is GTIN-14.
                     normalizedGTIN = gtin;
@@ -306,48 +313,55 @@ export class GTINValidator extends NumericIdentifierValidator<GTINType> implemen
         // Assume length-validated GTIN is the GTIN (true for all except zero-suppressed GTIN-12).
         let lengthValidatedGTIN = gtin;
 
+        let prefixType: PrefixType | undefined;
+        let allowUPCCompanyPrefix = false;
+        let allowGS18Prefix = false;
+        let validatePrefix = gtin;
         let gtinLevelRestriction: GTINLevel;
 
         switch (gtin.length) {
-            case GTINLengths.GTIN13 :
-                if (gtin.startsWith("0")) {
-                    throw new RangeError(i18nextGS1.t("Identifier.invalidGTIN13AtRetail"));
-                }
-
-                // Validate prefix requiring exact match for prefix type.
-                PrefixValidator.validate(PrefixTypes.GS1CompanyPrefix, false, false, gtin, true, true);
-
+            case GTINLengths.GTIN13:
+                // Validate prefix with restrictions on prefix type depending on GTIN level.
+                prefixType = PrefixTypes.GS1CompanyPrefix;
+                allowUPCCompanyPrefix = gtinLevel !== GTINLevels.RetailConsumer;
+                allowGS18Prefix = gtinLevel === GTINLevels.Any;
                 gtinLevelRestriction = GTINLevels.Any;
                 break;
 
-            case GTINLengths.GTIN12 :
+            case GTINLengths.GTIN12:
                 // Validate prefix requiring exact match for prefix type.
-                PrefixValidator.validate(PrefixTypes.UPCCompanyPrefix, false, false, gtin, true, true);
-
+                prefixType = PrefixTypes.UPCCompanyPrefix;
                 gtinLevelRestriction = GTINLevels.Any;
                 break;
 
-            case GTINLengths.GTIN8 :
+            case GTINLengths.GTIN8:
                 // Zero-suppressed GTIN-12 always starts with 0.
                 if (!gtin.startsWith("0")) {
                     // Validate prefix requiring exact match for prefix type.
-                    PrefixValidator.validate(PrefixTypes.GS18Prefix, false, false, gtin, true, true);
+                    prefixType = PrefixTypes.GS18Prefix;
                 } else {
                     lengthValidatedGTIN = GTINValidator.zeroExpand(gtin);
+                    prefixType = undefined;
                 }
 
                 gtinLevelRestriction = GTINLevels.RetailConsumer;
                 break;
 
-            case GTINLengths.GTIN14 :
-                // Validate prefix supporting any prefix type.
-                PrefixValidator.validate(PrefixTypes.GS1CompanyPrefix, true, true, gtin.substring(1), true, true);
-
+            case GTINLengths.GTIN14:
+                // Validate prefix with restrictions on prefix type depending on GTIN level.
+                prefixType = PrefixTypes.GS1CompanyPrefix;
+                allowUPCCompanyPrefix = true;
+                allowGS18Prefix = gtinLevel !== GTINLevels.OtherThanRetailConsumer || !gtin.startsWith("0");
+                validatePrefix = gtin.substring(1);
                 gtinLevelRestriction = GTINLevels.OtherThanRetailConsumer;
                 break;
 
             default:
                 throw new RangeError(i18nextGS1.t("Identifier.invalidGTINLength"));
+        }
+
+        if (prefixType !== undefined) {
+            PrefixValidator.validate(prefixType, allowUPCCompanyPrefix, allowGS18Prefix, validatePrefix, true, true, GTINValidator.#ERROR_MESSAGE_PARSE_KEYS[gtinLevel]);
         }
 
         // Validating the check digit will also validate the characters.

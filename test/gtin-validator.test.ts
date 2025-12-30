@@ -1,122 +1,214 @@
 import { describe, expect, test } from "vitest";
-import {
-    type GTINBaseLength,
-    GTINLengths,
-    GTINLevels,
-    GTINValidator,
-    IdentifierTypes,
-    LeaderTypes,
-    type PrefixType,
-    PrefixTypes
-} from "../src/index.js";
-import { validateNumericIdentifierValidator } from "./numeric-identifier-validator.js";
+import { type GTINLevel, GTINLevels, GTINValidator } from "../src/index.js";
 
-export function validateGTINValidator(validator: GTINValidator, isCreator: boolean, gtinBaseLength: GTINBaseLength): void {
-    let prefixType: PrefixType;
-
-    switch (gtinBaseLength) {
-        case GTINLengths.GTIN13:
-            prefixType = PrefixTypes.GS1CompanyPrefix;
-            break;
-
-        case GTINLengths.GTIN12:
-            prefixType = PrefixTypes.UPCCompanyPrefix;
-            break;
-
-        case GTINLengths.GTIN8:
-            prefixType = PrefixTypes.GS18Prefix;
-            break;
-    }
-
-    validateNumericIdentifierValidator(validator, IdentifierTypes.GTIN, prefixType, gtinBaseLength, LeaderTypes.IndicatorDigit);
+interface GTINValidation {
+    gtin: string;
+    
+    errorMessages: Record<GTINLevel, string | null>;
 }
+
+const GTIN_VALIDATIONS: GTINValidation[] = [
+    // GTIN-13.
+    {
+        gtin: "9521873000122",
+        errorMessages: {
+            [GTINLevels.Any]: null,
+            [GTINLevels.RetailConsumer]: null,
+            [GTINLevels.OtherThanRetailConsumer]: null
+        }
+    },
+
+    // GTIN-13 as GTIN-14.
+    {
+        gtin: "09521873000122",
+        errorMessages: {
+            [GTINLevels.Any]: null,
+            [GTINLevels.RetailConsumer]: "GTIN not supported at retail consumer trade item level",
+            [GTINLevels.OtherThanRetailConsumer]: null
+        }
+    },
+
+    // GTIN-12.
+    {
+        gtin: "614141773985",
+        errorMessages: {
+            [GTINLevels.Any]: null,
+            [GTINLevels.RetailConsumer]: null,
+            [GTINLevels.OtherThanRetailConsumer]: null
+        }
+    },
+
+    // GTIN-12 as GTIN-13.
+    {
+        gtin: "0614141773985",
+        errorMessages: {
+            [GTINLevels.Any]: null,
+            [GTINLevels.RetailConsumer]: "GTIN not supported at retail consumer trade item level",
+            [GTINLevels.OtherThanRetailConsumer]: null
+        }
+    },
+
+    // GTIN-12 as GTIN-14.
+    {
+        gtin: "00614141773985",
+        errorMessages: {
+            [GTINLevels.Any]: null,
+            [GTINLevels.RetailConsumer]: "GTIN not supported at retail consumer trade item level",
+            [GTINLevels.OtherThanRetailConsumer]: null
+        }
+    },
+
+    // Zero-suppressed GTIN-12.
+    {
+        gtin: "09867539",
+        errorMessages: {
+            [GTINLevels.Any]: null,
+            [GTINLevels.RetailConsumer]: null,
+            [GTINLevels.OtherThanRetailConsumer]: "GTIN not supported at other than retail consumer trade item level"
+        }
+    },
+
+    // GTIN-8.
+    {
+        gtin: "95216843",
+        errorMessages: {
+            [GTINLevels.Any]: null,
+            [GTINLevels.RetailConsumer]: null,
+            [GTINLevels.OtherThanRetailConsumer]: "GTIN not supported at other than retail consumer trade item level"
+        }
+    },
+
+    // GTIN-8 as GTIN-12.
+    {
+        gtin: "000095216843",
+        errorMessages: {
+            [GTINLevels.Any]: "U.P.C. Company Prefix can't start with \"0000\"",
+            [GTINLevels.RetailConsumer]: "U.P.C. Company Prefix can't start with \"0000\"",
+            [GTINLevels.OtherThanRetailConsumer]: "U.P.C. Company Prefix can't start with \"0000\""
+        }
+    },
+
+    // GTIN-8 as GTIN-13.
+    {
+        gtin: "0000095216843",
+        errorMessages: {
+            [GTINLevels.Any]: null,
+            [GTINLevels.RetailConsumer]: "GTIN not supported at retail consumer trade item level",
+            [GTINLevels.OtherThanRetailConsumer]: "GTIN not supported at other than retail consumer trade item level"
+        }
+    },
+
+    // GTIN-8 as GTIN-14.
+    {
+        gtin: "00000095216843",
+        errorMessages: {
+            [GTINLevels.Any]: null,
+            [GTINLevels.RetailConsumer]: "GTIN not supported at retail consumer trade item level",
+            [GTINLevels.OtherThanRetailConsumer]: "GTIN not supported at other than retail consumer trade item level"
+        }
+    },
+
+    // GTIN-14 from GTIN-13.
+    {
+        gtin: "19521873000129",
+        errorMessages: {
+            [GTINLevels.Any]: null,
+            [GTINLevels.RetailConsumer]: "GTIN not supported at retail consumer trade item level",
+            [GTINLevels.OtherThanRetailConsumer]: null
+        }
+    },
+
+    // GTIN-14 from GTIN-12.
+    {
+        gtin: "20614141773989",
+        errorMessages: {
+            [GTINLevels.Any]: null,
+            [GTINLevels.RetailConsumer]: "GTIN not supported at retail consumer trade item level",
+            [GTINLevels.OtherThanRetailConsumer]: null
+        }
+    },
+
+    // GTIN-14 from GTIN-8.
+    {
+        gtin: "30000095216844",
+        errorMessages: {
+            [GTINLevels.Any]: null,
+            [GTINLevels.RetailConsumer]: "GTIN not supported at retail consumer trade item level",
+            [GTINLevels.OtherThanRetailConsumer]: null
+        }
+    },
+
+    // Invalid character in GTIN-13.
+    {
+        gtin: "9521873000l22",
+        errorMessages: {
+            [GTINLevels.Any]: "Invalid character 'l' at position 11",
+            [GTINLevels.RetailConsumer]: "Invalid character 'l' at position 11",
+            [GTINLevels.OtherThanRetailConsumer]: "Invalid character 'l' at position 11"
+        }
+    },
+
+    // Invalid character in GTIN-14.
+    {
+        gtin: "30000O95216844",
+        errorMessages: {
+            [GTINLevels.Any]: "Invalid character 'O' at position 6",
+            [GTINLevels.RetailConsumer]: "Invalid character 'O' at position 6",
+            [GTINLevels.OtherThanRetailConsumer]: "Invalid character 'O' at position 6"
+        }
+    },
+
+    // Invalid length.
+    {
+        gtin: "95217800031",
+        errorMessages: {
+            [GTINLevels.Any]: "GTIN must be 13, 12, 8, or 14 digits long",
+            [GTINLevels.RetailConsumer]: "GTIN must be 13, 12, 8, or 14 digits long",
+            [GTINLevels.OtherThanRetailConsumer]: "GTIN must be 13, 12, 8, or 14 digits long"
+        }
+    },
+
+    // Invalid check digit.
+    {
+        gtin: "614141773991",
+        errorMessages: {
+            [GTINLevels.Any]: "Invalid check digit",
+            [GTINLevels.RetailConsumer]: "Invalid check digit",
+            [GTINLevels.OtherThanRetailConsumer]: "Invalid check digit"
+        }
+    },
+
+    // Invalid zero-suppressed GTIN-12.
+    {
+        gtin: "09800037",
+        errorMessages: {
+            [GTINLevels.Any]: "Invalid zero-suppressed GTIN-12",
+            [GTINLevels.RetailConsumer]: "Invalid zero-suppressed GTIN-12",
+            [GTINLevels.OtherThanRetailConsumer]: "Invalid zero-suppressed GTIN-12"
+        }
+    }
+];
 
 describe("GTIN validation and normalization", () => {
     test("Validation", () => {
-        expect(() => {
-            GTINValidator.validateAny("9521873000122", GTINLevels.Any);
-        }).not.toThrow(RangeError);
-        expect(() => {
-            GTINValidator.validateAny("19521873000129", GTINLevels.Any);
-        }).not.toThrow(RangeError);
-        expect(() => {
-            GTINValidator.validateAny("9521873000160", GTINLevels.Any);
-        }).not.toThrow(RangeError);
-        expect(() => {
-            GTINValidator.validateAny("95216843", GTINLevels.Any);
-        }).not.toThrow(RangeError);
-        expect(() => {
-            GTINValidator.validateAny("95217800031", GTINLevels.Any);
-        }).toThrow("GTIN must be 13, 12, 8, or 14 digits long");
-        expect(() => {
-            GTINValidator.validateAny("614141773985", GTINLevels.Any);
-        }).not.toThrow(RangeError);
-        expect(() => {
-            GTINValidator.validateAny("614141773991", GTINLevels.Any);
-        }).toThrow("Invalid check digit");
-        expect(() => {
-            GTINValidator.validateAny("09867539", GTINLevels.Any);
-        }).not.toThrow(RangeError);
-        expect(() => {
-            GTINValidator.validateAny("09800037", GTINLevels.Any);
-        }).toThrow("Invalid zero-suppressed GTIN-12");
-        expect(() => {
-            GTINValidator.validateAny("9521873000122", GTINLevels.RetailConsumer);
-        }).not.toThrow(RangeError);
-        expect(() => {
-            GTINValidator.validateAny("19521873000129", GTINLevels.RetailConsumer);
-        }).toThrow("GTIN not supported at retail consumer trade item level");
-        expect(() => {
-            GTINValidator.validateAny("9521873000160", GTINLevels.RetailConsumer);
-        }).not.toThrow(RangeError);
-        expect(() => {
-            GTINValidator.validateAny("95216843", GTINLevels.RetailConsumer);
-        }).not.toThrow(RangeError);
-        expect(() => {
-            GTINValidator.validateAny("95217800031", GTINLevels.RetailConsumer);
-        }).toThrow("GTIN must be 13, 12, 8, or 14 digits long");
-        expect(() => {
-            GTINValidator.validateAny("614141773985", GTINLevels.RetailConsumer);
-        }).not.toThrow(RangeError);
-        expect(() => {
-            GTINValidator.validateAny("0614141773985", GTINLevels.RetailConsumer);
-        }).toThrow("GTIN-13 at retail consumer trade item level can't start with zero");
-        expect(() => {
-            GTINValidator.validateAny("614141773991", GTINLevels.RetailConsumer);
-        }).toThrow("Invalid check digit");
-        expect(() => {
-            GTINValidator.validateAny("09867539", GTINLevels.RetailConsumer);
-        }).not.toThrow(RangeError);
-        expect(() => {
-            GTINValidator.validateAny("09800037", GTINLevels.RetailConsumer);
-        }).toThrow("Invalid zero-suppressed GTIN-12");
-        expect(() => {
-            GTINValidator.validateAny("9521873000122", GTINLevels.OtherThanRetailConsumer);
-        }).not.toThrow(RangeError);
-        expect(() => {
-            GTINValidator.validateAny("19521873000129", GTINLevels.OtherThanRetailConsumer);
-        }).not.toThrow(RangeError);
-        expect(() => {
-            GTINValidator.validateAny("9521873000160", GTINLevels.OtherThanRetailConsumer);
-        }).not.toThrow(RangeError);
-        expect(() => {
-            GTINValidator.validateAny("95216843", GTINLevels.OtherThanRetailConsumer);
-        }).toThrow("GTIN not supported at other than retail consumer trade item level");
-        expect(() => {
-            GTINValidator.validateAny("95217800031", GTINLevels.OtherThanRetailConsumer);
-        }).toThrow("GTIN must be 13, 12, 8, or 14 digits long");
-        expect(() => {
-            GTINValidator.validateAny("614141773985", GTINLevels.OtherThanRetailConsumer);
-        }).not.toThrow(RangeError);
-        expect(() => {
-            GTINValidator.validateAny("614141773991", GTINLevels.OtherThanRetailConsumer);
-        }).toThrow("Invalid check digit");
-        expect(() => {
-            GTINValidator.validateAny("09867539", GTINLevels.OtherThanRetailConsumer);
-        }).toThrow("GTIN not supported at other than retail consumer trade item level");
-        expect(() => {
-            GTINValidator.validateAny("09800037", GTINLevels.OtherThanRetailConsumer);
-        }).toThrow("Invalid zero-suppressed GTIN-12");
+        for (const gtinValidation of GTIN_VALIDATIONS) {
+            const gtin = gtinValidation.gtin;
+
+            for (const gtinLevel of Object.values(GTINLevels)) {
+                const expectMessage = `${gtin}:${gtinLevel}`;
+                const errorMessage = gtinValidation.errorMessages[gtinLevel];
+
+                if (errorMessage === null) {
+                    expect(() => {
+                        GTINValidator.validateAny(gtin, gtinLevel);
+                    }, expectMessage).not.toThrow(RangeError);
+                } else {
+                    expect(() => {
+                        GTINValidator.validateAny(gtin, gtinLevel);
+                    }, expectMessage).toThrow(errorMessage);
+                }
+            }
+        }
     });
 
     test("Normalization", () => {

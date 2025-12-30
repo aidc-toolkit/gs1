@@ -13,7 +13,6 @@ export default {
         invalidZeroSuppressibleGTIN12: "GTIN-12 not zero-suppressible",
         invalidZeroSuppressedGTIN12AsGTIN13: "Invalid zero-suppressed GTIN-12 as GTIN-13",
         invalidZeroSuppressedGTIN12AsGTIN14: "Invalid zero-suppressed GTIN-12 as GTIN-14",
-        invalidGTIN13AtRetail: "GTIN-13 at retail consumer trade item level can't start with zero",
         invalidGTINAtRetail: "GTIN not supported at retail consumer trade item level",
         invalidGTINAtOtherThanRetail: "GTIN not supported at other than retail consumer trade item level",
         invalidRCNLength: "RCN length must match format length",

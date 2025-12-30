@@ -13,7 +13,6 @@ export default {
         invalidZeroSuppressibleGTIN12: "Le GTIN-12 ne peut pas être supprimé par zéro",
         invalidZeroSuppressedGTIN12AsGTIN13: "GTIN-12 non valide avec zéro supprimé en tant que GTIN-13",
         invalidZeroSuppressedGTIN12AsGTIN14: "GTIN-12 non valide avec zéro supprimé en tant que GTIN-14",
-        invalidGTIN13AtRetail: "Le GTIN-13 au niveau des articles de consommation au détail ne peut pas commencer par zéro",
         invalidGTINAtRetail: "Le GTIN n'est pas pris en charge au niveau des articles de consommation au détail",
         invalidGTINAtOtherThanRetail: "Le GTIN n'est pas pris en charge à d'autres niveaux que ceux des articles de consommation au détail",
         invalidRCNLength: "La longueur du RCN doit correspondre à la longueur du format",

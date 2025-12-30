@@ -59,9 +59,9 @@ export abstract class NumericIdentifierValidator<TNumericIdentifierType extends 
     validate(identifier: string, validation?: NumericIdentifierValidation): void {
         // Validate the prefix, with care taken for its position within the identifier.
         if (this.#prefixPosition === 0) {
-            super.validatePrefix(identifier, validation?.positionOffset);
+            super.validatePrefix(identifier);
         } else {
-            super.validatePrefix(identifier.substring(this.#prefixPosition), validation?.positionOffset === undefined ? this.#prefixPosition : validation.positionOffset + this.#prefixPosition);
+            super.validatePrefix(identifier.substring(this.#prefixPosition));
         }
 
         // Validate the length.

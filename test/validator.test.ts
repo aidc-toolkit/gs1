@@ -17,7 +17,7 @@ import {
     isSerializableNumericIdentifierValidator,
     LeaderTypes
 } from "../src/index.js";
-import { validateGTINValidator } from "./gtin-validator.test.js";
+import { validateGTINValidator } from "./gtin-validator.js";
 import { validateNonNumericIdentifierValidator } from "./non-numeric-identifier-validator.js";
 import { validateNonSerializableNumericIdentifierValidator } from "./non-serializable-numeric-identifier-validator.js";
 import { validateSerializableNumericIdentifierValidator } from "./serializable-numeric-identifier-validator.js";
