@@ -9,6 +9,21 @@ import type { SerializableNumericIdentifierDescriptor } from "./serializable-num
 import type { SerializableNumericIdentifierType } from "./serializable-numeric-identifier-type.js";
 
 /**
+ * Serializable numeric identifier split.
+ */
+export interface SerializableNumericIdentifierSplit {
+    /**
+     * Base identifier.
+     */
+    baseIdentifier: string;
+
+    /**
+     * Serial component.
+     */
+    serialComponent: string;
+}
+
+/**
  * Serializable numeric identifier validator. Validates both serialized and non-serialized forms of numeric identifiers
  * that support serialization.
  */
@@ -93,5 +108,26 @@ export class SerializableNumericIdentifierValidator extends NonGTINNumericIdenti
         if (identifier.length > this.length) {
             this.serialComponentCreator.validate(identifier.substring(this.length), this.#serialComponentValidation);
         }
+    }
+
+    /**
+     * Split a serializable numeric identifier into its component parts.
+     *
+     * @param identifier
+     * Identifier.
+     *
+     * @param validation
+     * Identifier validation parameters.
+     *
+     * @returns
+     * Base identifier and serial component (possibly empty) as object.
+     */
+    split(identifier: string, validation?: IdentifierValidation): SerializableNumericIdentifierSplit {
+        this.validate(identifier, validation);
+
+        return {
+            baseIdentifier: identifier.substring(0, this.length),
+            serialComponent: identifier.substring(this.length)
+        };
     }
 }
