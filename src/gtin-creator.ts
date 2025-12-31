@@ -6,7 +6,7 @@ import {
     type TransformerOutput
 } from "@aidc-toolkit/utility";
 import { MixinAbstractNumericIdentifierCreator } from "./abstract-numeric-identifier-creator.js";
-import { checkDigit, priceOrWeightCheckDigit } from "./check.js";
+import { checkDigit } from "./check.js";
 import { type GTINBaseLength, GTINLengths } from "./gtin-length.js";
 import type { GTINType } from "./gtin-type.js";
 import { GTINValidator } from "./gtin-validator.js";
@@ -75,121 +75,5 @@ export class GTINCreator extends MixinAbstractNumericIdentifierCreator<
 
             return partialIdentifier + checkDigit(partialIdentifier);
         });
-    }
-
-    /**
-     * Create a Restricted Circulation Number (RCN) using a variable measure trade item format. See {@linkcode
-     * GTINValidator.parseVariableMeasureRCN} for format details.
-     *
-     * @param format
-     * Format.
-     *
-     * @param itemReference
-     * Item reference.
-     *
-     * @param priceOrWeight
-     * Price or weight (whole number only).
-     *
-     * @returns
-     * RCN-12 or RCN-13.
-     */
-    static createVariableMeasureRCN(format: string, itemReference: number, priceOrWeight: number): string {
-        const formatLength = format.length;
-
-        let validFormat = formatLength === 12 || formatLength === 13;
-
-        let rcnPrefix = "";
-
-        let buildingItemReference = false;
-        let itemReferenceString = "";
-        let itemReferenceLength = 0;
-
-        let buildingPriceOrWeight = false;
-        let priceOrWeightString = "";
-        let priceOrWeightLength = 0;
-
-        let calculatePriceOrWeightCheckDigit = false;
-
-        // RCN may be built in almost any order, so defer to builders that will be in ordered array.
-        const rcnPrefixBuilder = (partialRCN: string): string => partialRCN + rcnPrefix;
-        const itemReferenceBuilder = (partialRCN: string): string => partialRCN + itemReferenceString;
-        const priceOrWeightBuilder = (partialRCN: string): string => partialRCN + priceOrWeightString;
-        const priceOrWeightCheckDigitBuilder = (partialRCN: string): string => partialRCN + priceOrWeightCheckDigit(priceOrWeightString);
-        const checkDigitBuilder = (partialRCN: string): string => partialRCN + checkDigit(partialRCN);
-
-        const rcnBuilders = [rcnPrefixBuilder];
-
-        for (let index = 0; validFormat && index < formatLength; index++) {
-            const formatChar = format.charAt(index);
-
-            if (index === 0) {
-                validFormat = formatChar === "2";
-                rcnPrefix = formatChar;
-            } else if (formatLength === 13 && index === 1) {
-                validFormat = NUMERIC_CREATOR.characterIndex(formatChar) !== undefined;
-                rcnPrefix += formatChar;
-            } else if (index === formatLength - 1) {
-                validFormat = formatChar === "C";
-            } else {
-                switch (formatChar) {
-                    case "I":
-                        if (!buildingItemReference) {
-                            // Item reference can't appear more than once.
-                            validFormat = itemReferenceLength === 0;
-
-                            buildingItemReference = true;
-                            buildingPriceOrWeight = false;
-
-                            rcnBuilders.push(itemReferenceBuilder);
-                        }
-
-                        itemReferenceLength++;
-                        break;
-
-                    case "P":
-                        if (!buildingPriceOrWeight) {
-                            // Price or weight can't appear more than once.
-                            validFormat = priceOrWeightLength === 0;
-
-                            buildingPriceOrWeight = true;
-                            buildingItemReference = false;
-
-                            rcnBuilders.push(priceOrWeightBuilder);
-                        }
-
-                        priceOrWeightLength++;
-                        break;
-
-                    case "V":
-                        // Price or weight check digit can't appear more than once.
-                        validFormat = !calculatePriceOrWeightCheckDigit;
-
-                        buildingItemReference = false;
-                        buildingPriceOrWeight = false;
-
-                        calculatePriceOrWeightCheckDigit = true;
-
-                        rcnBuilders.push(priceOrWeightCheckDigitBuilder);
-                        break;
-
-                    default:
-                        validFormat = false;
-                        break;
-                }
-            }
-        }
-
-        validFormat &&= itemReferenceLength !== 0 && priceOrWeightLength !== 0;
-
-        if (!validFormat) {
-            throw new RangeError(i18nextGS1.t("Identifier.invalidVariableMeasureRCNFormat"));
-        }
-
-        itemReferenceString = NUMERIC_CREATOR.create(itemReferenceLength, itemReference);
-        priceOrWeightString = NUMERIC_CREATOR.create(priceOrWeightLength, priceOrWeight);
-
-        rcnBuilders.push(checkDigitBuilder);
-
-        return rcnBuilders.reduce((partialRCN, rcnBuilder) => rcnBuilder(partialRCN), "");
     }
 }

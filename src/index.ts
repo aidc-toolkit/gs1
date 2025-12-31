@@ -47,7 +47,7 @@ export * from "./identifier-descriptors.js";
 
 export * from "./identifier-validator.js";
 export * from "./numeric-identifier-validator.js";
-export { GTINLevels, type GTINLevelKey, type GTINLevel, type RCNReference, GTINValidator } from "./gtin-validator.js";
+export { GTINLevels, type GTINLevelKey, type GTINLevel, GTINValidator } from "./gtin-validator.js";
 export * from "./non-gtin-numeric-identifier-validator.js";
 export * from "./non-serializable-numeric-identifier-validator.js";
 export * from "./serializable-numeric-identifier-validator.js";
@@ -64,6 +64,8 @@ export * from "./non-serializable-numeric-identifier-creator.js";
 export * from "./serializable-numeric-identifier-creator.js";
 export * from "./non-numeric-identifier-creator.js";
 export * from "./identifier-creators.js";
+
+export * from "./variable-measure.js";
 
 export * from "./gcp-length-cache.js";
 export * from "./prefix-manager.js";
