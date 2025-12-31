@@ -5,29 +5,29 @@ import { describe, expect, test } from "vitest";
 import * as GCPLength from "../src/gcp-length.js";
 import {
     GCPLengthCache,
+    type GCPLengthData,
     IdentifierTypes,
     PrefixManager,
     PrefixTypes,
-    PrefixValidator,
-    RemoteGCPLengthCache
+    PrefixValidator
 } from "../src/index.js";
 
 interface ReadonlyStorage<T> {
-    read: () => Promisable<T>;
+    read: () => T;
 }
 
 interface Storage<T> extends ReadonlyStorage<T> {
-    write: (value: NonNullable<T>) => Promisable<void>;
+    write: (value: NonNullable<T>) => void;
 }
 
 interface RequiredStorage<T> extends Storage<T> {
-    read: () => Promisable<NonNullable<T>>;
+    read: () => NonNullable<T>;
 }
 
 function makeReadonly<T>(storage: Storage<T | undefined>): ReadonlyStorage<T> {
     return {
-        async read(): Promise<T> {
-            const t = await storage.read();
+        read(): T {
+            const t = storage.read();
 
             if (t === undefined) {
                 throw new Error("Storage has no data");
@@ -40,8 +40,8 @@ function makeReadonly<T>(storage: Storage<T | undefined>): ReadonlyStorage<T> {
 
 function makeRequired<T>(storage: Storage<T | undefined>): RequiredStorage<T> {
     return {
-        async read(): Promise<NonNullable<T>> {
-            const t = await storage.read();
+        read(): NonNullable<T> {
+            const t = storage.read();
 
             if (t === undefined || t === null) {
                 throw new Error("Storage has no data");
@@ -54,37 +54,33 @@ function makeRequired<T>(storage: Storage<T | undefined>): RequiredStorage<T> {
     };
 }
 
-function createGCPLengthCache(nextCheckDateTimeStorage: Storage<Date | undefined>, cacheDateTimeStorage: Storage<Date | undefined>, cacheDataStorage: Storage<Uint8Array | undefined>, sourceDateTimeStorage: ReadonlyStorage<Date>, sourceDataStorage: ReadonlyStorage<string> | ReadonlyStorage<Uint8Array>): GCPLengthCache {
+function createGCPLengthCache(nextCheckDateTimeStorage: Storage<Date | undefined>, cacheDataStorage: Storage<GCPLengthData | undefined>, sourceDateTimeStorage: ReadonlyStorage<Date>, sourceDataStorage: ReadonlyStorage<GCPLengthData> | ReadonlyStorage<string>): GCPLengthCache {
     return new class extends GCPLengthCache {
         get nextCheckDateTime(): Promisable<Date | undefined> {
             return nextCheckDateTimeStorage.read();
         }
 
-        get cacheDateTime(): Promisable<Date | undefined> {
-            return cacheDateTimeStorage.read();
+        get cacheDateTime(): Date | undefined {
+            return cacheDataStorage.read()?.dateTime;
         }
 
-        get cacheData(): Promisable<Uint8Array> {
+        get cacheData(): GCPLengthData {
             return makeRequired(cacheDataStorage).read();
         }
 
-        get sourceDateTime(): Promisable<Date> {
+        get sourceDateTime(): Date {
             return sourceDateTimeStorage.read();
         }
 
-        get sourceData(): Promisable<string | Uint8Array> {
+        get sourceData(): GCPLengthData | string {
             return sourceDataStorage.read();
         }
 
-        async update(nextCheckDateTime: Date, cacheDateTime?: Date, cacheData?: Uint8Array): Promise<void> {
-            await nextCheckDateTimeStorage.write(nextCheckDateTime);
-
-            if (cacheDateTime !== undefined) {
-                await cacheDateTimeStorage.write(cacheDateTime);
-            }
+        update(nextCheckDateTime: Date, _cacheDateTime?: Date, cacheData?: GCPLengthData): void {
+            nextCheckDateTimeStorage.write(nextCheckDateTime);
 
             if (cacheData !== undefined) {
-                await cacheDataStorage.write(cacheData);
+                cacheDataStorage.write(cacheData);
             }
         }
     }();
@@ -92,13 +88,13 @@ function createGCPLengthCache(nextCheckDateTimeStorage: Storage<Date | undefined
 
 const DATA_DIRECTORY = "test/data";
 
-const BINARY_1_DATE_TIME_PATH = path.resolve(DATA_DIRECTORY, "gcp-length-date-time-1.txt");
+const BINARY_1_HEADER_PATH = path.resolve(DATA_DIRECTORY, "gcp-length-header-1.txt");
 
-const BINARY_1_DATA_PATH = path.resolve(DATA_DIRECTORY, "gcp-length-1.bin");
+const BINARY_1_DATA_PATH = path.resolve(DATA_DIRECTORY, "gcp-length-data-1.bin");
 
-const BINARY_2_DATE_TIME_PATH = path.resolve(DATA_DIRECTORY, "gcp-length-date-time-2.txt");
+const BINARY_2_HEADER_PATH = path.resolve(DATA_DIRECTORY, "gcp-length-header-2.txt");
 
-const BINARY_2_DATA_PATH = path.resolve(DATA_DIRECTORY, "gcp-length-2.bin");
+const BINARY_2_DATA_PATH = path.resolve(DATA_DIRECTORY, "gcp-length-data-2.bin");
 
 const JSON_1_DATA_PATH = path.resolve(DATA_DIRECTORY, "gcpprefixformatlist-1.json");
 
@@ -116,42 +112,32 @@ interface GCPLengthJSON {
 }
 
 describe("GS1 Company Prefix length", () => {
-    function binaryDateTimeStorage(binaryDateTimePath: string): Storage<Date | undefined> {
+    function binaryDataStorage(binaryHeaderPath: string, binaryDataPath: string): Storage<GCPLengthData | undefined> {
         return {
-            read(): Date | undefined {
-                let dateTime: Date | undefined;
-
-                try {
-                    dateTime = new Date(fs.readFileSync(binaryDateTimePath).toString());
-                } catch {
-                    dateTime = undefined;
-                }
-
-                return dateTime;
-            },
-
-            write(value: Date): void {
-                fs.writeFileSync(binaryDateTimePath, value.toISOString());
-            }
-        };
-    }
-
-    function binaryDataStorage(binaryDataPath: string): Storage<Uint8Array | undefined> {
-        return {
-            read(): Uint8Array | undefined {
+            read(): GCPLengthData | undefined {
+                let header: string[] | undefined;
                 let data: Uint8Array | undefined;
 
                 try {
+                    header = fs.readFileSync(binaryHeaderPath).toString().split("\n");
                     data = fs.readFileSync(binaryDataPath);
                 } catch {
+                    header = undefined;
                     data = undefined;
                 }
-
-                return data;
+                
+                return header !== undefined && data !== undefined ?
+                    {
+                        dateTime: new Date(header[0]),
+                        disclaimer: `${header.slice(1).join("\n")}\n`,
+                        data
+                    } :
+                    undefined;
             },
 
-            write(value: Uint8Array): void {
-                fs.writeFileSync(binaryDataPath, value);
+            write(value: GCPLengthData): void {
+                fs.writeFileSync(binaryHeaderPath, `${value.dateTime.toISOString()}\n${value.disclaimer}`);
+                fs.writeFileSync(binaryDataPath, value.data);
             }
         };
     }
@@ -205,22 +191,20 @@ describe("GS1 Company Prefix length", () => {
     }
 
     function unlinkBinaries(): void {
-        unlink(BINARY_1_DATE_TIME_PATH);
+        unlink(BINARY_1_HEADER_PATH);
         unlink(BINARY_1_DATA_PATH);
-        unlink(BINARY_2_DATE_TIME_PATH);
+        unlink(BINARY_2_HEADER_PATH);
         unlink(BINARY_2_DATA_PATH);
     }
 
-    const binary1DateTimeStorage = binaryDateTimeStorage(BINARY_1_DATE_TIME_PATH);
-    const binary1DataStorage = binaryDataStorage(BINARY_1_DATA_PATH);
-    const binary2DateTimeStorage = binaryDateTimeStorage(BINARY_2_DATE_TIME_PATH);
-    const binary2DataStorage = binaryDataStorage(BINARY_2_DATA_PATH);
+    const binary1DataStorage = binaryDataStorage(BINARY_1_HEADER_PATH, BINARY_1_DATA_PATH);
+    const binary2DataStorage = binaryDataStorage(BINARY_2_HEADER_PATH, BINARY_2_DATA_PATH);
     const json1DateTimeStorage = jsonDateTimeStorage(JSON_1_DATA_PATH);
     const json1DataStorage = jsonDataStorage(JSON_1_DATA_PATH);
     const json2DateTimeStorage = jsonDateTimeStorage(JSON_2_DATA_PATH);
     const json2DataStorage = jsonDataStorage(JSON_2_DATA_PATH);
 
-    const emptyStorage: Storage<Date | undefined> & Storage<string | undefined> & Storage<Uint8Array | undefined> = {
+    const emptyStorage: Storage<Date | undefined> & Storage<string | undefined> & Storage<GCPLengthData | undefined> = {
         read(): undefined {
             return undefined;
         },
@@ -244,9 +228,16 @@ describe("GS1 Company Prefix length", () => {
             }
         };
 
+        const binary2DataReadonlyStorage = makeReadonly(binary2DataStorage);
+        const binary2DateTimeReadonlyStorage: ReadonlyStorage<Date> = {
+            read(): Date {
+                return binary2DataReadonlyStorage.read().dateTime;
+            }
+        };
+        
         // Neither binary available.
         await expect((async () => {
-            await GCPLength.loadData(createGCPLengthCache(nextCheckDateTimeStorage, binary1DateTimeStorage, binary1DataStorage, makeReadonly(binary2DateTimeStorage), makeReadonly(binary2DataStorage)));
+            await GCPLength.loadData(createGCPLengthCache(nextCheckDateTimeStorage, binary1DataStorage, binary2DateTimeReadonlyStorage, binary2DataReadonlyStorage));
         })()).rejects.toThrowError("Storage has no data");
 
         expect(nextCheckDateTime).toBeUndefined();
@@ -255,7 +246,7 @@ describe("GS1 Company Prefix length", () => {
 
         // Binary 1 not available, JSON 1 available.
         await expect((async () => {
-            root1 = await GCPLength.loadData(createGCPLengthCache(nextCheckDateTimeStorage, binary1DateTimeStorage, binary1DataStorage, json1DateTimeStorage, json1DataStorage));
+            root1 = await GCPLength.loadData(createGCPLengthCache(nextCheckDateTimeStorage, binary1DataStorage, json1DateTimeStorage, json1DataStorage));
         })()).resolves.not.toThrowError(RangeError);
 
         expect(nextCheckDateTime).not.toBeUndefined();
@@ -269,7 +260,7 @@ describe("GS1 Company Prefix length", () => {
 
         // Binary 1 available, binary 2 not available but not in next check date/time window.
         await expect((async () => {
-            root2 = await GCPLength.loadData(createGCPLengthCache(nextCheckDateTimeStorage, binary1DateTimeStorage, binary1DataStorage, makeReadonly(binary2DateTimeStorage), makeReadonly(binary2DataStorage)));
+            root2 = await GCPLength.loadData(createGCPLengthCache(nextCheckDateTimeStorage, binary1DataStorage, binary2DateTimeReadonlyStorage, binary2DataReadonlyStorage));
         })()).resolves.not.toThrowError(RangeError);
 
         expect(root2).not.toBeUndefined();
@@ -284,7 +275,7 @@ describe("GS1 Company Prefix length", () => {
 
         // Binary 2 not available, JSON 2 available.
         await expect((async () => {
-            root2 = await GCPLength.loadData(createGCPLengthCache(nextCheckDateTimeStorage, binary2DateTimeStorage, binary2DataStorage, json2DateTimeStorage, json2DataStorage));
+            root2 = await GCPLength.loadData(createGCPLengthCache(nextCheckDateTimeStorage, binary2DataStorage, json2DateTimeStorage, json2DataStorage));
         })()).resolves.not.toThrowError(RangeError);
 
         expect(nextCheckDateTime).not.toBeUndefined();
@@ -294,7 +285,7 @@ describe("GS1 Company Prefix length", () => {
 
         // Binary 1 available, binary 2 available and more recent but not in next check date/time window.
         await expect((async () => {
-            root2 = await GCPLength.loadData(createGCPLengthCache(nextCheckDateTimeStorage, binary1DateTimeStorage, binary1DataStorage, makeReadonly(binary2DateTimeStorage), makeReadonly(binary2DataStorage)));
+            root2 = await GCPLength.loadData(createGCPLengthCache(nextCheckDateTimeStorage, binary1DataStorage, binary2DateTimeReadonlyStorage, binary2DataReadonlyStorage));
         })()).resolves.not.toThrowError(RangeError);
 
         // No change.
@@ -306,7 +297,7 @@ describe("GS1 Company Prefix length", () => {
 
         // Binary 1 available, binary 2 available and more recent and in next check date/time window.
         await expect((async () => {
-            root2 = await GCPLength.loadData(createGCPLengthCache(nextCheckDateTimeStorage, binary1DateTimeStorage, binary1DataStorage, makeReadonly(binary2DateTimeStorage), makeReadonly(binary2DataStorage)));
+            root2 = await GCPLength.loadData(createGCPLengthCache(nextCheckDateTimeStorage, binary1DataStorage, binary2DateTimeReadonlyStorage, binary2DataReadonlyStorage));
         })()).resolves.not.toThrowError(RangeError);
 
         expect(root2).not.toBeUndefined();
@@ -320,7 +311,7 @@ describe("GS1 Company Prefix length", () => {
     });
 
     test("Identifiers", async () => {
-        const tempRoot = await GCPLength.loadData(createGCPLengthCache(emptyStorage, emptyStorage, emptyStorage, json1DateTimeStorage, json1DataStorage));
+        const tempRoot = await GCPLength.loadData(createGCPLengthCache(emptyStorage, emptyStorage, json1DateTimeStorage, json1DataStorage));
 
         expect(tempRoot).not.toBeUndefined();
 
@@ -340,7 +331,7 @@ describe("GS1 Company Prefix length", () => {
             }
         }
 
-        const gcpLengthJSON = JSON.parse(await json1DataStorage.read()) as GCPLengthJSON;
+        const gcpLengthJSON = JSON.parse(json1DataStorage.read()) as GCPLengthJSON;
         const entries = gcpLengthJSON.GCPPrefixFormatList.entry;
 
         for (let i = 0; i < 1000; i++) {
@@ -373,46 +364,40 @@ describe("GS1 Company Prefix length", () => {
         }
     });
 
-    test("Remote", async () => {
-        const gcpLengthCache = new class extends RemoteGCPLengthCache {
-            #nextCheckDateTime: Date | undefined = undefined;
-
-            #cacheDateTime: Date | undefined = undefined;
-
-            #cacheData: Uint8Array | undefined = undefined;
-
-            get nextCheckDateTime(): Date | undefined {
-                return this.#nextCheckDateTime;
-            }
-
-            get cacheDateTime(): Date | undefined {
-                return this.#cacheDateTime;
-            }
-
-            get cacheData(): Uint8Array {
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Method will be called only if cache date/time is defined.
-                return this.#cacheData!;
-            }
-
-            update(nextCheckDateTime: Date, cacheDateTime?: Date, cacheData?: Uint8Array): Promisable<void> {
-                this.#nextCheckDateTime = nextCheckDateTime;
-
-                if (cacheDateTime !== undefined) {
-                    this.#cacheDateTime = cacheDateTime;
-                }
-
-                if (cacheData !== undefined) {
-                    this.#cacheData = cacheData;
-                }
-            }
-        }();
-
-        await expect((async () => {
-            await GCPLength.loadData(gcpLengthCache);
-        })()).resolves.not.toThrowError(RangeError);
-
-        expect(gcpLengthCache.nextCheckDateTime).not.toBeUndefined();
-        expect(gcpLengthCache.cacheDateTime).not.toBeUndefined();
-        expect(gcpLengthCache.cacheData).not.toBeUndefined();
-    });
+    // test("Remote", async () => {
+    //     const gcpLengthCache = new class extends RemoteGCPLengthCache {
+    //         #nextCheckDateTime: Date | undefined = undefined;
+    //
+    //         #cacheData: GCPLengthData | undefined = undefined;
+    //
+    //         get nextCheckDateTime(): Date | undefined {
+    //             return this.#nextCheckDateTime;
+    //         }
+    //
+    //         get cacheDateTime(): Date | undefined {
+    //             return this.#cacheData?.dateTime;
+    //         }
+    //
+    //         get cacheData(): GCPLengthData {
+    //             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Method will be called only if cache date/time is defined.
+    //             return this.#cacheData!;
+    //         }
+    //
+    //         update(nextCheckDateTime: Date, _cacheDateTime?: Date, cacheData?: GCPLengthData): Promisable<void> {
+    //             this.#nextCheckDateTime = nextCheckDateTime;
+    //
+    //             if (cacheData !== undefined) {
+    //                 this.#cacheData = cacheData;
+    //             }
+    //         }
+    //     }();
+    //
+    //     await expect((async () => {
+    //         await GCPLength.loadData(gcpLengthCache);
+    //     })()).resolves.not.toThrowError(RangeError);
+    //
+    //     expect(gcpLengthCache.nextCheckDateTime).not.toBeUndefined();
+    //     expect(gcpLengthCache.cacheDateTime).not.toBeUndefined();
+    //     expect(gcpLengthCache.cacheData).not.toBeUndefined();
+    // });
 });

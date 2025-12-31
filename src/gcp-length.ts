@@ -1,4 +1,6 @@
+import { omit } from "@aidc-toolkit/core";
 import type { GCPLengthCache } from "./gcp-length-cache.js";
+import type { GCPLengthData, GCPLengthHeader } from "./gcp-length-data.js";
 import { GTINLengths } from "./gtin-length.js";
 import { GTINValidator } from "./gtin-validator.js";
 import { type IdentifierType, IdentifierTypes } from "./identifier-type.js";
@@ -57,8 +59,7 @@ export interface Branch {
 /**
  * Root of GS1 Company Prefix length tree.
  */
-export interface Root extends Branch {
-    dateTime: Date;
+export interface Root extends GCPLengthHeader, Branch {
 }
 
 /**
@@ -296,15 +297,16 @@ export async function loadData(gcpLengthCache: GCPLengthCache): Promise<Root | u
         if (cacheDateTime === undefined || cacheDateTime.getTime() < sourceDateTime.getTime()) {
             const sourceData = await gcpLengthCache.sourceData;
 
-            let cacheData: Uint8Array;
+            let cacheData: GCPLengthData;
 
             if (typeof sourceData !== "string") {
                 root = {
-                    dateTime: sourceDateTime,
+                    dateTime: sourceData.dateTime,
+                    disclaimer: sourceData.disclaimer,
                     childNodes: []
                 };
 
-                fromBinary(sourceData, root.childNodes, 0);
+                fromBinary(sourceData.data, root.childNodes, 0);
 
                 cacheData = sourceData;
             } else {
@@ -313,6 +315,17 @@ export async function loadData(gcpLengthCache: GCPLengthCache): Promise<Root | u
 
                 root = {
                     dateTime: new Date(gcpLength.GCPPrefixFormatList.date),
+                    // Join disclaimer as a single string.
+                    disclaimer: `${gcpLength._disclaimer.reduce<string[]>((lines, line) => {
+                        if (lines.length === 0 || lines[lines.length - 1] === "" || line === "") {
+                            lines.push(line);
+                        } else {
+                            // Lines are part of the same paragraph.
+                            lines.push(`${lines.pop()} ${line}`);
+                        }
+
+                        return lines;
+                    }, []).join("\n")}\n`,
                     childNodes: []
                 };
 
@@ -323,9 +336,14 @@ export async function loadData(gcpLengthCache: GCPLengthCache): Promise<Root | u
                 }
 
                 // Each branch has ten (some possibly undefined) entries, two per byte.
-                cacheData = new Uint8Array(branchesAdded * 5);
+                const data = new Uint8Array(branchesAdded * 5);
 
-                toBinary(cacheData, root, 0);
+                toBinary(data, root, 0);
+
+                cacheData = {
+                    ...omit(root, "childNodes"),
+                    data
+                };
             }
 
             // Next check date/time is a week from source date/time or tomorrow, whichever is later.
@@ -345,12 +363,14 @@ export async function loadData(gcpLengthCache: GCPLengthCache): Promise<Root | u
 
     // Root is undefined if cache data is still valid or retrying after prior failure.
     if (root === undefined && cacheDateTime !== undefined) {
+        const cacheData = await gcpLengthCache.cacheData;
+
         root = {
-            dateTime: cacheDateTime,
+            ...omit(cacheData, "data"),
             childNodes: []
         };
 
-        fromBinary(await gcpLengthCache.cacheData, root.childNodes, 0);
+        fromBinary(cacheData.data, root.childNodes, 0);
     }
 
     return root;

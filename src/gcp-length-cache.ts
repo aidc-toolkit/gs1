@@ -1,10 +1,11 @@
 import { Cache } from "@aidc-toolkit/core";
+import type { GCPLengthData, GCPLengthHeader } from "./gcp-length-data.js";
 import { i18nextGS1 } from "./locale/i18n.js";
 
 /**
  * GS1 Company Prefix length cache.
  */
-export abstract class GCPLengthCache extends Cache<Uint8Array, Uint8Array | string> {
+export abstract class GCPLengthCache extends Cache<GCPLengthData, GCPLengthData | string> {
 }
 
 /**
@@ -17,14 +18,14 @@ export abstract class RemoteGCPLengthCache extends GCPLengthCache {
     static DEFAULT_BASE_URL = "https://aidc-toolkit.com/data/";
 
     /**
-     * Default base URL pointing to AIDC Toolkit website data directory.
+     * File containing header information (date/time and disclaimer).
      */
-    static SOURCE_DATE_TIME_FILE_NAME = "gcp-length-date-time.txt";
+    static SOURCE_HEADER_FILE_NAME = "gcp-length-header.txt";
 
     /**
-     * Default base URL pointing to AIDC Toolkit website data directory.
+     * File containing tree data in binary form.
      */
-    static SOURCE_DATA_FILE_NAME = "gcp-length.bin";
+    static SOURCE_DATA_FILE_NAME = "gcp-length-data.bin";
 
     /**
      * Base URL.
@@ -32,11 +33,16 @@ export abstract class RemoteGCPLengthCache extends GCPLengthCache {
     readonly #baseURL: string;
 
     /**
+     * GS1 Company Prefix header data.
+     */
+    #gcpLengthHeader?: GCPLengthHeader | undefined;
+
+    /**
      * Constructor.
      *
      * @param baseURL
-     * Base URL. The URL must end with a slash, and must host the {@linkcode SOURCE_DATE_TIME_FILE_NAME} and
-     * {@linkcode SOURCE_DATA_FILE_NAME} files.
+     * Base URL. The URL must end with a slash, and must host the {@linkcode SOURCE_HEADER_FILE_NAME} and {@linkcode
+     * SOURCE_DATA_FILE_NAME} files.
      */
     constructor(baseURL: string = RemoteGCPLengthCache.DEFAULT_BASE_URL) {
         super();
@@ -78,21 +84,39 @@ export abstract class RemoteGCPLengthCache extends GCPLengthCache {
      * @inheritDoc
      */
     get sourceDateTime(): Promise<Date> {
-        return this.#getRemoteFile(RemoteGCPLengthCache.SOURCE_DATE_TIME_FILE_NAME).then(async response =>
+        return this.#getRemoteFile(RemoteGCPLengthCache.SOURCE_HEADER_FILE_NAME).then(async response =>
             await response.text()
-        ).then(s =>
-            new Date(s)
-        );
+        ).then((s) => {
+            const lines = s.split("\n");
+
+            this.#gcpLengthHeader = {
+                dateTime: new Date(lines[0]),
+                disclaimer: lines.slice(1).join("\n")
+            };
+
+            return this.#gcpLengthHeader.dateTime;
+        });
     }
 
     /**
      * @inheritDoc
      */
-    get sourceData(): Promise<Uint8Array> {
+    get sourceData(): Promise<GCPLengthData> {
+        if (this.#gcpLengthHeader === undefined) {
+            // Application error; no localization necessary.
+            throw new Error("GS1 Company Prefix length header not loaded");
+        }
+
+        const gcpLengthHeader = this.#gcpLengthHeader;
+
+        // Clear header to allow for retry in case of failure.
+        this.#gcpLengthHeader = undefined;
+
         return this.#getRemoteFile(RemoteGCPLengthCache.SOURCE_DATA_FILE_NAME).then(async response =>
             await response.arrayBuffer()
-        ).then(a =>
-            new Uint8Array(a)
-        );
+        ).then(a => ({
+            ...gcpLengthHeader,
+            data: new Uint8Array(a)
+        }));
     }
 }

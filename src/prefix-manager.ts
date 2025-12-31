@@ -401,4 +401,18 @@ export class PrefixManager implements PrefixProvider {
 
         return PrefixManager.#gcpLengthRoot.dateTime;
     }
+
+    /**
+     * Get the disclaimer for the GS1 Company Prefix length data.
+     *
+     * @returns
+     * Disclaimer for the GS1 Company Prefix length data.
+     */
+    static gcpLengthDisclaimer(): string {
+        if (PrefixManager.#gcpLengthRoot === undefined) {
+            throw new RangeError(i18nextGS1.t("Prefix.gs1CompanyPrefixLengthDataNotLoaded"));
+        }
+
+        return PrefixManager.#gcpLengthRoot.disclaimer;
+    }
 }
