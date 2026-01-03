@@ -68,8 +68,8 @@ export function testGTINCreator(creator: GTINCreator): void {
 
             expect(index).toBe(referenceCount);
 
-            const randomValues = new Array<number>();
-            const identifiers = new Array<string>();
+            const randomValues: number[] = [];
+            const identifiers: string[] = [];
 
             for (let i = 0; i < 1000; i++) {
                 const randomValue = Math.floor(Math.random() * creator.capacity);
@@ -105,8 +105,8 @@ export function testGTINCreator(creator: GTINCreator): void {
             expect(sequential).toBe(false);
             expect(index).toBe(sparseReferenceCount);
 
-            const randomValues = new Array<number>();
-            const identifiers = new Array<string>();
+            const randomValues: number[] = [];
+            const identifiers: string[] = [];
 
             for (let i = 0; i < 1000; i++) {
                 const randomValue = Math.floor(Math.random() * creator.capacity);

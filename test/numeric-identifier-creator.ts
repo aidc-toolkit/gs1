@@ -62,8 +62,8 @@ export function testNumericIdentifierCreator<TNumericIdentifierType extends Nume
             expect(index).toBe(referenceCount);
             expect(sequenceIterator.next().value).toBeUndefined();
 
-            const randomValues = new Array<number>();
-            const identifiers = new Array<string>();
+            const randomValues: number[] = [];
+            const identifiers: string[] = [];
 
             for (let i = 0; i < 1000; i++) {
                 const randomValue = Math.floor(Math.random() * creator.capacity);
@@ -99,8 +99,8 @@ export function testNumericIdentifierCreator<TNumericIdentifierType extends Nume
             expect(sequential).toBe(false);
             expect(index).toBe(sparseReferenceCount);
 
-            const randomValues = new Array<number>();
-            const identifiers = new Array<string>();
+            const randomValues: number[] = [];
+            const identifiers: string[] = [];
 
             for (let i = 0; i < 1000; i++) {
                 const randomValue = Math.floor(Math.random() * creator.capacity);
