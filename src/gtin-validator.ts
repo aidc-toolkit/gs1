@@ -191,18 +191,16 @@ export class GTINValidator extends NumericIdentifierValidator<GTINType> implemen
      * GTIN-14.
      */
     static convertToGTIN14(indicatorDigit: string, gtin: string): string {
-        GTINValidator.validateAny(gtin);
-
         NUMERIC_CREATOR.validate(indicatorDigit, GTINValidator.#OPTIONAL_INDICATOR_DIGIT_VALIDATION);
 
         // Check digit doesn't change by prepending zeros.
-        let gtin14 = gtin.padStart(GTINLengths.GTIN14, "0");
+        let gtin14 = GTINValidator.normalize(gtin).padStart(GTINLengths.GTIN14, "0");
 
         // If indicator digit provided and is different, recalculate the check digit.
-        if (indicatorDigit.length !== 0 && indicatorDigit !== gtin14.charAt(0)) {
-            const partialGTIN14 = indicatorDigit + gtin14.substring(1, GTINLengths.GTIN14 - 1);
+        if (indicatorDigit.length !== 0 && !gtin14.startsWith(indicatorDigit)) {
+            const partialGTIN14 = `${indicatorDigit}${gtin14.substring(1, GTINLengths.GTIN14 - 1)}`;
 
-            gtin14 = partialGTIN14 + checkDigit(partialGTIN14);
+            gtin14 = `${partialGTIN14}${checkDigit(partialGTIN14)}`;
         }
 
         return gtin14;
