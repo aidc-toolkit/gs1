@@ -1,5 +1,5 @@
 import { Cache } from "@aidc-toolkit/core";
-import type { GCPLengthData, GCPLengthHeader } from "./gcp-length-data.js";
+import { type GCPLengthData, type GCPLengthHeader, parseGCPLengthHeader } from "./gcp-length-data.js";
 import { i18nextGS1 } from "./locale/i18n.js";
 
 /**
@@ -20,7 +20,7 @@ export abstract class RemoteGCPLengthCache extends GCPLengthCache {
     /**
      * File containing header information (date/time and disclaimer).
      */
-    static SOURCE_HEADER_FILE_NAME = "gcp-length-header.txt";
+    static SOURCE_HEADER_FILE_NAME = "gcp-length-header.json";
 
     /**
      * File containing tree data in binary form.
@@ -85,14 +85,9 @@ export abstract class RemoteGCPLengthCache extends GCPLengthCache {
      */
     get sourceDateTime(): Promise<Date> {
         return this.#getRemoteFile(RemoteGCPLengthCache.SOURCE_HEADER_FILE_NAME).then(async response =>
-            await response.text()
+            response.text()
         ).then((s) => {
-            const lines = s.split("\n");
-
-            this.#gcpLengthHeader = {
-                dateTime: new Date(lines[0]),
-                disclaimer: lines.slice(1).join("\n")
-            };
+            this.#gcpLengthHeader = parseGCPLengthHeader(s);
 
             return this.#gcpLengthHeader.dateTime;
         });
@@ -113,7 +108,7 @@ export abstract class RemoteGCPLengthCache extends GCPLengthCache {
         this.#gcpLengthHeader = undefined;
 
         return this.#getRemoteFile(RemoteGCPLengthCache.SOURCE_DATA_FILE_NAME).then(async response =>
-            await response.arrayBuffer()
+            response.arrayBuffer()
         ).then(a => ({
             ...gcpLengthHeader,
             data: new Uint8Array(a)
