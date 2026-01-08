@@ -270,6 +270,7 @@ describe("GS1 Company Prefix length", () => {
             verifyEqual("", root1, root2);
         }).not.toThrow(RangeError);
 
+        // eslint-disable-next-line require-atomic-updates -- No rance condition.
         nextCheckDateTime = undefined;
         root2 = undefined;
 
@@ -293,6 +294,7 @@ describe("GS1 Company Prefix length", () => {
             verifyEqual("", root1, root2);
         }).not.toThrow(RangeError);
 
+        // eslint-disable-next-line require-atomic-updates -- No rance condition.
         nextCheckDateTime = new Date();
 
         // Binary 1 available, binary 2 available and more recent and in next check date/time window.

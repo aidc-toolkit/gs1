@@ -30,7 +30,7 @@ export class NonNumericIdentifierValidator extends IdentifierValidator<NonNumeri
         protected override createErrorMessage(_s: string): string {
             return i18nextGS1.t("Identifier.referenceCantBeAllNumeric");
         }
-    }(/\D/);
+    }(/\D/u);
 
     /**
      * True if the identifier requires a check character pair.

@@ -38,7 +38,7 @@ export function testSerializableNumericIdentifierCreator(creator: SerializableNu
             expect(Array.from(creator.concatenate(baseIdentifier, serialComponents))).toStrictEqual(serializedIdentifiers);
 
             const fullLengthSerial = "0".repeat(creator.serialComponentLength);
-            const fullLengthPlusOneSerial = fullLengthSerial + "0";
+            const fullLengthPlusOneSerial = `${fullLengthSerial}0`;
             const fullLengthPlusOneSerialErrorMessage = `Length ${creator.serialComponentLength + 1} of serial component must be less than or equal to ${creator.serialComponentLength}`;
 
             expect(() => creator.createSerialized(0, fullLengthSerial, true)).not.toThrow(RangeError);

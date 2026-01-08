@@ -210,11 +210,11 @@ export const PrefixValidator = {
                 break;
 
             case PrefixTypes.UPCCompanyPrefix:
-                gs1CompanyPrefix = "0" + prefix;
+                gs1CompanyPrefix = `0${prefix}`;
                 break;
 
             case PrefixTypes.GS18Prefix:
-                gs1CompanyPrefix = "00000" + prefix;
+                gs1CompanyPrefix = `00000${prefix}`;
                 break;
         }
 

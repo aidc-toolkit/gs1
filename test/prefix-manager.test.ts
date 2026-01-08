@@ -15,7 +15,7 @@ describe("Prefix manager", () => {
 
         const gtin14 = prefixManager.gtinCreator.createGTIN14("5", 0);
 
-        expect(gtin14.startsWith("5" + prefixManager.gs1CompanyPrefix)).toBe(true);
+        expect(gtin14.startsWith(`5${prefixManager.gs1CompanyPrefix}`)).toBe(true);
         expect(gtin14.length).toBe(14);
     }
 
@@ -64,7 +64,7 @@ describe("Prefix manager", () => {
 
         expect(prefixManager.prefixType).toBe(PrefixTypes.UPCCompanyPrefix);
         expect(prefixManager.prefix).toBe("614141");
-        expect(prefixManager.gs1CompanyPrefix).toBe("0" + prefixManager.prefix);
+        expect(prefixManager.gs1CompanyPrefix).toBe(`0${prefixManager.prefix}`);
         expect(prefixManager.upcCompanyPrefix).toBe(prefixManager.prefix);
         expect(prefixManager.gs18Prefix).toBeUndefined();
 
@@ -79,7 +79,7 @@ describe("Prefix manager", () => {
 
         expect(prefixManager.prefixType).toBe(PrefixTypes.GS18Prefix);
         expect(prefixManager.prefix).toBe("952");
-        expect(prefixManager.gs1CompanyPrefix).toBe("00000" + prefixManager.prefix);
+        expect(prefixManager.gs1CompanyPrefix).toBe(`00000${prefixManager.prefix}`);
         expect(prefixManager.upcCompanyPrefix).toBeUndefined();
         expect(prefixManager.gs18Prefix).toBe(prefixManager.prefix);
 
