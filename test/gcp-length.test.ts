@@ -1,4 +1,4 @@
-import { LocalAppDataStorage } from "@aidc-toolkit/core";
+import { FileAppDataStorage } from "@aidc-toolkit/core";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
@@ -7,9 +7,13 @@ import {
     GCPLengthCache,
     type GCPLengthData,
     type GCPLengthHeader,
-    type GCPLengthSourceJSON, IdentifierTypes,
+    type GCPLengthSourceJSON,
+    IdentifierTypes,
     isGCPLengthHeader,
-    isGCPLengthSourceJSON, PrefixManager, PrefixTypes, PrefixValidator
+    isGCPLengthSourceJSON,
+    PrefixManager,
+    PrefixTypes,
+    PrefixValidator
 } from "../src/index.js";
 
 const DATA_DIRECTORY = "test/data";
@@ -20,7 +24,7 @@ class GCPLengthCacheJSONSource extends GCPLengthCache {
     #gcpLengthSourceJSON!: GCPLengthSourceJSON;
 
     constructor(index: number) {
-        super(new LocalAppDataStorage(DATA_DIRECTORY));
+        super(new FileAppDataStorage(DATA_DIRECTORY));
 
         this.#pathKey = `gcpprefixformatlist-${index}`;
     }
@@ -50,7 +54,7 @@ class GCPLengthCacheBinarySource extends GCPLengthCache {
     #gcpLengthHeader!: GCPLengthHeader;
 
     constructor(index: number) {
-        super(new LocalAppDataStorage(DATA_DIRECTORY));
+        super(new FileAppDataStorage(DATA_DIRECTORY));
 
         this.#headerPathKey = `${GCPLengthCache.HEADER_STORAGE_KEY}-${index}`;
         this.#dataPathKey = `${GCPLengthCache.DATA_STORAGE_KEY}-${index}`;

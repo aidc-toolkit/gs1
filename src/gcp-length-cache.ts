@@ -1,11 +1,4 @@
-import {
-    type AppData,
-    type AppDataStorage,
-    Cache,
-    LocalAppDataStorage,
-    omit,
-    RemoteAppDataStorage
-} from "@aidc-toolkit/core";
+import { type AppData, type AppDataStorage, Cache, omit, RemoteAppDataStorage } from "@aidc-toolkit/core";
 import {
     type GCPLengthAppData,
     type GCPLengthData,
@@ -56,7 +49,7 @@ export abstract class GCPLengthCache extends Cache<GCPLengthData, GCPLengthData 
      * @param appDataStorage
      * Application data storage.
      */
-    constructor(appDataStorage: AppDataStorage<boolean> = new LocalAppDataStorage()) {
+    constructor(appDataStorage: AppDataStorage<boolean>) {
         super();
 
         this.#appDataStorage = appDataStorage;
@@ -193,7 +186,7 @@ export class RemoteGCPLengthCache extends GCPLengthCache {
      * Base URL. The URL must not end with a slash and must host the `gcp-length-header.json` and `gcp-length-data.bin`
      * files.
      */
-    constructor(appDataStorage: AppDataStorage<boolean> = new LocalAppDataStorage(), baseURL: string = RemoteGCPLengthCache.DEFAULT_BASE_URL) {
+    constructor(appDataStorage: AppDataStorage<boolean>, baseURL: string = RemoteGCPLengthCache.DEFAULT_BASE_URL) {
         super(appDataStorage);
 
         this.#remoteAppDataStorage = new RemoteAppDataStorage(baseURL);
