@@ -1,4 +1,4 @@
-import { FileAppDataStorage } from "@aidc-toolkit/core";
+import { type AppDataStorage, LocalAppDataStorage } from "@aidc-toolkit/core";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
@@ -13,7 +13,8 @@ import {
     isGCPLengthSourceJSON,
     PrefixManager,
     PrefixTypes,
-    PrefixValidator
+    PrefixValidator,
+    RemoteGCPLengthCache
 } from "../src/index.js";
 
 const DATA_DIRECTORY = "test/data";
@@ -23,8 +24,8 @@ class GCPLengthCacheJSONSource extends GCPLengthCache {
 
     #gcpLengthSourceJSON!: GCPLengthSourceJSON;
 
-    constructor(index: number) {
-        super(new FileAppDataStorage(DATA_DIRECTORY));
+    constructor(appDataStorage: AppDataStorage<boolean>, index: number) {
+        super(appDataStorage);
 
         this.#pathKey = `gcpprefixformatlist-${index}`;
     }
@@ -53,8 +54,8 @@ class GCPLengthCacheBinarySource extends GCPLengthCache {
 
     #gcpLengthHeader!: GCPLengthHeader;
 
-    constructor(index: number) {
-        super(new FileAppDataStorage(DATA_DIRECTORY));
+    constructor(appDataStorage: AppDataStorage<boolean>, index: number) {
+        super(appDataStorage);
 
         this.#headerPathKey = `${GCPLengthCache.HEADER_STORAGE_KEY}-${index}`;
         this.#dataPathKey = `${GCPLengthCache.DATA_STORAGE_KEY}-${index}`;
@@ -85,82 +86,6 @@ class GCPLengthCacheBinarySource extends GCPLengthCache {
         });
     }
 }
-
-// interface ReadonlyStorage<T> {
-//     read: () => T;
-// }
-//
-// interface Storage<T> extends ReadonlyStorage<T> {
-//     write: (value: NonNullable<T>) => void;
-// }
-//
-// interface RequiredStorage<T> extends Storage<T> {
-//     read: () => NonNullable<T>;
-// }
-//
-// function makeReadonly<T>(storage: Storage<T | undefined>): ReadonlyStorage<T> {
-//     return {
-//         read(): T {
-//             const t = storage.read();
-//
-//             if (t === undefined) {
-//                 throw new Error("Storage has no data");
-//             }
-//
-//             return t;
-//         }
-//     };
-// }
-//
-// function makeRequired<T>(storage: Storage<T | undefined>): RequiredStorage<T> {
-//     return {
-//         read(): NonNullable<T> {
-//             const t = storage.read();
-//
-//             if (t === undefined || t === null) {
-//                 throw new Error("Storage has no data");
-//             }
-//
-//             return t;
-//         },
-//
-//         write: storage.write
-//     };
-// }
-//
-// function createGCPLengthCache(nextCheckDateTimeStorage: Storage<Date | undefined>, cacheDataStorage: Storage<GCPLengthData | undefined>, sourceDateTimeStorage: ReadonlyStorage<Date>, sourceDataStorage: ReadonlyStorage<GCPLengthData> | ReadonlyStorage<string>): GCPLengthCache {
-//     return new class extends GCPLengthCache {
-//         override get nextCheckDateTime(): Promise<Date | undefined> {
-//             return nextCheckDateTimeStorage.read();
-//         }
-//
-//         override get cacheDateTime(): Promise<Date | undefined> {
-//             return cacheDataStorage.read()?.dateTime;
-//         }
-//
-//         override get cacheData(): Promise<GCPLengthData> {
-//             return makeRequired(cacheDataStorage).read();
-//         }
-//
-//         get sourceDateTime(): Date {
-//             return sourceDateTimeStorage.read();
-//         }
-//
-//         get sourceData(): GCPLengthData | string {
-//             return sourceDataStorage.read();
-//         }
-//
-//         // eslint-disable-next-line @typescript-eslint/require-await -- Necessary for testing.
-//         override async update(nextCheckDateTime: Date, _cacheDateTime?: Date, cacheData?: GCPLengthData): Promise<void> {
-//             nextCheckDateTimeStorage.write(nextCheckDateTime);
-//
-//             if (cacheData !== undefined) {
-//                 cacheDataStorage.write(cacheData);
-//             }
-//         }
-//     }();
-// }
-//
 
 const NEXT_CHECK_DATE_TIME_PATH = path.resolve(DATA_DIRECTORY, "gcp-length-next-check-date-time.json");
 
@@ -241,10 +166,12 @@ describe("GS1 Company Prefix length", () => {
     afterAll(rmCache);
 
     test("Load", async () => {
-        const gcpLengthCacheJSON1Source = new GCPLengthCacheJSONSource(1);
-        const gcpLengthCacheJSON2Source = new GCPLengthCacheJSONSource(2);
-        const gcpLengthCacheBinary1Source = new GCPLengthCacheBinarySource(1);
-        const gcpLengthCacheBinary2Source = new GCPLengthCacheBinarySource(2);
+        const appDataStorage = new (await LocalAppDataStorage())(DATA_DIRECTORY);
+
+        const gcpLengthCacheJSON1Source = new GCPLengthCacheJSONSource(appDataStorage, 1);
+        const gcpLengthCacheJSON2Source = new GCPLengthCacheJSONSource(appDataStorage, 2);
+        const gcpLengthCacheBinary1Source = new GCPLengthCacheBinarySource(appDataStorage, 1);
+        const gcpLengthCacheBinary2Source = new GCPLengthCacheBinarySource(appDataStorage, 2);
 
         let root1: GCPLength.Root | undefined;
         let root2: GCPLength.Root | undefined;
@@ -330,7 +257,7 @@ describe("GS1 Company Prefix length", () => {
             override async update(): Promise<void> {
                 return Promise.resolve();
             }
-        }(2);
+        }(new (await LocalAppDataStorage())(DATA_DIRECTORY), 2);
 
         const tempRoot = await GCPLength.loadData(gcpLengthCacheJSON2Source);
 
@@ -385,41 +312,33 @@ describe("GS1 Company Prefix length", () => {
         }
     });
 
-    // test("Remote", async () => {
-    //     const gcpLengthCache = new class extends RemoteGCPLengthCache {
-    //         #nextCheckDateTime: Date | undefined = undefined;
-    //
-    //         #cacheData: GCPLengthData | undefined = undefined;
-    //
-    //         override get nextCheckDateTime(): Date | undefined {
-    //             return this.#nextCheckDateTime;
-    //         }
-    //
-    //         override get cacheDateTime(): Date | undefined {
-    //             return this.#cacheData?.dateTime;
-    //         }
-    //
-    //         override get cacheData(): GCPLengthData {
-    //             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Method will be called only if cache date/time is defined.
-    //             return this.#cacheData!;
-    //         }
-    //
-    //         // eslint-disable-next-line @typescript-eslint/require-await -- Necessary for testing.
-    //         override async update(nextCheckDateTime: Date, _cacheDateTime?: Date, cacheData?: GCPLengthData): Promise<void> {
-    //             this.#nextCheckDateTime = nextCheckDateTime;
-    //
-    //             if (cacheData !== undefined) {
-    //                 this.#cacheData = cacheData;
-    //             }
-    //         }
-    //     }();
-    //
-    //     await expect((async () => {
-    //         await GCPLength.loadData(gcpLengthCache);
-    //     })()).resolves.not.toThrowError(RangeError);
-    //
-    //     expect(gcpLengthCache.nextCheckDateTime).not.toBeUndefined();
-    //     expect(gcpLengthCache.cacheDateTime).not.toBeUndefined();
-    //     expect(gcpLengthCache.cacheData).not.toBeUndefined();
-    // });
+    test("Remote", async () => {
+        let savedNextCheckDateTime: Date | undefined = undefined;
+        let savedCacheDateTime: Date | undefined = undefined;
+        let savedCacheData: GCPLengthData | undefined = undefined;
+
+        const gcpLengthCache = new class extends RemoteGCPLengthCache {
+            override get nextCheckDateTime(): Promise<Date | undefined> {
+                return Promise.resolve(savedNextCheckDateTime);
+            }
+
+            override get cacheDateTime(): Promise<Date | undefined> {
+                return Promise.resolve(savedCacheDateTime);
+            }
+
+            override async update(nextCheckDateTime: Date, cacheDateTime?: Date, cacheData?: GCPLengthData): Promise<void> {
+                savedNextCheckDateTime = nextCheckDateTime;
+                savedCacheDateTime = cacheDateTime;
+                savedCacheData = cacheData;
+
+                return Promise.resolve();
+            }
+        }(new (await LocalAppDataStorage())(DATA_DIRECTORY));
+
+        await expect(GCPLength.loadData(gcpLengthCache)).resolves.not.toThrowError(RangeError);
+
+        expect(savedNextCheckDateTime).not.toBeUndefined();
+        expect(savedCacheDateTime).not.toBeUndefined();
+        expect(savedCacheData).not.toBeUndefined();
+    });
 });
