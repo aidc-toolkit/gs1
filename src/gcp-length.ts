@@ -1,46 +1,11 @@
 import { omit } from "@aidc-toolkit/core";
 import type { GCPLengthCache } from "./gcp-length-cache.js";
-import type { GCPLengthData, GCPLengthHeader } from "./gcp-length-data.js";
+import { type GCPLengthData, type GCPLengthHeader, isGCPLengthData } from "./gcp-length-data.js";
 import { GTINLengths } from "./gtin-length.js";
 import { GTINValidator } from "./gtin-validator.js";
 import { type IdentifierType, IdentifierTypes } from "./identifier-type.js";
 import { IdentifierValidators, isNumericIdentifierValidator } from "./identifier-validators.js";
 import { LeaderTypes } from "./leader-type.js";
-
-/**
- * GS1 Company Prefix length JSON source file format.
- */
-interface GCPLengthJSON {
-    /**
-     * Disclaimer.
-     */
-    _disclaimer: string[];
-
-    /**
-     * Format list.
-     */
-    GCPPrefixFormatList: {
-        /**
-         * ISO data/time the table was last updated.
-         */
-        date: string;
-
-        /**
-         * Entries.
-         */
-        entry: Array<{
-            /**
-             * Identification key prefix start.
-             */
-            prefix: string;
-
-            /**
-             * Length of GS1 Company Prefix.
-             */
-            gcpLength: number;
-        }>;
-    };
-}
 
 /**
  * Leaf of GS1 Company Prefix length tree.
@@ -299,7 +264,7 @@ export async function loadData(gcpLengthCache: GCPLengthCache): Promise<Root | u
 
             let cacheData: GCPLengthData;
 
-            if (typeof sourceData !== "string") {
+            if (isGCPLengthData(sourceData)) {
                 root = {
                     dateTime: sourceData.dateTime,
                     disclaimer: sourceData.disclaimer,
@@ -310,13 +275,10 @@ export async function loadData(gcpLengthCache: GCPLengthCache): Promise<Root | u
 
                 cacheData = sourceData;
             } else {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- File format is known.
-                const gcpLength = JSON.parse(sourceData) as GCPLengthJSON;
-
                 root = {
-                    dateTime: new Date(gcpLength.GCPPrefixFormatList.date),
+                    dateTime: new Date(sourceData.GCPPrefixFormatList.date),
                     // Join disclaimer as a single string.
-                    disclaimer: `${gcpLength._disclaimer.reduce<string[]>((lines, line) => {
+                    disclaimer: `${sourceData._disclaimer.reduce<string[]>((lines, line) => {
                         if (lines.length === 0 || lines[lines.length - 1] === "" || line === "") {
                             lines.push(line);
                         } else {
@@ -331,7 +293,7 @@ export async function loadData(gcpLengthCache: GCPLengthCache): Promise<Root | u
 
                 let branchesAdded = 1;
 
-                for (const entry of gcpLength.GCPPrefixFormatList.entry) {
+                for (const entry of sourceData.GCPPrefixFormatList.entry) {
                     branchesAdded += addEntry(root, entry.prefix, entry.gcpLength);
                 }
 
