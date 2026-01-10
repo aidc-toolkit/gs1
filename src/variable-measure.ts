@@ -37,12 +37,12 @@ export class VariableMeasure {
      *
      * Some examples:
      *
-     * - 2IIIIIVPPPPC - RCN-12 with a five-digit item reference, a price or weight check digit, and a four-digit price
+     * - `2IIIIIVPPPPC` - RCN-12 with a five-digit item reference, a price or weight check digit, and a four-digit price
      * or weight.
-     * - 23IIIIVPPPPPC - RCN-13 with a four-digit item reference, a price or weight check digit, and a five-digit price
+     * - `23IIIIVPPPPPC` - RCN-13 with a four-digit item reference, a price or weight check digit, and a five-digit price
      * or weight.
-     * - 2IIIIIIPPPPC - RCN-12 with a six-digit item reference and a four-digit price or eight.
-     * - 29IIIIIPPPPPC - RCN-13 with a five-digit item reference and a five-digit price or weight.
+     * - `2IIIIIIPPPPC` - RCN-12 with a six-digit item reference and a four-digit price or eight.
+     * - `29IIIIIPPPPPC` - RCN-13 with a five-digit item reference and a five-digit price or weight.
      *
      * @param format
      * Format.
