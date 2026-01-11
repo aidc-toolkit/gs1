@@ -166,7 +166,7 @@ describe("GS1 Company Prefix length", () => {
     afterAll(rmCache);
 
     test("Load", async () => {
-        const appDataStorage = new (await LocalAppDataStorage())(DATA_DIRECTORY);
+        const appDataStorage = new (await LocalAppDataStorage)(DATA_DIRECTORY);
 
         const gcpLengthCacheJSON1Source = new GCPLengthCacheJSONSource(appDataStorage, 1);
         const gcpLengthCacheJSON2Source = new GCPLengthCacheJSONSource(appDataStorage, 2);
@@ -257,7 +257,7 @@ describe("GS1 Company Prefix length", () => {
             override async update(): Promise<void> {
                 return Promise.resolve();
             }
-        }(new (await LocalAppDataStorage())(DATA_DIRECTORY), 2);
+        }(new (await LocalAppDataStorage)(DATA_DIRECTORY), 2);
 
         const tempRoot = await GCPLength.loadData(gcpLengthCacheJSON2Source);
 
@@ -333,7 +333,7 @@ describe("GS1 Company Prefix length", () => {
 
                 return Promise.resolve();
             }
-        }(new (await LocalAppDataStorage())(DATA_DIRECTORY));
+        }(new (await LocalAppDataStorage)(DATA_DIRECTORY));
 
         await expect(GCPLength.loadData(gcpLengthCache)).resolves.not.toThrowError(RangeError);
 
