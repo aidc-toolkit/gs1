@@ -193,19 +193,22 @@ export class RemoteGCPLengthCache extends GCPLengthCache {
     }
 
     /**
-     * Get remote application data. If an exception is thrown, retrying is delayed for ten minutes to prevent repeated
-     * network calls.
+     * Get remote application data. If an exception is thrown while retrieving or processing the data, retrying is
+     * delayed for ten minutes to prevent repeated network calls.
      *
      * @param pathKey
      * Key relative to base URL.
      *
      * @param asBinary
-     * True if binary data is requested, false or undefined if string data is requested.
+     * True if binary data is requested, false if string data is requested.
+     *
+     * @param callback
+     * Callback function to process the application data.
      *
      * @returns
      * Application data.
      */
-    async #getRemoteAppData(pathKey: string, asBinary?: boolean): Promise<AppData> {
+    async #getRemoteAppData<T>(pathKey: string, asBinary: boolean, callback: (appData: AppData) => T): Promise<T> {
         return this.#remoteAppDataStorage.read(pathKey, asBinary).then((appData) => {
             if (appData === undefined) {
                 throw new RangeError(i18nextGS1.t("Prefix.gs1CompanyPrefixLengthDataFileNotFound", {
@@ -213,7 +216,7 @@ export class RemoteGCPLengthCache extends GCPLengthCache {
                 }));
             }
 
-            return appData;
+            return callback(appData);
         }).catch(async (e: unknown) => {
             // Try again in ten minutes.
             const nowPlus10Minutes = new Date();
@@ -230,7 +233,7 @@ export class RemoteGCPLengthCache extends GCPLengthCache {
      */
     get sourceDateTime(): Promise<Date> {
         // Header is fetched on each call.
-        return this.#getRemoteAppData(RemoteGCPLengthCache.HEADER_STORAGE_KEY).then((appData) => {
+        return this.#getRemoteAppData(RemoteGCPLengthCache.HEADER_STORAGE_KEY, false, (appData) => {
             if (!isGCPLengthHeader(appData)) {
                 // Application error; no localization necessary.
                 throw new Error("Invalid GS1 Company Prefix length header");
@@ -246,14 +249,14 @@ export class RemoteGCPLengthCache extends GCPLengthCache {
      * @inheritDoc
      */
     get sourceData(): Promise<GCPLengthData> {
-        const gcpLengthHeader = this.#remoteGCPLengthHeader;
+        return this.#getRemoteAppData(RemoteGCPLengthCache.DATA_STORAGE_KEY, true, (appData) => {
+            const gcpLengthHeader = this.#remoteGCPLengthHeader;
 
-        if (gcpLengthHeader === undefined) {
-            // Application error; no localization necessary.
-            throw new Error("GS1 Company Prefix length header not loaded");
-        }
+            if (gcpLengthHeader === undefined) {
+                // Application error; no localization necessary.
+                throw new Error("GS1 Company Prefix length header not loaded");
+            }
 
-        return this.#getRemoteAppData(RemoteGCPLengthCache.DATA_STORAGE_KEY, true).then((appData) => {
             if (!(appData instanceof Uint8Array)) {
                 // Application error; no localization necessary.
                 throw new Error("Invalid GS1 Company Prefix length data");
