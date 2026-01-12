@@ -56,7 +56,7 @@ export abstract class NumericIdentifierValidator<TNumericIdentifierType extends 
     /**
      * @inheritDoc
      */
-    validate(identifier: string, validation?: NumericIdentifierValidation): void {
+    override validate(identifier: string, validation?: NumericIdentifierValidation): void {
         // Validate the prefix, with care taken for its position within the identifier.
         if (this.#prefixPosition === 0) {
             super.validatePrefix(identifier);

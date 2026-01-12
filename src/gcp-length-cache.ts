@@ -231,7 +231,7 @@ export class RemoteGCPLengthCache extends GCPLengthCache {
     /**
      * @inheritDoc
      */
-    get sourceDateTime(): Promise<Date> {
+    override get sourceDateTime(): Promise<Date> {
         // Header is fetched on each call.
         return this.#getRemoteAppData(RemoteGCPLengthCache.HEADER_STORAGE_KEY, false, (appData) => {
             if (!isGCPLengthHeader(appData)) {
@@ -248,7 +248,7 @@ export class RemoteGCPLengthCache extends GCPLengthCache {
     /**
      * @inheritDoc
      */
-    get sourceData(): Promise<GCPLengthData> {
+    override get sourceData(): Promise<GCPLengthData> {
         return this.#getRemoteAppData(RemoteGCPLengthCache.DATA_STORAGE_KEY, true, (appData) => {
             const gcpLengthHeader = this.#remoteGCPLengthHeader;
 
