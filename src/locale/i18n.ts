@@ -1,5 +1,5 @@
-import { type I18nEnvironment, i18nFinalizeInit } from "@aidc-toolkit/core";
-import { i18nUtilityInit, utilityResources } from "@aidc-toolkit/utility";
+import { i18nCoreInit, type I18nEnvironment, i18nInit } from "@aidc-toolkit/core";
+import { i18nUtilityInit } from "@aidc-toolkit/utility";
 import i18next, { type i18n, type Resource } from "i18next";
 import enLocaleResources from "./en/locale-resources.js";
 import frLocaleResources from "./fr/locale-resources.js";
@@ -12,9 +12,9 @@ export const gs1NS = "aidct_gs1";
 export type GS1LocaleResources = typeof enLocaleResources;
 
 /**
- * GS1 resources.
+ * GS1 resource bundle.
  */
-export const gs1Resources: Resource = {
+export const gs1ResourceBundle: Resource = {
     en: {
         aidct_gs1: enLocaleResources
     },
@@ -34,8 +34,10 @@ export const i18nextGS1: i18n = i18next.createInstance();
  *
  * @param debug
  * Debug setting.
+ *
+ * @returns
+ * GS1 resource bundle.
  */
-export async function i18nGS1Init(environment: I18nEnvironment, debug = false): Promise<void> {
-    await i18nUtilityInit(environment, debug);
-    await i18nFinalizeInit(i18nextGS1, environment, debug, gs1NS, utilityResources, gs1Resources);
+export async function i18nGS1Init(environment: I18nEnvironment, debug = false): Promise<Resource> {
+    return i18nInit(i18nextGS1, environment, debug, gs1NS, gs1ResourceBundle, i18nCoreInit, i18nUtilityInit);
 }
