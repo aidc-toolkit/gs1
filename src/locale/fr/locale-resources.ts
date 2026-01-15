@@ -38,4 +38,4 @@ export default {
         gs1CompanyPrefixLengthDataFileNotFound: "Données de longueur du préfixe d'entreprise GS1 «{{key}}» introuvables",
         gs1CompanyPrefixLengthDataNotLoaded: "Les données relatives à la longueur du préfixe d'entreprise GS1 n'ont pas été chargées"
     }
-} as const;
+};

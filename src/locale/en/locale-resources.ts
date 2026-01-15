@@ -38,4 +38,4 @@ export default {
         gs1CompanyPrefixLengthDataFileNotFound: "GS1 Company Prefix length data \"{{key}}\" not found",
         gs1CompanyPrefixLengthDataNotLoaded: "GS1 Company Prefix length data not loaded"
     }
-} as const;
+};
