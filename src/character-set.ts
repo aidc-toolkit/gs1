@@ -95,4 +95,4 @@ class AI64CharacterSetValidator extends CharacterSetValidator {
  * GS1 AI encodable character set 64 validator as defined in section 7.11 of the {@link
  * https://ref.gs1.org/standards/genspecs/ | GS1 General Specifications}. Doesn't support any exclusions.
  */
-export const AI64_VALIDATOR = new AI64CharacterSetValidator();
+export const AI64_VALIDATOR: CharacterSetValidator = new AI64CharacterSetValidator();
