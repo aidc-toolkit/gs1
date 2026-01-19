@@ -1,4 +1,7 @@
 export default {
+    AI64CharacterSetValidator: {
+        lengthMustBeMultipleOf4: "La longueur {{length, number}} doit être un multiple de 4"
+    },
     Check: {
         lengthOfStringForPriceOrWeightMustBeExactly: "La longueur {{length, number}} de la chaîne pour le prix ou le poids doit être 4 ou 5",
         priceOrWeightComponent: "prix ou poids",
