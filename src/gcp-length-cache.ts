@@ -1,4 +1,11 @@
-import { type AppData, type AppDataStorage, Cache, omit, RemoteAppDataStorage } from "@aidc-toolkit/core";
+import {
+    AIDC_TOOLKIT_BASE_URL,
+    type AppData,
+    type AppDataStorage,
+    Cache,
+    omit,
+    RemoteAppDataStorage
+} from "@aidc-toolkit/core";
 import {
     type GCPLengthAppData,
     type GCPLengthData,
@@ -164,7 +171,7 @@ export class RemoteGCPLengthCache extends GCPLengthCache {
     /**
      * Default base URL pointing to AIDC Toolkit website data directory.
      */
-    static DEFAULT_BASE_URL = "https://aidc-toolkit.com/data";
+    static DEFAULT_BASE_URL = `${AIDC_TOOLKIT_BASE_URL}/data`;
 
     /**
      * Remote application data storage.
