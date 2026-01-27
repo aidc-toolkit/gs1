@@ -37,7 +37,9 @@ export default {
         gs1CompanyPrefixCantStartWith000000: "Le préfixe de l'entreprise GS1 ne peut pas commencer par \"000000\"",
         upcCompanyPrefixCantStartWith0000: "Le préfixe de l'entreprise U.P.C. ne peut pas commencer par \"0000\"",
         gs18PrefixCantStartWith0: "Le préfixe GS1-8 ne peut pas commencer par \"0\"",
-        identifierTypeNotSupportedByGS18Prefix: "{{identifierType}} non pris en charge par le préfixe GS1-8",
+        identifierTypeNotSupportedByGS18Prefix: "{{identifierType}} non pris en charge par le préfixe GS1-8"
+    },
+    GCPLength: {
         gs1CompanyPrefixLengthDataFileNotFound: "Données de longueur du préfixe d'entreprise GS1 «{{key}}» introuvables",
         gs1CompanyPrefixLengthDataNotLoaded: "Les données relatives à la longueur du préfixe d'entreprise GS1 n'ont pas été chargées"
     }

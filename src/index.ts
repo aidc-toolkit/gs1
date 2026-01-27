@@ -68,6 +68,8 @@ export * from "./identifier-creators.js";
 
 export * from "./variable-measure.js";
 
+export * from "./prefix-manager.js";
+
 export * from "./gcp-length-data.js";
 export * from "./gcp-length-cache.js";
-export * from "./prefix-manager.js";
+export * from "./gcp-length.js";

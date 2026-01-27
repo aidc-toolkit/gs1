@@ -165,7 +165,12 @@ export abstract class GCPLengthCache extends Cache<GCPLengthData, GCPLengthData 
 }
 
 /**
- * GS1 Company Prefix length cache with remote source.
+ * GS1 Company Prefix length cache with remote source. This class provides access to the data from a remote source, by
+ * default the AIDC Toolkit website. If any error occurs, the next check date/time is set to the current date/time plus
+ * ten minutes to prevent the network from being overloaded.
+ *
+ * The data on the AIDC Toolkit website is updated regularly with the data provided by GS1, and it's stored in binary
+ * format for faster retrieval.
  */
 export class RemoteGCPLengthCache extends GCPLengthCache {
     /**
@@ -218,7 +223,7 @@ export class RemoteGCPLengthCache extends GCPLengthCache {
     async #getRemoteAppData<T>(pathKey: string, asBinary: boolean, callback: (appData: AppData) => T): Promise<T> {
         return this.#remoteAppDataStorage.read(pathKey, asBinary).then((appData) => {
             if (appData === undefined) {
-                throw new RangeError(i18nextGS1.t("Prefix.gs1CompanyPrefixLengthDataFileNotFound", {
+                throw new RangeError(i18nextGS1.t("GCPLength.gs1CompanyPrefixLengthDataFileNotFound", {
                     key: pathKey
                 }));
             }

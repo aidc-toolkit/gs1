@@ -300,23 +300,6 @@ The [`verifiedByGS1()`](https://aidc-toolkit.com/v1.0/api/GS1/functions/verified
 
 #### GS1 Company Prefix Length Determination
 
-GS1 Company Prefix length determination is required when encoding a GS1 identifier as an EPC URN. Though this is typically done by the GS1 Company Prefix licensee (who knows the length), it's occasionally required by downstream trading partners such as distributors.
+GS1 Company Prefix length determination is required when encoding a GS1 identifier as an EPC URN. Although this is typically done by the GS1 Company Prefix licensee (who knows the length), it's occasionally required by downstream trading partners such as distributors.
 
-This functionality part of the [`PrefixManager`](https://aidc-toolkit.com/v1.0/api/GS1/classes/PrefixManager.html) class.
-
-The first step is to load the GS1 Company Prefix length data. This is done using [`loadGCPLengthData()`](https://aidc-toolkit.com/v1.0/api/GS1/classes/PrefixManager.html#loadgcplengthdata) static method, which takes a [`GCPLengthCache`](https://aidc-toolkit.com/v1.0/api/GS1/classes/GCPLengthCache.html) object. The cache object is used to store the data so that it can be shared across multiple instances of the prefix manager.
-
-The `loadGCPLengthData()` method works as follows:
-
-- If the next check date/time is in the future, the method returns immediately, regardless of whether any data is available. It does this to prevent a large number of requests to the source in the event of a failure.
-- Otherwise, if the cache date/time is undefined or less than the source date/time, it loads from the source, converts the data if necessary, and updates the cache.
-- Otherwise, it continues with the cached data.
-- The next check date/time is updated to the later of the source date/time plus one week and the current date/time plus one day.
-
-The base class implementation of the `GCPLengthCache` manages only the cache itself, and it requires an application-provided [`AppDataStorage`](https://aidc-toolkit.com/v1.0/api/Core/classes/AppDataStorage.html) storage implementation. The source is expected to be either a [`GCPLengthData`](https://aidc-toolkit.com/v1.0/api/GS1/interfaces/GCPLengthData.html) object (created via another cache implementation) or a [`GCPLengthSourceJSON`](https://aidc-toolkit.com/v1.0/api/GS1/interfaces/GCPLengthSourceJSON.html) object, which is the format of the file provided by GS1.
-
-The [`RemoteGCPLengthCache`](https://aidc-toolkit.com/v1.0/api/GS1/classes/RemoteGCPLengthCache.html) class provides access to the data from a remote source, by default the AIDC Toolkit website. If any error occurs, the next check date/time is set to the current date/time plus ten minutes to prevent the network from being overloaded.
-
-The data on the AIDC Toolkit website is updated regularly with the data provided by GS1, and it's stored in binary format for faster retrieval.
-
-Once the data is loaded, the [`gcpLength()`](https://aidc-toolkit.com/v1.0/api/GS1/classes/PrefixManager.html#gcplength) method can be used to get the length of a GS1 Company Prefix for a given identifier type.
+This functionality is provided by the [`GCPLength`](https://aidc-toolkit.com/v1.0/api/GS1/classes/GCPLength.html) class.
