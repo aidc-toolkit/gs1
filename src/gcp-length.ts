@@ -1,7 +1,6 @@
 import { omit } from "@aidc-toolkit/core";
 import type { GCPLengthCache } from "./gcp-length-cache.js";
-import { type GCPLengthData, isGCPLengthData } from "./gcp-length-data.js";
-import * as GCPLengthTree from "./gcp-length-tree.js";
+import { type GCPLengthData, type GCPLengthHeader, isGCPLengthData } from "./gcp-length-data.js";
 import { GTINLengths } from "./gtin-length.js";
 import { GTINValidator } from "./gtin-validator.js";
 import { type IdentifierType, IdentifierTypes } from "./identifier-type.js";
@@ -10,10 +9,48 @@ import { LeaderTypes } from "./leader-type.js";
 import { i18nextGS1 } from "./locale/i18n.js";
 
 /**
+ * Leaf of GS1 Company Prefix length tree.
+ */
+interface Leaf {
+    readonly length: number;
+}
+
+/**
+ * Branch of GS1 Company Prefix length tree.
+ */
+interface Branch {
+    readonly childNodes: ReadonlyArray<Node | undefined>;
+}
+
+/**
+ * Root of GS1 Company Prefix length tree.
+ */
+interface Root extends GCPLengthHeader, Branch {
+}
+
+/**
+ * Node in GS1 Company Prefix length tree.
+ */
+type Node = Branch | Leaf;
+
+/**
+ * Determine if a node is a leaf.
+ *
+ * @param node
+ * Node.
+ *
+ * @returns
+ * True if node is a leaf.
+ */
+function isLeaf(node: Node): node is Leaf {
+    return "length" in node;
+}
+
+/**
  * Interim branch of GS1 Company Prefix length tree with writeable child nodes.
  */
 export interface InterimBranch {
-    readonly childNodes: Array<InterimBranch | GCPLengthTree.Leaf | undefined>;
+    readonly childNodes: Array<InterimBranch | Leaf | undefined>;
 }
 
 /**
@@ -58,7 +95,7 @@ export class GCPLength {
     /**
      * GS1 Company Prefix length tree root.
      */
-    #root?: GCPLengthTree.Root;
+    #root?: Root;
 
     /**
      * Constructor.
@@ -76,7 +113,7 @@ export class GCPLength {
      * @returns
      * GS1 Company Prefix length tree root.
      */
-    get root(): GCPLengthTree.Root {
+    get root(): Root {
         if (this.#root === undefined) {
             throw new RangeError(i18nextGS1.t("GCPLength.gs1CompanyPrefixLengthDataNotLoaded"));
         }
@@ -113,7 +150,7 @@ export class GCPLength {
      * @returns
      * End index into binary data array.
      */
-    static #fromBinary(binaryData: Uint8Array, childNodes: Array<GCPLengthTree.Node | undefined>, startIndex: number): number {
+    static #fromBinary(binaryData: Uint8Array, childNodes: Array<Node | undefined>, startIndex: number): number {
         let endIndex = startIndex;
 
         const decompressedLengths = new Array<number>(10);
@@ -130,10 +167,10 @@ export class GCPLength {
             const length = decompressedLengths[childNodeIndex];
 
             if (length !== GCPLength.#BINARY_UNDEFINED) {
-                let childNode: GCPLengthTree.Node;
+                let childNode: Node;
 
                 if (length === GCPLength.#BINARY_BRANCH) {
-                    const childNodes: Array<GCPLengthTree.Node | undefined> = [];
+                    const childNodes: Array<Node | undefined> = [];
 
                     endIndex = GCPLength.#fromBinary(binaryData, childNodes, endIndex);
 
@@ -186,7 +223,7 @@ export class GCPLength {
 
                 branchesAdded++;
             } else {
-                if (GCPLengthTree.isLeaf(existingChildNode)) {
+                if (isLeaf(existingChildNode)) {
                     // File format error or application bug; localization not necessary.
                     throw new Error("Overlapping entry");
                 }
@@ -224,8 +261,8 @@ export class GCPLength {
      * @returns
      * Child node length, 0x0E (branch), or 0x0F (undefined).
      */
-    static #childNodeValue(childNode: GCPLengthTree.Node | undefined): number {
-        return childNode !== undefined ? GCPLengthTree.isLeaf(childNode) ? childNode.length : GCPLength.#BINARY_BRANCH : GCPLength.#BINARY_UNDEFINED;
+    static #childNodeValue(childNode: Node | undefined): number {
+        return childNode !== undefined ? isLeaf(childNode) ? childNode.length : GCPLength.#BINARY_BRANCH : GCPLength.#BINARY_UNDEFINED;
     }
 
     /**
@@ -243,7 +280,7 @@ export class GCPLength {
      * @returns
      * End index into binary data array.
      */
-    static #toBinary(binaryData: Uint8Array, branch: GCPLengthTree.Branch, startIndex: number): number {
+    static #toBinary(binaryData: Uint8Array, branch: Branch, startIndex: number): number {
         let endIndex = startIndex;
 
         const childNodes = branch.childNodes;
@@ -256,7 +293,7 @@ export class GCPLength {
 
         // Process child nodes.
         for (const childNode of childNodes) {
-            if (childNode !== undefined && !GCPLengthTree.isLeaf(childNode)) {
+            if (childNode !== undefined && !isLeaf(childNode)) {
                 endIndex = GCPLength.#toBinary(binaryData, childNode, endIndex);
             }
         }
@@ -288,7 +325,7 @@ export class GCPLength {
      * Load the GS1 Company Prefix length data.
      */
     async load(): Promise<void> {
-        let root: GCPLengthTree.Root | undefined = undefined;
+        let root: Root | undefined = undefined;
 
         const gcpLengthCache = this.#gcpLengthCache;
 
@@ -307,7 +344,7 @@ export class GCPLength {
                 let cacheData: GCPLengthData;
 
                 if (isGCPLengthData(sourceData)) {
-                    const childNodes: Array<GCPLengthTree.Node | undefined> = [];
+                    const childNodes: Array<Node | undefined> = [];
 
                     GCPLength.#fromBinary(sourceData.data, childNodes, 0);
 
@@ -375,7 +412,7 @@ export class GCPLength {
         if (root === undefined && cacheDateTime !== undefined) {
             const cacheData = await gcpLengthCache.cacheData;
 
-            const childNodes: Array<GCPLengthTree.Node | undefined> = [];
+            const childNodes: Array<Node | undefined> = [];
 
             GCPLength.#fromBinary(cacheData.data, childNodes, 0);
 
@@ -417,12 +454,12 @@ export class GCPLength {
             identifierPrefix = !isNumericIdentifierValidator(identifierValidator) || identifierValidator.leaderType !== LeaderTypes.ExtensionDigit ? identifier : identifier.substring(1);
         }
 
-        let node: GCPLengthTree.Node | undefined = this.root;
+        let node: Node | undefined = this.root;
 
         let digitIndex = 0;
 
         // Traverse tree until exhausted or at a leaf.
-        while (node !== undefined && !GCPLengthTree.isLeaf(node)) {
+        while (node !== undefined && !isLeaf(node)) {
             node = node.childNodes[Number(identifierPrefix.charAt(digitIndex++))];
         }
 

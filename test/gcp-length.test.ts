@@ -2,7 +2,6 @@ import { type AppDataStorage, LocalAppDataStorage } from "@aidc-toolkit/core";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
-import * as GCPLengthTree from "../src/gcp-length-tree.js";
 import {
     GCPLength,
     GCPLengthCache,
@@ -102,22 +101,28 @@ const BINARY_2_HEADER_PATH = path.resolve(DATA_DIRECTORY, "gcp-length-header-2.j
 
 const BINARY_2_DATA_PATH = path.resolve(DATA_DIRECTORY, "gcp-length-data-2.bin");
 
+// Type Root is not exported.
+type Root = GCPLength["root"];
+
+// Type Node is not exported.
+type Node = Root["childNodes"][number];
+
 describe("GS1 Company Prefix length", () => {
-    function verifyEqual(prefix: string, node1: GCPLengthTree.Node | undefined, node2: GCPLengthTree.Node | undefined): void {
+    function verifyEqual(prefix: string, node1: Node | undefined, node2: Node | undefined): void {
         if (node1 !== undefined) {
             if (node2 === undefined) {
                 throw new RangeError(`Prefix ${prefix}: node1 defined, node2 undefined`);
             }
 
-            if (GCPLengthTree.isLeaf(node1)) {
-                if (!GCPLengthTree.isLeaf(node2)) {
+            if ("length" in node1) {
+                if (!("length" in node2)) {
                     throw new RangeError(`Prefix ${prefix}: node1 is leaf, node2 is branch`);
                 }
 
                 if (node1.length !== node2.length) {
                     throw new RangeError(`Prefix ${prefix}: node1.length = ${node1.length}, node2.length = ${node2.length}`);
                 }
-            } else if (!GCPLengthTree.isLeaf(node2)) {
+            } else if (!("length" in node2)) {
                 for (let index = 0; index < 10; index++) {
                     verifyEqual(`${prefix}${index}`, node1.childNodes[index], node2.childNodes[index]);
                 }
@@ -174,8 +179,8 @@ describe("GS1 Company Prefix length", () => {
         const gcpLengthCacheBinary1Source = new GCPLengthCacheBinarySource(appDataStorage, 1);
         const gcpLengthCacheBinary2Source = new GCPLengthCacheBinarySource(appDataStorage, 2);
 
-        let root1: GCPLengthTree.Root | undefined;
-        let root2: GCPLengthTree.Root | undefined;
+        let root1: Root | undefined;
+        let root2: Root | undefined;
         let nextCheckDateTime: Date | undefined;
 
         const gcpLengthJSON1Source = new GCPLength(gcpLengthCacheJSON1Source);
