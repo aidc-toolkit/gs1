@@ -1,4 +1,3 @@
-import { I18NEnvironment } from "@aidc-toolkit/core";
 import { NUMERIC_CREATOR } from "@aidc-toolkit/utility";
 import { describe, expect, test } from "vitest";
 import {
@@ -6,12 +5,10 @@ import {
     checkDigit,
     checkDigitSum,
     hasValidCheckCharacterPair,
-    hasValidCheckDigit, hasValidPriceWeightCheckDigit,
-    i18nGS1Init,
-    priceWeightCheckDigit
-} from "../src";
-
-await i18nGS1Init(I18NEnvironment.CLI, true);
+    hasValidCheckDigit,
+    isValidPriceOrWeightCheckDigit,
+    priceOrWeightCheckDigit
+} from "../src/index.js";
 
 describe("Check digit", () => {
     const testNumericString = "1234567890";
@@ -39,7 +36,7 @@ describe("Check digit", () => {
     });
 });
 
-describe("Price/weight check digit", () => {
+describe("Price or weight check digit", () => {
     function weight2Minus(characterIndex: number): number {
         const product = characterIndex * 2;
 
@@ -68,8 +65,10 @@ describe("Price/weight check digit", () => {
 
         const sum = weight2Minus(characterIndexes[0]) + weight2Minus(characterIndexes[1]) + weight3(characterIndexes[2]) + weight5Minus(characterIndexes[3]);
 
-        expect(priceWeightCheckDigit(s)).toBe(NUMERIC_CREATOR.character(sum * 3 % 10));
-        expect(hasValidPriceWeightCheckDigit(s + priceWeightCheckDigit(s))).toBe(true);
+        const checkDigit = priceOrWeightCheckDigit(s);
+
+        expect(checkDigit).toBe(NUMERIC_CREATOR.character(sum * 3 % 10));
+        expect(isValidPriceOrWeightCheckDigit(s, checkDigit)).toBe(true);
     }
 
     function testFiveDigitPriceWeightCheckDigit(s: string): void {
@@ -78,8 +77,10 @@ describe("Price/weight check digit", () => {
 
         const sum = weight5Plus(characterIndexes[0]) + weight2Minus(characterIndexes[1]) + weight5Minus(characterIndexes[2]) + weight5Plus(characterIndexes[3]) + weight2Minus(characterIndexes[4]);
 
-        expect(weight5Minus(Number(priceWeightCheckDigit(s)))).toBe(9 - (sum + 9) % 10);
-        expect(hasValidPriceWeightCheckDigit(s + priceWeightCheckDigit(s))).toBe(true);
+        const checkDigit = priceOrWeightCheckDigit(s);
+
+        expect(weight5Minus(Number(checkDigit))).toBe(9 - (sum + 9) % 10);
+        expect(isValidPriceOrWeightCheckDigit(s, checkDigit)).toBe(true);
     }
 
     test("Four-digit", () => {
@@ -109,9 +110,9 @@ describe("Price/weight check digit", () => {
     });
 
     test("Invalid", () => {
-        expect(() => priceWeightCheckDigit("l2345")).toThrow("Invalid character 'l' at position 1 of price or weight");
-        expect(() => priceWeightCheckDigit("123")).toThrow("Length 3 of string for price or weight must be 4 or 5");
-        expect(() => priceWeightCheckDigit("123456")).toThrow("Length 6 of string for price or weight must be 4 or 5");
+        expect(() => priceOrWeightCheckDigit("l2345")).toThrow("Invalid character 'l' at position 1 of price or weight");
+        expect(() => priceOrWeightCheckDigit("123")).toThrow("Length 3 of string for price or weight must be 4 or 5");
+        expect(() => priceOrWeightCheckDigit("123456")).toThrow("Length 6 of string for price or weight must be 4 or 5");
     });
 });
 
