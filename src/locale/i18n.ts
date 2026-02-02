@@ -1,4 +1,4 @@
-import { i18nCoreInit, type I18nEnvironment, i18nInit } from "@aidc-toolkit/core";
+import { i18nCoreInit, i18nInit, type I18nLanguageDetector } from "@aidc-toolkit/core";
 import { i18nUtilityInit } from "@aidc-toolkit/utility";
 import i18next, { type i18n, type Resource } from "i18next";
 import enLocaleResources from "./en/locale-resources.js";
@@ -29,8 +29,8 @@ export const i18nextGS1: i18n = i18next.createInstance();
 /**
  * Initialize internationalization.
  *
- * @param environment
- * Environment in which the application is running.
+ * @param languageDetector
+ * Language detector.
  *
  * @param debug
  * Debug setting.
@@ -38,6 +38,6 @@ export const i18nextGS1: i18n = i18next.createInstance();
  * @returns
  * GS1 resource bundle.
  */
-export async function i18nGS1Init(environment: I18nEnvironment, debug = false): Promise<Resource> {
-    return i18nInit(i18nextGS1, environment, debug, gs1NS, gs1ResourceBundle, i18nCoreInit, i18nUtilityInit);
+export async function i18nGS1Init(languageDetector: I18nLanguageDetector, debug = false): Promise<Resource> {
+    return i18nInit(i18nextGS1, languageDetector, debug, gs1NS, gs1ResourceBundle, i18nCoreInit, i18nUtilityInit);
 }

@@ -2,6 +2,8 @@ import {
     type AppData,
     type AppDataStorage,
     Cache,
+    defaultHTTPFetch,
+    type HTTPFetch,
     omit,
     RemoteAppDataStorage,
     WEBSITE_BASE_URL
@@ -197,11 +199,14 @@ export class RemoteGCPLengthCache extends GCPLengthCache {
      * @param baseURL
      * Base URL. The URL must not end with a slash and must host the `gcp-length-header.json` and `gcp-length-data.bin`
      * files.
+     *
+     * @param httpFetch
+     * HTTP fetch function.
      */
-    constructor(appDataStorage: AppDataStorage<boolean>, baseURL: string = RemoteGCPLengthCache.DEFAULT_BASE_URL) {
+    constructor(appDataStorage: AppDataStorage<boolean>, baseURL: string = RemoteGCPLengthCache.DEFAULT_BASE_URL, httpFetch: HTTPFetch = defaultHTTPFetch) {
         super(appDataStorage);
 
-        this.#remoteAppDataStorage = new RemoteAppDataStorage(baseURL);
+        this.#remoteAppDataStorage = new RemoteAppDataStorage(baseURL, httpFetch);
     }
 
     /**
