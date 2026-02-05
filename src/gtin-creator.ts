@@ -1,10 +1,4 @@
-import {
-    type CharacterSetValidation,
-    Exclusions,
-    NUMERIC_CREATOR,
-    type TransformerInput,
-    type TransformerOutput
-} from "@aidc-toolkit/utility";
+import { type CharacterSetValidation, Exclusions, NUMERIC_CREATOR } from "@aidc-toolkit/utility";
 import { MixinAbstractNumericIdentifierCreator } from "./abstract-numeric-identifier-creator.js";
 import { checkDigit } from "./check.js";
 import { type GTINBaseLength, GTINLengths } from "./gtin-length.js";
@@ -49,28 +43,46 @@ export class GTINCreator extends MixinAbstractNumericIdentifierCreator<
     }
 
     /**
-     * Create GTIN-14(s) with an indicator digit and reference(s) based on numeric value(s). The value(s) is/are
-     * converted to reference(s) of the appropriate length using {@linkcode NUMERIC_CREATOR}.
-     *
-     * @template TTransformerInput
-     * Transformer input type.
+     * Create GTIN-14 with an indicator digit and reference based on a numeric value. The value is converted to a
+     * reference of the appropriate length using {@linkcode NUMERIC_CREATOR}.
      *
      * @param indicatorDigit
      * Indicator digit.
      *
-     * @param valueOrValues
-     * Numeric value(s).
+     * @param value
+     * Numeric value.
      *
      * @param sparse
-     * If true, the value(s) is/are mapped to a sparse sequence resistant to discovery. Default is false.
+     * If true, the value is mapped to a sparse sequence resistant to discovery.
      *
      * @returns
-     * GTIN-14(s).
+     * GTIN-14.
      */
-    createGTIN14<TTransformerInput extends TransformerInput<number | bigint>>(indicatorDigit: string, valueOrValues: TTransformerInput, sparse = false): TransformerOutput<TTransformerInput, string> {
+    createGTIN14(indicatorDigit: string, value: number | bigint, sparse?: boolean): string;
+
+    /**
+     * Create GTIN-14s with an indicator digit and references based on numeric values. The values are converted to
+     * references of the appropriate length using {@linkcode NUMERIC_CREATOR}.
+     *
+     * @param indicatorDigit
+     * Indicator digit.
+     *
+     * @param values
+     * Numeric values.
+     *
+     * @param sparse
+     * If true, the values are mapped to a sparse sequence resistant to discovery.
+     *
+     * @returns
+     * GTIN-14s.
+     */
+    createGTIN14(indicatorDigit: string, values: Iterable<number | bigint>, sparse?: boolean): Iterable<string>;
+
+    // eslint-disable-next-line jsdoc/require-jsdoc -- Implementation of overloaded signatures.
+    createGTIN14(indicatorDigit: string, valueOrValues: number | bigint | Iterable<number | bigint>, sparse?: boolean): string | Iterable<string> {
         NUMERIC_CREATOR.validate(indicatorDigit, GTINCreator.#REQUIRED_INDICATOR_DIGIT_VALIDATION);
 
-        return NUMERIC_CREATOR.create(GTINLengths.GTIN13 - this.prefixProvider.gs1CompanyPrefix.length - 1, valueOrValues, Exclusions.None, sparse ? this.tweak : undefined, (reference) => {
+        return NUMERIC_CREATOR.create(GTINLengths.GTIN13 - this.prefixProvider.gs1CompanyPrefix.length - 1, valueOrValues, Exclusions.None, sparse === true ? this.tweak : undefined, (reference) => {
             const partialIdentifier = indicatorDigit + this.prefixProvider.gs1CompanyPrefix + reference;
 
             return partialIdentifier + checkDigit(partialIdentifier);

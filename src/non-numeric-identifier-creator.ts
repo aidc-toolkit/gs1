@@ -1,9 +1,4 @@
-import {
-    type CharacterSetValidation,
-    mapIterable,
-    type TransformerInput,
-    type TransformerOutput
-} from "@aidc-toolkit/utility";
+import { type CharacterSetValidation, mapIterable } from "@aidc-toolkit/utility";
 import { MixinAbstractIdentifierCreator } from "./abstract-identifier-creator.js";
 import { checkCharacterPair } from "./check.js";
 import { IdentifierDescriptors } from "./identifier-descriptors.js";
@@ -55,21 +50,29 @@ export class NonNumericIdentifierCreator extends MixinAbstractIdentifierCreator<
     }
 
     /**
-     * Create identifier(s) with reference(s).
+     * Create an identifier with a reference.
      *
-     * @template TTransformerInput
-     * Transformer input type.
-     *
-     * @param referenceOrReferences
-     * Reference(s).
+     * @param reference
+     * Reference.
      *
      * @returns
-     * Identifier(s).
+     * Identifier.
      */
-    create<TTransformerInput extends TransformerInput<string>>(referenceOrReferences: TTransformerInput): TransformerOutput<TTransformerInput, string> {
-        // TODO Refactor type when https://github.com/microsoft/TypeScript/pull/56941 released.
-        let result: string | Iterable<string>;
+    create(reference: string): string;
 
+    /**
+     * Create identifiers with references.
+     *
+     * @param references
+     * References.
+     *
+     * @returns
+     * Identifiers.
+     */
+    create(references: Iterable<string>): Iterable<string>;
+
+    // eslint-disable-next-line jsdoc/require-jsdoc -- Implementation of overloaded signatures.
+    create(referenceOrReferences: string | Iterable<string>): string | Iterable<string> {
         const referenceCreator = this.referenceCreator;
         const referenceValidation = this.referenceValidation;
         const prefix = this.prefix;
@@ -92,13 +95,8 @@ export class NonNumericIdentifierCreator extends MixinAbstractIdentifierCreator<
             return requiresCheckCharacterPair ? partialIdentifier + checkCharacterPair(partialIdentifier) : partialIdentifier;
         }
 
-        if (typeof referenceOrReferences !== "object") {
-            result = validateAndCreate(referenceOrReferences);
-        } else {
-            result = mapIterable(referenceOrReferences, validateAndCreate);
-        }
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type determination is handled above.
-        return result as TransformerOutput<TTransformerInput, string>;
+        return typeof referenceOrReferences !== "object" ?
+            validateAndCreate(referenceOrReferences) :
+            mapIterable(referenceOrReferences, validateAndCreate);
     }
 }

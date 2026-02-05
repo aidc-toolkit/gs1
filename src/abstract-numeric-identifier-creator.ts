@@ -1,11 +1,5 @@
 import type { AbstractConstructor } from "@aidc-toolkit/core";
-import {
-    CharacterSetCreator,
-    Exclusions,
-    NUMERIC_CREATOR,
-    type TransformerInput,
-    type TransformerOutput
-} from "@aidc-toolkit/utility";
+import { CharacterSetCreator, Exclusions, NUMERIC_CREATOR } from "@aidc-toolkit/utility";
 import { type IdentifierCreatorConstructor, MixinAbstractIdentifierCreator } from "./abstract-identifier-creator.js";
 import { checkDigit, checkDigitSum } from "./check.js";
 import type { IdentifierTypeValidator, IdentifierValidatorConstructorsEntry } from "./identifier-validators.js";
@@ -132,8 +126,16 @@ export function MixinAbstractNumericIdentifierCreator<
         /**
          * @inheritDoc
          */
-        create<TTransformerInput extends TransformerInput<number | bigint>>(valueOrValues: TTransformerInput, sparse = false): TransformerOutput<TTransformerInput, string> {
-            return NUMERIC_CREATOR.create(this.referenceLength, valueOrValues, Exclusions.None, sparse ? this.tweak : undefined, reference => this.#buildIdentifier(reference));
+        create(value: number | bigint, sparse?: boolean): string;
+
+        /**
+         * @inheritDoc
+         */
+        create(values: Iterable<number | bigint>, sparse?: boolean): Iterable<string>;
+
+        // eslint-disable-next-line jsdoc/require-jsdoc -- Implementation of overloaded signatures.
+        create(valueOrValues: number | bigint | Iterable<number | bigint>, sparse?: boolean): string | Iterable<string> {
+            return NUMERIC_CREATOR.create(this.referenceLength, valueOrValues, Exclusions.None, sparse === true ? this.tweak : undefined, reference => this.#buildIdentifier(reference));
         }
 
         /**
