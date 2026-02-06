@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Used in JSDoc.
-import { NUMERIC_CREATOR, type TransformerInput, type TransformerOutput } from "@aidc-toolkit/utility";
+import { NUMERIC_CREATOR } from "@aidc-toolkit/utility";
 import type { IdentifierCreator } from "./identifier-creator.js";
 import type { NumericIdentifierType } from "./numeric-identifier-type.js";
 import type { NumericIdentifierValidation, NumericIdentifierValidator } from "./numeric-identifier-validator.js";
@@ -26,23 +26,37 @@ export interface NumericIdentifierCreator<TNumericIdentifierType extends Numeric
      */
     set tweak(value: bigint);
 
-    /**
-     * Create identifier(s) with reference(s) based on numeric value(s). The value(s) is/are converted to references of
-     * the appropriate length using {@linkcode NUMERIC_CREATOR}.
-     *
-     * @template TTransformerInput
-     * Transformer input type.
-     *
-     * @param valueOrValues
-     * Numeric value(s).
-     *
-     * @param sparse
-     * If true, the value(s) are mapped to a sparse sequence resistant to discovery. Default is false.
-     *
-     * @returns
-     * Identifier(s).
-     */
-    create: <TTransformerInput extends TransformerInput<number | bigint>>(valueOrValues: TTransformerInput, sparse?: boolean) => TransformerOutput<TTransformerInput, string>;
+    create: {
+        /**
+         * Create an identifier with a reference based on a numeric value. The value is converted to a reference of the
+         * appropriate length using {@linkcode NUMERIC_CREATOR}.
+         *
+         * @param value
+         * Numeric value.
+         *
+         * @param sparse
+         * If true, the value is mapped to a sparse sequence resistant to discovery.
+         *
+         * @returns
+         * Identifier.
+         */
+        (value: number | bigint, sparse?: boolean): string;
+
+        /**
+         * Create identifiers with references based on numeric values. The values are converted to references of the
+         * appropriate length using {@linkcode NUMERIC_CREATOR}.
+         *
+         * @param values
+         * Numeric values.
+         *
+         * @param sparse
+         * If true, the values are mapped to a sparse sequence resistant to discovery.
+         *
+         * @returns
+         * Identifiers.
+         */
+        (values: Iterable<number | bigint>, sparse?: boolean): Iterable<string>;
+    };
 
     /**
      * Create all identifiers for the prefix from `0` to `capacity - 1`.
