@@ -188,7 +188,7 @@ describe("GS1 Company Prefix length", () => {
         // Binary not available, JSON 1 available.
         await expect(gcpLengthJSON1Source.load().then(() => {
             root1 = gcpLengthJSON1Source.root;
-        })).resolves.not.toThrowError(RangeError);
+        })).resolves.not.toThrow(RangeError);
 
         nextCheckDateTime = await gcpLengthCacheJSON1Source.nextCheckDateTime;
 
@@ -204,7 +204,7 @@ describe("GS1 Company Prefix length", () => {
         // Binary available, binary 1 not available but not in next check date/time window.
         await expect(gcpLengthBinary1Source.load().then(() => {
             root2 = gcpLengthBinary1Source.root;
-        })).resolves.not.toThrowError(RangeError);
+        })).resolves.not.toThrow(RangeError);
 
         expect(root2).not.toBeUndefined();
 
@@ -221,7 +221,7 @@ describe("GS1 Company Prefix length", () => {
         // Binary not available, JSON 2 available.
         await expect(gcpLengthJSON2Source.load().then(() => {
             root2 = gcpLengthJSON2Source.root;
-        })).resolves.not.toThrowError(RangeError);
+        })).resolves.not.toThrow(RangeError);
 
         nextCheckDateTime = await gcpLengthCacheJSON2Source.nextCheckDateTime;
 
@@ -236,7 +236,7 @@ describe("GS1 Company Prefix length", () => {
         // Binary available, binary 2 available and more recent but not in next check date/time window.
         await expect(gcpLengthBinary2Source.load().then(() => {
             root2 = gcpLengthBinary2Source.root;
-        })).resolves.not.toThrowError(RangeError);
+        })).resolves.not.toThrow(RangeError);
 
         // No change.
         expect(() => {
@@ -248,7 +248,7 @@ describe("GS1 Company Prefix length", () => {
         // Binary 1 available, binary 2 available and more recent and in next check date/time window.
         await expect(gcpLengthBinary2Source.load().then(() => {
             root2 = gcpLengthBinary2Source.root;
-        })).resolves.not.toThrowError(RangeError);
+        })).resolves.not.toThrow(RangeError);
 
         expect(root2).not.toBeUndefined();
 
@@ -275,7 +275,7 @@ describe("GS1 Company Prefix length", () => {
 
         const gcpLengthJSON2Source = new GCPLength(gcpLengthCacheJSON2Source);
 
-        await expect(gcpLengthJSON2Source.load()).resolves.not.toThrowError(RangeError);
+        await expect(gcpLengthJSON2Source.load()).resolves.not.toThrow(RangeError);
 
         function testIdentifiers(prefixManager: PrefixManager, prefixLength: number): void {
             expect(gcpLengthJSON2Source.lengthOf(IdentifierTypes.GTIN, prefixManager.gtinCreator.create(0, true))).toBe(prefixLength);
@@ -348,7 +348,7 @@ describe("GS1 Company Prefix length", () => {
 
         const gcpLength = new GCPLength(gcpLengthCache);
 
-        await expect(gcpLength.load()).resolves.not.toThrowError(RangeError);
+        await expect(gcpLength.load()).resolves.not.toThrow(RangeError);
 
         expect(savedNextCheckDateTime).not.toBeUndefined();
         expect(savedCacheDateTime).not.toBeUndefined();
