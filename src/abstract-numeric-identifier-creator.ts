@@ -118,7 +118,7 @@ export function MixinAbstractNumericIdentifierCreator<
          * Identifier.
          */
         #buildIdentifier(reference: string): string {
-            const partialIdentifier = this.leaderType === LeaderTypes.ExtensionDigit ? reference.substring(0, 1) + this.prefix + reference.substring(1) : this.prefix + reference;
+            const partialIdentifier = this.leaderType === LeaderTypes.ExtensionDigit ? reference.charAt(0) + this.prefix + reference.substring(1) : this.prefix + reference;
 
             return partialIdentifier + checkDigit(partialIdentifier);
         }
