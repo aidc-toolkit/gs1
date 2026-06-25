@@ -1,6 +1,6 @@
 import { ContentCharacterSets } from "./content-character-set.js";
 import type { GTINDescriptor } from "./gtin-descriptor.js";
-import { type GTINBaseLength, GTINBaseLengths } from "./gtin-length.js";
+import { type GTINBaseLength, GTINBaseLengths, GTINLengths } from "./gtin-length.js";
 import type { GTINType } from "./gtin-type.js";
 import type { IdentifierDescriptor } from "./identifier-descriptor.js";
 import {
@@ -241,6 +241,24 @@ export const IdentifierDescriptors: IdentifierDescriptorsRecord = {
     [IdentifierTypes.CPID]: CPID_DESCRIPTOR,
     [IdentifierTypes.GMN]: GMN_DESCRIPTOR
 };
+
+/**
+ * Get the identifier descriptor for an identifier type. As the GTIN has multiple descriptors, one for each supported
+ * length, the GTIN base length may be provided to select one specifically; default is {@linkcode GTINLengths.GTIN13}.
+ *
+ * @param identifierType
+ * Identifier type.
+ *
+ * @param gtinBaseLength
+ * GTIN base length.
+ *
+ * @returns
+ * Identifier descriptor.
+ */
+export function identifierDescriptorFor<TIdentifierType extends IdentifierType>(identifierType: TIdentifierType, gtinBaseLength?: GTINBaseLength): IdentifierTypeDescriptor<TIdentifierType> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Identifier type determines the identifier descriptor type.
+    return (identifierType === IdentifierTypes.GTIN ? IdentifierDescriptors.GTIN[gtinBaseLength ?? GTINLengths.GTIN13] : IdentifierDescriptors[identifierType]) as IdentifierTypeDescriptor<TIdentifierType>;
+}
 
 /**
  * Determine if identifier descriptors or descriptor is GTIN descriptors.
