@@ -40,7 +40,8 @@ export default {
         identifierTypeNotSupportedByGS18Prefix: "{{identifierType}} non pris en charge par le préfixe GS1-8"
     },
     GCPLength: {
-        gs1CompanyPrefixLengthDataFileNotFound: "Données de longueur du préfixe d'entreprise GS1 « {{key}} » introuvables",
-        gs1CompanyPrefixLengthDataNotLoaded: "Les données relatives à la longueur du préfixe d'entreprise GS1 n'ont pas été chargées"
+        instanceNotInitialized: "Instance globale partagée de longueur de préfixe d'entreprise GS1 non initialisée",
+        lengthDataFileNotFound: "Fichier de données sur la longueur du préfixe d'entreprise GS1 « {{key}} » introuvable",
+        lengthDataNotLoaded: "Données de longueur du préfixe d'entreprise GS1 n'ont pas été chargées"
     }
 };

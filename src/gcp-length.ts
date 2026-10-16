@@ -98,6 +98,11 @@ export class GCPLength {
     #root?: Root;
 
     /**
+     * Shared global instance if any.
+     */
+    static #instance: GCPLength | undefined;
+
+    /**
      * Constructor.
      *
      * @param gcpLengthCache
@@ -108,6 +113,30 @@ export class GCPLength {
     }
 
     /**
+     * Get the shared global instance, initializing it if necessary. Every call to this method will call {@linkcode
+     * GCPLength.load}, so saving the return value is not recommended except for time-limited batch operations.
+     *
+     * @param cacheInitializer
+     * Optional callback to initialize the cache if the instance is undefined.
+     *
+     * @returns
+     * Shared global instance.
+     */
+    static async instance(cacheInitializer?: () => GCPLengthCache): Promise<GCPLength> {
+        if (this.#instance === undefined) {
+            if (cacheInitializer === undefined) {
+                throw new RangeError(i18nextGS1.t("GCPLength.instanceNotInitialized"));
+            }
+
+            this.#instance = new GCPLength(cacheInitializer());
+        }
+
+        await this.#instance.load();
+
+        return this.#instance;
+    }
+
+    /**
      * Get the GS1 Company Prefix length tree root.
      *
      * @returns
@@ -115,7 +144,7 @@ export class GCPLength {
      */
     get root(): Root {
         if (this.#root === undefined) {
-            throw new RangeError(i18nextGS1.t("GCPLength.gs1CompanyPrefixLengthDataNotLoaded"));
+            throw new RangeError(i18nextGS1.t("GCPLength.lengthDataNotLoaded"));
         }
 
         return this.#root;
@@ -322,7 +351,8 @@ export class GCPLength {
     }
 
     /**
-     * Load the GS1 Company Prefix length data.
+     * Load the GS1 Company Prefix length data. If the data has already been loaded, it will be reloaded if the data is
+     * at least a week old, a check for an update was made more than a day ago, and an update is present.
      */
     async load(): Promise<void> {
         let root: Root | undefined = undefined;

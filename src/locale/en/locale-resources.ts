@@ -40,7 +40,8 @@ export default {
         identifierTypeNotSupportedByGS18Prefix: "{{identifierType}} not supported by GS1-8 Prefix"
     },
     GCPLength: {
-        gs1CompanyPrefixLengthDataFileNotFound: "GS1 Company Prefix length data \"{{key}}\" not found",
-        gs1CompanyPrefixLengthDataNotLoaded: "GS1 Company Prefix length data not loaded"
+        instanceNotInitialized: "GS1 Company Prefix length shared global instance not initialized",
+        lengthDataFileNotFound: "GS1 Company Prefix length data file \"{{key}}\" not found",
+        lengthDataNotLoaded: "GS1 Company Prefix length data not loaded"
     }
 };
