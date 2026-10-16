@@ -16,3 +16,21 @@ export type NonGTINNumericIdentifierTypeKey = keyof typeof NonGTINNumericIdentif
  * Non-GTIN numeric identifier type.
  */
 export type NonGTINNumericIdentifierType = typeof NonGTINNumericIdentifierTypes[NonGTINNumericIdentifierTypeKey];
+
+/**
+ * Non-GTIN numeric identifier type values.
+ */
+const NonGTINNumericIdentifierTypeValues = Object.values<string>(NonGTINNumericIdentifierTypes);
+
+/**
+ * Determine if identifier type is a valid non-GTIN numeric identifier type.
+ *
+ * @param identifierType
+ * Identifier type.
+ *
+ * @returns
+ * True if identifier type is a valid non-GTIN numeric identifier type.
+ */
+export function isNonGTINNumericIdentifierType(identifierType: string): identifierType is NonGTINNumericIdentifierType {
+    return NonGTINNumericIdentifierTypeValues.includes(identifierType);
+}

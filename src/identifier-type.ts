@@ -72,3 +72,21 @@ export type IdentifierTypeKey = keyof typeof IdentifierTypes;
  * Identifier type.
  */
 export type IdentifierType = typeof IdentifierTypes[IdentifierTypeKey];
+
+/**
+ * Identifier type values.
+ */
+const IdentifierTypeValues = Object.values<string>(IdentifierTypes);
+
+/**
+ * Determine if identifier type is a valid identifier type.
+ *
+ * @param identifierType
+ * Identifier type.
+ *
+ * @returns
+ * True if identifier type is a valid identifier type.
+ */
+export function isIdentifierType(identifierType: string): identifierType is IdentifierType {
+    return IdentifierTypeValues.includes(identifierType);
+}

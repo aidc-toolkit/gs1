@@ -20,3 +20,21 @@ export type NonSerializableNumericIdentifierTypeKey = keyof typeof NonSerializab
  * Non-serializable numeric identifier type.
  */
 export type NonSerializableNumericIdentifierType = typeof NonSerializableNumericIdentifierTypes[NonSerializableNumericIdentifierTypeKey];
+
+/**
+ * Non-serializable numeric identifier type values.
+ */
+const NonSerializableNumericIdentifierTypeValues = Object.values<string>(NonSerializableNumericIdentifierTypes);
+
+/**
+ * Determine if identifier type is a valid non-serializable numeric identifier type.
+ *
+ * @param identifierType
+ * Identifier type.
+ *
+ * @returns
+ * True if identifier type is a valid non-serializable numeric identifier type.
+ */
+export function isNonSerializableNumericIdentifierType(identifierType: string): identifierType is NonSerializableNumericIdentifierType {
+    return NonSerializableNumericIdentifierTypeValues.includes(identifierType);
+}
