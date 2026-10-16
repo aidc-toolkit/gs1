@@ -38,7 +38,6 @@ export class SerializableNumericIdentifierCreator extends MixinAbstractNonGTINNu
      */
     #concatenateValidated(baseIdentifier: string, serialComponents: Iterable<string>): Iterable<string>;
 
-    // eslint-disable-next-line jsdoc/require-jsdoc -- Implementation of overloaded signatures.
     #concatenateValidated(baseIdentifier: string, serialComponentOrComponents: string | Iterable<string>): string | Iterable<string> {
         const serialComponentCreator = this.serialComponentCreator;
         const serialComponentValidation = this.serialComponentValidation;
@@ -99,7 +98,6 @@ export class SerializableNumericIdentifierCreator extends MixinAbstractNonGTINNu
      */
     createSerialized(value: number | bigint, serialComponents: Iterable<string>, sparse?: boolean): Iterable<string>;
 
-    // eslint-disable-next-line jsdoc/require-jsdoc -- Implementation of overloaded signatures.
     createSerialized(value: number | bigint, serialComponentOrComponents: string | Iterable<string>, sparse?: boolean): string | Iterable<string> {
         return this.#concatenateValidated(this.create(value, sparse), serialComponentOrComponents);
     }
@@ -132,7 +130,6 @@ export class SerializableNumericIdentifierCreator extends MixinAbstractNonGTINNu
      */
     concatenate(baseIdentifier: string, serialComponents: Iterable<string>): Iterable<string>;
 
-    // eslint-disable-next-line jsdoc/require-jsdoc -- Implementation of overloaded signatures.
     concatenate(baseIdentifier: string, serialComponentOrComponents: string | Iterable<string>): string | Iterable<string> {
         this.validate(baseIdentifier);
 

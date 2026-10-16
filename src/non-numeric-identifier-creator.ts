@@ -71,7 +71,6 @@ export class NonNumericIdentifierCreator extends MixinAbstractIdentifierCreator<
      */
     create(references: Iterable<string>): Iterable<string>;
 
-    // eslint-disable-next-line jsdoc/require-jsdoc -- Implementation of overloaded signatures.
     create(referenceOrReferences: string | Iterable<string>): string | Iterable<string> {
         const referenceCreator = this.referenceCreator;
         const referenceValidation = this.referenceValidation;

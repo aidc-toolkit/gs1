@@ -133,7 +133,6 @@ export function MixinAbstractNumericIdentifierCreator<
          */
         create(values: Iterable<number | bigint>, sparse?: boolean): Iterable<string>;
 
-        // eslint-disable-next-line jsdoc/require-jsdoc -- Implementation of overloaded signatures.
         create(valueOrValues: number | bigint | Iterable<number | bigint>, sparse?: boolean): string | Iterable<string> {
             return NUMERIC_CREATOR.create(this.referenceLength, valueOrValues, Exclusions.None, sparse === true ? this.tweak : undefined, reference => this.#buildIdentifier(reference));
         }

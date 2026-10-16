@@ -78,7 +78,6 @@ export class GTINCreator extends MixinAbstractNumericIdentifierCreator<
      */
     createGTIN14(indicatorDigit: string, values: Iterable<number | bigint>, sparse?: boolean): Iterable<string>;
 
-    // eslint-disable-next-line jsdoc/require-jsdoc -- Implementation of overloaded signatures.
     createGTIN14(indicatorDigit: string, valueOrValues: number | bigint | Iterable<number | bigint>, sparse?: boolean): string | Iterable<string> {
         NUMERIC_CREATOR.validate(indicatorDigit, GTINCreator.#REQUIRED_INDICATOR_DIGIT_VALIDATION);
 
