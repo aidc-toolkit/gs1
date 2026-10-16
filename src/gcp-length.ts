@@ -1,7 +1,7 @@
 import { omit } from "@aidc-toolkit/core";
+import { mapIterable } from "@aidc-toolkit/utility";
 import type { GCPLengthCache } from "./gcp-length-cache.js";
 import { type GCPLengthData, type GCPLengthHeader, isGCPLengthData } from "./gcp-length-data.js";
-import { GTINLengths } from "./gtin-length.js";
 import { GTINValidator } from "./gtin-validator.js";
 import { type IdentifierType, IdentifierTypes } from "./identifier-type.js";
 import { IdentifierValidators, isNumericIdentifierValidator } from "./identifier-validators.js";
@@ -440,8 +440,36 @@ export class GCPLength {
      * @returns
      * Length of GS1 Company Prefix, 0 if not a GS1 Company Prefix, or -1 if not found.
      */
-    lengthOf(identifierType: IdentifierType, identifier: string): number {
-        let identifierPrefix: string;
+    lengthOf(identifierType: IdentifierType, identifier: string): number;
+
+    /**
+     * Get the lengths of GS1 Company Prefixes for multiple identifiers.
+     *
+     * @param identifierType
+     * Identifier type.
+     *
+     * @param identifiers
+     * Identifiers.
+     *
+     * @returns
+     * Lengths of GS1 Company Prefixes, 0 if not a GS1 Company Prefix, or -1 if not found.
+     */
+    lengthOf(identifierType: IdentifierType, identifiers: Iterable<string>): Iterable<number>;
+
+    lengthOf(identifierType: IdentifierType, identifierOrIdentifiers: string | Iterable<string>): number | Iterable<number> {
+        const root = this.root;
+
+        /**
+         * Validate an identifier and get the length of its GS1 Company Prefix.
+         *
+         * @param identifier
+         * Identifier.
+         *
+         * @returns
+         * Length of GS1 Company Prefix, 0 if not a GS1 Company Prefix, or -1 if not found.
+         */
+        function validateAndLengthOf(identifier: string): number {
+            let identifierPrefix: string;
 
         if (identifierType === IdentifierTypes.GTIN) {
             // Normalize the GTIN, pad to 14 digits, and extract the identifier prefix at the first character.
