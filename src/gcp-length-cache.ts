@@ -228,7 +228,7 @@ export class RemoteGCPLengthCache extends GCPLengthCache {
     async #getRemoteAppData<T>(pathKey: string, asBinary: boolean, callback: (appData: AppData) => T): Promise<T> {
         return this.#remoteAppDataStorage.read(pathKey, asBinary).then((appData) => {
             if (appData === undefined) {
-                throw new RangeError(i18nextGS1.t("GCPLength.gs1CompanyPrefixLengthDataFileNotFound", {
+                throw new RangeError(i18nextGS1.t("GCPLength.lengthDataFileNotFound", {
                     key: pathKey
                 }));
             }

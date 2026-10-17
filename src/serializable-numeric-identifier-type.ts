@@ -16,3 +16,21 @@ export type SerializableNumericIdentifierTypeKey = keyof typeof SerializableNume
  * Serializable numeric identifier type.
  */
 export type SerializableNumericIdentifierType = typeof SerializableNumericIdentifierTypes[SerializableNumericIdentifierTypeKey];
+
+/**
+ * Serializable numeric identifier type values.
+ */
+const SerializableNumericIdentifierTypeValues = Object.values<string>(SerializableNumericIdentifierTypes);
+
+/**
+ * Determine if identifier type is a valid serializable numeric identifier type.
+ *
+ * @param identifierType
+ * Identifier type.
+ *
+ * @returns
+ * True if identifier type is a valid serializable numeric identifier type.
+ */
+export function isSerializableNumericIdentifierType(identifierType: string): identifierType is SerializableNumericIdentifierType {
+    return SerializableNumericIdentifierTypeValues.includes(identifierType);
+}
