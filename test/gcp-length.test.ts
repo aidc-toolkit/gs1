@@ -24,7 +24,7 @@ class GCPLengthCacheJSONSource extends GCPLengthCache {
 
     #gcpLengthSourceJSON!: GCPLengthSourceJSON;
 
-    constructor(appDataStorage: AppDataStorage<boolean>, index: number) {
+    constructor(appDataStorage: AppDataStorage, index: number) {
         super(appDataStorage);
 
         this.#pathKey = `gcpprefixformatlist-${index}`;
@@ -54,7 +54,7 @@ class GCPLengthCacheBinarySource extends GCPLengthCache {
 
     #gcpLengthHeader!: GCPLengthHeader;
 
-    constructor(appDataStorage: AppDataStorage<boolean>, index: number) {
+    constructor(appDataStorage: AppDataStorage, index: number) {
         super(appDataStorage);
 
         this.#headerPathKey = `${GCPLengthCache.HEADER_STORAGE_KEY}-${index}`;
@@ -172,7 +172,7 @@ describe("GS1 Company Prefix length", () => {
     afterAll(rmCache);
 
     test("Load", async () => {
-        const appDataStorage = new (await LocalAppDataStorage)(DATA_DIRECTORY);
+        const appDataStorage = new LocalAppDataStorage(DATA_DIRECTORY);
 
         const gcpLengthCacheJSON1Source = new GCPLengthCacheJSONSource(appDataStorage, 1);
         const gcpLengthCacheJSON2Source = new GCPLengthCacheJSONSource(appDataStorage, 2);
@@ -271,7 +271,7 @@ describe("GS1 Company Prefix length", () => {
             override async update(): Promise<void> {
                 return Promise.resolve();
             }
-        }(new (await LocalAppDataStorage)(DATA_DIRECTORY), 2);
+        }(new LocalAppDataStorage(DATA_DIRECTORY), 2);
 
         const gcpLengthJSON2Source = new GCPLength(gcpLengthCacheJSON2Source);
 
@@ -346,7 +346,7 @@ describe("GS1 Company Prefix length", () => {
 
                 return Promise.resolve();
             }
-        }(new (await LocalAppDataStorage)(DATA_DIRECTORY));
+        }(new LocalAppDataStorage(DATA_DIRECTORY));
 
         const gcpLength = new GCPLength(gcpLengthCache);
 

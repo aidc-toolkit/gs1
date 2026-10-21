@@ -45,7 +45,7 @@ export abstract class GCPLengthCache extends Cache<GCPLengthData, GCPLengthData 
     /**
      * Application data storage.
      */
-    readonly #appDataStorage: AppDataStorage<boolean>;
+    readonly #appDataStorage: AppDataStorage;
 
     /**
      * GS1 Company Prefix application data.
@@ -58,7 +58,7 @@ export abstract class GCPLengthCache extends Cache<GCPLengthData, GCPLengthData 
      * @param appDataStorage
      * Application data storage.
      */
-    constructor(appDataStorage: AppDataStorage<boolean>) {
+    constructor(appDataStorage: AppDataStorage) {
         super();
 
         this.#appDataStorage = appDataStorage;
@@ -67,7 +67,7 @@ export abstract class GCPLengthCache extends Cache<GCPLengthData, GCPLengthData 
     /**
      * Get the application data storage.
      */
-    get appDataStorage(): AppDataStorage<boolean> {
+    get appDataStorage(): AppDataStorage {
         return this.#appDataStorage;
     }
 
@@ -203,7 +203,7 @@ export class RemoteGCPLengthCache extends GCPLengthCache {
      * @param httpFetch
      * HTTP fetch function.
      */
-    constructor(appDataStorage: AppDataStorage<boolean>, baseURL: string = RemoteGCPLengthCache.DEFAULT_BASE_URL, httpFetch: HTTPFetch = defaultHTTPFetch) {
+    constructor(appDataStorage: AppDataStorage, baseURL: string = RemoteGCPLengthCache.DEFAULT_BASE_URL, httpFetch: HTTPFetch = defaultHTTPFetch) {
         super(appDataStorage);
 
         this.#remoteAppDataStorage = new RemoteAppDataStorage(baseURL, httpFetch);
