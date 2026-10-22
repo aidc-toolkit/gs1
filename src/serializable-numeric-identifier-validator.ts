@@ -3,7 +3,7 @@ import { CONTENT_CHARACTER_SET_CREATORS } from "./content-character-set-creators
 import type { ContentCharacterSet } from "./content-character-set.js";
 import { IdentifierDescriptors } from "./identifier-descriptors.js";
 import type { IdentifierValidation } from "./identifier-validator.js";
-import { i18nextGS1 } from "./locale/i18n.js";
+import { i18nextGS1T } from "./locale/i18n.js";
 import { NonGTINNumericIdentifierValidator } from "./non-gtin-numeric-identifier-validator.js";
 import type { SerializableNumericIdentifierDescriptor } from "./serializable-numeric-identifier-descriptor.js";
 import type { SerializableNumericIdentifierType } from "./serializable-numeric-identifier-type.js";
@@ -65,7 +65,7 @@ export class SerializableNumericIdentifierValidator extends NonGTINNumericIdenti
         this.#serialComponentValidation = {
             minimumLength: 1,
             maximumLength: identifierDescriptor.serialComponentLength,
-            component: () => i18nextGS1.t("Identifier.serialComponent")
+            component: () => i18nextGS1T("Identifier.serialComponent")
         };
 
         this.#serialComponentCreator = CONTENT_CHARACTER_SET_CREATORS[identifierDescriptor.serialComponentCharacterSet];

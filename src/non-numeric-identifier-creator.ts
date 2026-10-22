@@ -2,7 +2,7 @@ import { type CharacterSetValidation, mapIterable } from "@aidc-toolkit/utility"
 import { MixinAbstractIdentifierCreator } from "./abstract-identifier-creator.js";
 import { checkCharacterPair } from "./check.js";
 import { IdentifierDescriptors } from "./identifier-descriptors.js";
-import { i18nextGS1 } from "./locale/i18n.js";
+import { i18nextGS1T } from "./locale/i18n.js";
 import type { NonNumericIdentifierType } from "./non-numeric-identifier-type.js";
 import {
     type NonNumericIdentifierValidation,
@@ -38,7 +38,7 @@ export class NonNumericIdentifierCreator extends MixinAbstractIdentifierCreator<
             minimumLength: 1,
             // Maximum reference length has to account for prefix and check character pair.
             maximumLength: this.referenceLength,
-            component: () => i18nextGS1.t("Identifier.reference")
+            component: () => i18nextGS1T("Identifier.reference")
         };
     }
 

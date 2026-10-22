@@ -16,7 +16,7 @@ import {
     isGCPLengthAppData,
     isGCPLengthHeader
 } from "./gcp-length-data.js";
-import { i18nextGS1 } from "./locale/i18n.js";
+import { i18nextGS1T } from "./locale/i18n.js";
 
 /**
  * GS1 Company Prefix length cache.
@@ -228,7 +228,7 @@ export class RemoteGCPLengthCache extends GCPLengthCache {
     async #getRemoteAppData<T>(pathKey: string, asBinary: boolean, callback: (appData: AppData) => T): Promise<T> {
         return this.#remoteAppDataStorage.read(pathKey, asBinary).then((appData) => {
             if (appData === undefined) {
-                throw new RangeError(i18nextGS1.t("GCPLength.lengthDataFileNotFound", {
+                throw new RangeError(i18nextGS1T("GCPLength.lengthDataFileNotFound", {
                     key: pathKey
                 }));
             }
