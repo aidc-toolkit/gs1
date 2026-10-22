@@ -6,7 +6,7 @@ import { GTINValidator } from "./gtin-validator.js";
 import { type IdentifierType, IdentifierTypes } from "./identifier-type.js";
 import { IdentifierValidators, isNumericIdentifierValidator } from "./identifier-validators.js";
 import { LeaderTypes } from "./leader-type.js";
-import { i18nextGS1 } from "./locale/i18n.js";
+import { i18nextGS1T } from "./locale/i18n.js";
 
 /**
  * Leaf of GS1 Company Prefix length tree.
@@ -125,7 +125,7 @@ export class GCPLength {
     static async instance(cacheInitializer?: () => GCPLengthCache): Promise<GCPLength> {
         if (this.#instance === undefined) {
             if (cacheInitializer === undefined) {
-                throw new RangeError(i18nextGS1.t("GCPLength.instanceNotInitialized"));
+                throw new RangeError(i18nextGS1T("GCPLength.instanceNotInitialized"));
             }
 
             this.#instance = new GCPLength(cacheInitializer());
@@ -144,7 +144,7 @@ export class GCPLength {
      */
     get root(): Root {
         if (this.#root === undefined) {
-            throw new RangeError(i18nextGS1.t("GCPLength.lengthDataNotLoaded"));
+            throw new RangeError(i18nextGS1T("GCPLength.lengthDataNotLoaded"));
         }
 
         return this.#root;

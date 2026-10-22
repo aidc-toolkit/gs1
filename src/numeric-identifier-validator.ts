@@ -2,7 +2,7 @@ import { hasValidCheckDigit } from "./check.js";
 import type { IdentifierTypeDescriptor } from "./identifier-descriptors.js";
 import { type IdentifierValidation, IdentifierValidator } from "./identifier-validator.js";
 import { LeaderTypes } from "./leader-type.js";
-import { i18nextGS1 } from "./locale/i18n.js";
+import { i18nextGS1T } from "./locale/i18n.js";
 import type { NumericIdentifierDescriptor } from "./numeric-identifier-descriptor.js";
 import type { NumericIdentifierType } from "./numeric-identifier-type.js";
 
@@ -66,7 +66,7 @@ export abstract class NumericIdentifierValidator<TNumericIdentifierType extends 
 
         // Validate the length.
         if (identifier.length !== this.length) {
-            throw new RangeError(i18nextGS1.t("Identifier.identifierTypeLength", {
+            throw new RangeError(i18nextGS1T("Identifier.identifierTypeLength", {
                 identifierType: this.identifierType,
                 length: this.length
             }));
@@ -74,7 +74,7 @@ export abstract class NumericIdentifierValidator<TNumericIdentifierType extends 
 
         // Validating the check digit will also validate the characters.
         if (!hasValidCheckDigit(this.padIdentifier(identifier, validation?.positionOffset))) {
-            throw new RangeError(i18nextGS1.t("Identifier.invalidCheckDigit"));
+            throw new RangeError(i18nextGS1T("Identifier.invalidCheckDigit"));
         }
     }
 }

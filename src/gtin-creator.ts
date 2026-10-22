@@ -4,7 +4,7 @@ import { checkDigit } from "./check.js";
 import { type GTINBaseLength, GTINLengths } from "./gtin-length.js";
 import type { GTINType } from "./gtin-type.js";
 import { GTINValidator } from "./gtin-validator.js";
-import { i18nextGS1 } from "./locale/i18n.js";
+import { i18nextGS1T } from "./locale/i18n.js";
 import type { PrefixProvider } from "./prefix-provider.js";
 
 /**
@@ -19,7 +19,7 @@ export class GTINCreator extends MixinAbstractNumericIdentifierCreator<
     static readonly #REQUIRED_INDICATOR_DIGIT_VALIDATION: CharacterSetValidation = {
         minimumLength: 1,
         maximumLength: 1,
-        component: () => i18nextGS1.t("Identifier.indicatorDigit")
+        component: () => i18nextGS1T("Identifier.indicatorDigit")
     };
 
     /**

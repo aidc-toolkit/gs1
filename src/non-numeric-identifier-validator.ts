@@ -2,7 +2,7 @@ import { Exclusions, RegExpValidator } from "@aidc-toolkit/utility";
 import { hasValidCheckCharacterPair } from "./check.js";
 import { IdentifierDescriptors } from "./identifier-descriptors.js";
 import { type IdentifierValidation, IdentifierValidator } from "./identifier-validator.js";
-import { i18nextGS1 } from "./locale/i18n.js";
+import { i18nextGS1T } from "./locale/i18n.js";
 import type { NonNumericIdentifierDescriptor } from "./non-numeric-identifier-descriptor.js";
 import type { NonNumericIdentifierType } from "./non-numeric-identifier-type.js";
 
@@ -28,7 +28,7 @@ export class NonNumericIdentifierValidator extends IdentifierValidator<NonNumeri
          * @inheritDoc
          */
         protected override createErrorMessage(_s: string): string {
-            return i18nextGS1.t("Identifier.referenceCantBeAllNumeric");
+            return i18nextGS1T("Identifier.referenceCantBeAllNumeric");
         }
     }(/\D/u);
 
@@ -78,7 +78,7 @@ export class NonNumericIdentifierValidator extends IdentifierValidator<NonNumeri
             });
             // Validating the check character pair will also validate the characters.
         } else if (!hasValidCheckCharacterPair(this.padIdentifier(identifier))) {
-            throw new RangeError(i18nextGS1.t("Identifier.invalidCheckCharacterPair"));
+            throw new RangeError(i18nextGS1T("Identifier.invalidCheckCharacterPair"));
         }
 
         // Check for all-numeric identifier (minus check character pair) if excluded.

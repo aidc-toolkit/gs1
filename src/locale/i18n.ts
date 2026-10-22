@@ -1,13 +1,21 @@
-import { i18nCoreInit, i18nInit, type I18nLanguageDetector } from "@aidc-toolkit/core";
+import { i18nCoreInit, i18nextInstance, i18nInit, type I18nLanguageDetector } from "@aidc-toolkit/core";
 import { i18nUtilityInit } from "@aidc-toolkit/utility";
-import i18next, { type i18n, type Resource } from "i18next";
+import type { ParseKeys, Resource } from "i18next";
 import enLocaleResources from "./en/locale-resources.js";
 import frLocaleResources from "./fr/locale-resources.js";
 
+/**
+ * GS1 namespace.
+ */
 export const gs1NS = "aidct_gs1";
 
 /**
- * Locale strings type is extracted from the English locale strings object.
+ * GS1 parse keys.
+ */
+export type GS1ParseKeys = ParseKeys<typeof gs1NS>;
+
+/**
+ * Locale resources type is extracted from the English locale strings object.
  */
 export type GS1LocaleResources = typeof enLocaleResources;
 
@@ -23,8 +31,10 @@ export const gs1ResourceBundle: Resource = {
     }
 };
 
-// Explicit type is necessary because type can't be inferred without additional references.
-export const i18nextGS1: i18n = i18next.createInstance();
+/**
+ * GS1 i18next translator function.
+ */
+export const i18nextGS1T = i18nextInstance.getFixedT(null, gs1NS);
 
 /**
  * Initialize internationalization.
@@ -39,5 +49,5 @@ export const i18nextGS1: i18n = i18next.createInstance();
  * GS1 resource bundle.
  */
 export async function i18nGS1Init(languageDetector: I18nLanguageDetector, debug = false): Promise<Resource> {
-    return i18nInit(i18nextGS1, languageDetector, debug, gs1NS, gs1ResourceBundle, i18nCoreInit, i18nUtilityInit);
+    return i18nInit(languageDetector, debug, gs1ResourceBundle, i18nCoreInit, i18nUtilityInit);
 }

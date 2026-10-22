@@ -1,8 +1,7 @@
 import { type CharacterSetValidation, NUMERIC_CREATOR } from "@aidc-toolkit/utility";
-import { i18nextGS1 } from "./locale/i18n.js";
+import { type GS1ParseKeys, i18nextGS1T } from "./locale/i18n.js";
 import type { PrefixProvider } from "./prefix-provider.js";
 import { type PrefixType, PrefixTypes } from "./prefix-type.js";
-import type { ParseKeys } from "i18next";
 
 /**
  * Prefix validation parameters.
@@ -60,7 +59,7 @@ const GS1_8_PREFIX_MAXIMUM_LENGTH = 7;
 const GS1_COMPANY_PREFIX_VALIDATION: Readonly<PrefixValidation> = {
     minimumLength: GS1_COMPANY_PREFIX_MINIMUM_LENGTH,
     maximumLength: GS1_COMPANY_PREFIX_MAXIMUM_LENGTH,
-    component: () => i18nextGS1.t("Prefix.gs1CompanyPrefix")
+    component: () => i18nextGS1T("Prefix.gs1CompanyPrefix")
 };
 
 /**
@@ -69,7 +68,7 @@ const GS1_COMPANY_PREFIX_VALIDATION: Readonly<PrefixValidation> = {
 const UPC_COMPANY_PREFIX_AS_GS1_COMPANY_PREFIX_VALIDATION: Readonly<PrefixValidation> = {
     minimumLength: UPC_COMPANY_PREFIX_MINIMUM_LENGTH + 1,
     maximumLength: UPC_COMPANY_PREFIX_MAXIMUM_LENGTH + 1,
-    component: () => i18nextGS1.t("Prefix.gs1CompanyPrefix")
+    component: () => i18nextGS1T("Prefix.gs1CompanyPrefix")
 };
 
 /**
@@ -78,7 +77,7 @@ const UPC_COMPANY_PREFIX_AS_GS1_COMPANY_PREFIX_VALIDATION: Readonly<PrefixValida
 const GS1_8_PREFIX_AS_GS1_COMPANY_PREFIX_VALIDATION: Readonly<PrefixValidation> = {
     minimumLength: GS1_8_PREFIX_MINIMUM_LENGTH + 5,
     maximumLength: GS1_8_PREFIX_MAXIMUM_LENGTH + 5,
-    component: () => i18nextGS1.t("Prefix.gs1CompanyPrefix")
+    component: () => i18nextGS1T("Prefix.gs1CompanyPrefix")
 };
 
 /**
@@ -87,7 +86,7 @@ const GS1_8_PREFIX_AS_GS1_COMPANY_PREFIX_VALIDATION: Readonly<PrefixValidation> 
 const UPC_COMPANY_PREFIX_VALIDATION: Readonly<PrefixValidation> = {
     minimumLength: UPC_COMPANY_PREFIX_MINIMUM_LENGTH,
     maximumLength: UPC_COMPANY_PREFIX_MAXIMUM_LENGTH,
-    component: () => i18nextGS1.t("Prefix.upcCompanyPrefix")
+    component: () => i18nextGS1T("Prefix.upcCompanyPrefix")
 };
 
 /**
@@ -96,7 +95,7 @@ const UPC_COMPANY_PREFIX_VALIDATION: Readonly<PrefixValidation> = {
 const GS1_8_PREFIX_VALIDATION: Readonly<PrefixValidation> = {
     minimumLength: GS1_8_PREFIX_MINIMUM_LENGTH,
     maximumLength: GS1_8_PREFIX_MAXIMUM_LENGTH,
-    component: () => i18nextGS1.t("Prefix.gs18Prefix")
+    component: () => i18nextGS1T("Prefix.gs18Prefix")
 };
 
 /**
@@ -134,7 +133,7 @@ export const PrefixValidator = {
      * @param errorMessageParseKey
      * Parse key for error message when validating GS1 Company Prefix type.
      */
-    validate(prefixType: PrefixType, allowUPCCompanyPrefix: boolean, allowGS18Prefix: boolean, prefix: string, isFromIdentifier = false, isNumericIdentifier = false, errorMessageParseKey?: ParseKeys): void {
+    validate(prefixType: PrefixType, allowUPCCompanyPrefix: boolean, allowGS18Prefix: boolean, prefix: string, isFromIdentifier = false, isNumericIdentifier = false, errorMessageParseKey?: GS1ParseKeys): void {
         let validation: PrefixValidation;
 
         // Validate the prefix type and determine the prefix validation parameters.
@@ -144,24 +143,24 @@ export const PrefixValidator = {
                     validation = GS1_COMPANY_PREFIX_VALIDATION;
                 } else if (!prefix.startsWith("00000")) {
                     if (!allowUPCCompanyPrefix) {
-                        throw new RangeError(i18nextGS1.t(errorMessageParseKey ?? "Prefix.gs1CompanyPrefixCantStartWith0"));
+                        throw new RangeError(i18nextGS1T(errorMessageParseKey ?? "Prefix.gs1CompanyPrefixCantStartWith0"));
                     }
 
                     validation = UPC_COMPANY_PREFIX_AS_GS1_COMPANY_PREFIX_VALIDATION;
                 } else if (!prefix.startsWith("000000")) {
                     if (!allowGS18Prefix) {
-                        throw new RangeError(i18nextGS1.t(errorMessageParseKey ?? "Prefix.gs1CompanyPrefixCantStartWith00000"));
+                        throw new RangeError(i18nextGS1T(errorMessageParseKey ?? "Prefix.gs1CompanyPrefixCantStartWith00000"));
                     }
 
                     validation = GS1_8_PREFIX_AS_GS1_COMPANY_PREFIX_VALIDATION;
                 } else {
-                    throw new RangeError(i18nextGS1.t(errorMessageParseKey ?? "Prefix.gs1CompanyPrefixCantStartWith000000"));
+                    throw new RangeError(i18nextGS1T(errorMessageParseKey ?? "Prefix.gs1CompanyPrefixCantStartWith000000"));
                 }
                 break;
 
             case PrefixTypes.UPCCompanyPrefix:
                 if (prefix.startsWith("0000")) {
-                    throw new RangeError(i18nextGS1.t("Prefix.upcCompanyPrefixCantStartWith0000"));
+                    throw new RangeError(i18nextGS1T("Prefix.upcCompanyPrefixCantStartWith0000"));
                 }
 
                 validation = UPC_COMPANY_PREFIX_VALIDATION;
@@ -169,7 +168,7 @@ export const PrefixValidator = {
 
             case PrefixTypes.GS18Prefix:
                 if (prefix.startsWith("0")) {
-                    throw new RangeError(i18nextGS1.t("Prefix.gs18PrefixCantStartWith0"));
+                    throw new RangeError(i18nextGS1T("Prefix.gs18PrefixCantStartWith0"));
                 }
 
                 validation = GS1_8_PREFIX_VALIDATION;

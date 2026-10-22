@@ -1,11 +1,10 @@
 import { type CharacterSetValidation, NUMERIC_CREATOR } from "@aidc-toolkit/utility";
-import type { ParseKeys } from "i18next";
 import { checkDigit, hasValidCheckDigit } from "./check.js";
 import type { GTINDescriptor } from "./gtin-descriptor.js";
 import { type GTINBaseLength, GTINLengths } from "./gtin-length.js";
 import type { GTINType } from "./gtin-type.js";
 import { IdentifierDescriptors } from "./identifier-descriptors.js";
-import { i18nextGS1 } from "./locale/i18n.js";
+import { type GS1ParseKeys, i18nextGS1T } from "./locale/i18n.js";
 import { NumericIdentifierValidator } from "./numeric-identifier-validator.js";
 import { type PrefixType, PrefixTypes } from "./prefix-type.js";
 import { PrefixValidator } from "./prefix-validator.js";
@@ -50,7 +49,7 @@ export class GTINValidator extends NumericIdentifierValidator<GTINType> implemen
     static readonly #OPTIONAL_INDICATOR_DIGIT_VALIDATION: CharacterSetValidation = {
         minimumLength: 0,
         maximumLength: 1,
-        component: () => i18nextGS1.t("Identifier.indicatorDigit")
+        component: () => i18nextGS1T("Identifier.indicatorDigit")
     };
 
     /**
@@ -61,7 +60,7 @@ export class GTINValidator extends NumericIdentifierValidator<GTINType> implemen
         maximumLength: 8
     };
 
-    static readonly #ERROR_MESSAGE_PARSE_KEYS: Record<GTINLevel, ParseKeys | undefined> = {
+    static readonly #ERROR_MESSAGE_PARSE_KEYS: Record<GTINLevel, GS1ParseKeys | undefined> = {
         [GTINLevels.Any]: undefined,
         [GTINLevels.RetailConsumer]: "Identifier.invalidGTINAtRetail",
         [GTINLevels.OtherThanRetailConsumer]: "Identifier.invalidGTINAtOtherThanRetail"
@@ -132,7 +131,7 @@ export class GTINValidator extends NumericIdentifierValidator<GTINType> implemen
         }
 
         if (zeroSuppressedGTIN12 === undefined) {
-            throw new RangeError(i18nextGS1.t("Identifier.invalidZeroSuppressibleGTIN12"));
+            throw new RangeError(i18nextGS1T("Identifier.invalidZeroSuppressibleGTIN12"));
         }
 
         return zeroSuppressedGTIN12;
@@ -169,7 +168,7 @@ export class GTINValidator extends NumericIdentifierValidator<GTINType> implemen
         }
 
         if (gtin12 === undefined) {
-            throw new RangeError(i18nextGS1.t("Identifier.invalidZeroSuppressedGTIN12"));
+            throw new RangeError(i18nextGS1T("Identifier.invalidZeroSuppressedGTIN12"));
         }
 
         // Make sure that resulting GTIN-12 is valid.
@@ -236,7 +235,7 @@ export class GTINValidator extends NumericIdentifierValidator<GTINType> implemen
                     // GTIN is GTIN-8.
                     normalizedGTIN = gtin.substring(5);
                 } else {
-                    throw new RangeError(i18nextGS1.t("Identifier.invalidZeroSuppressedGTIN12AsGTIN13"));
+                    throw new RangeError(i18nextGS1T("Identifier.invalidZeroSuppressedGTIN12AsGTIN13"));
                 }
                 break;
 
@@ -269,12 +268,12 @@ export class GTINValidator extends NumericIdentifierValidator<GTINType> implemen
                     // GTIN is GTIN-8.
                     normalizedGTIN = gtin.substring(6);
                 } else {
-                    throw new RangeError(i18nextGS1.t("Identifier.invalidZeroSuppressedGTIN12AsGTIN14"));
+                    throw new RangeError(i18nextGS1T("Identifier.invalidZeroSuppressedGTIN12AsGTIN14"));
                 }
                 break;
 
             default:
-                throw new RangeError(i18nextGS1.t("Identifier.invalidGTINLength"));
+                throw new RangeError(i18nextGS1T("Identifier.invalidGTINLength"));
         }
 
         // Validation applies to the normalized GTIN.
@@ -340,7 +339,7 @@ export class GTINValidator extends NumericIdentifierValidator<GTINType> implemen
                 break;
 
             default:
-                throw new RangeError(i18nextGS1.t("Identifier.invalidGTINLength"));
+                throw new RangeError(i18nextGS1T("Identifier.invalidGTINLength"));
         }
 
         if (prefixType !== undefined) {
@@ -349,12 +348,12 @@ export class GTINValidator extends NumericIdentifierValidator<GTINType> implemen
 
         // Validating the check digit will also validate the characters.
         if (!hasValidCheckDigit(lengthValidatedGTIN)) {
-            throw new RangeError(i18nextGS1.t("Identifier.invalidCheckDigit"));
+            throw new RangeError(i18nextGS1T("Identifier.invalidCheckDigit"));
         }
 
         // Validate against level if required.
         if (gtinLevel !== GTINLevels.Any && gtinLevelRestriction !== GTINLevels.Any && gtinLevelRestriction !== gtinLevel) {
-            throw new RangeError(i18nextGS1.t(gtinLevel === GTINLevels.RetailConsumer ? "Identifier.invalidGTINAtRetail" : "Identifier.invalidGTINAtOtherThanRetail"));
+            throw new RangeError(i18nextGS1T(gtinLevel === GTINLevels.RetailConsumer ? "Identifier.invalidGTINAtRetail" : "Identifier.invalidGTINAtOtherThanRetail"));
         }
     }
 
@@ -366,7 +365,7 @@ export class GTINValidator extends NumericIdentifierValidator<GTINType> implemen
      */
     static validateGTIN14(gtin14: string): void {
         if (gtin14.length !== GTINLengths.GTIN14) {
-            throw new RangeError(i18nextGS1.t("Identifier.invalidGTIN14Length"));
+            throw new RangeError(i18nextGS1T("Identifier.invalidGTIN14Length"));
         }
 
         GTINValidator.validateAny(gtin14);

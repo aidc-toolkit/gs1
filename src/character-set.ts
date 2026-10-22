@@ -2,9 +2,10 @@ import {
     CharacterSetCreator,
     type CharacterSetValidation,
     CharacterSetValidator,
-    Exclusions, utilityNS
+    Exclusions,
+    i18nextUtilityT
 } from "@aidc-toolkit/utility";
-import { i18nextGS1 } from "./locale/i18n.js";
+import { i18nextGS1T } from "./locale/i18n.js";
 
 /**
  * GS1 AI encodable character set 82 creator as defined in section 7.11 of the {@link
@@ -74,7 +75,7 @@ class AI64CharacterSetValidator extends CharacterSetValidator {
         const length = s.length;
 
         if (length % 4 !== 0) {
-            throw new RangeError(i18nextGS1.t("AI64CharacterSetValidator.lengthMustBeMultipleOf4", {
+            throw new RangeError(i18nextGS1T("AI64CharacterSetValidator.lengthMustBeMultipleOf4", {
                 length
             }));
         }
@@ -82,8 +83,7 @@ class AI64CharacterSetValidator extends CharacterSetValidator {
         const equalIndex = s.search(/={1,2}/u);
 
         if (equalIndex !== -1 && equalIndex < length - 2) {
-            throw new RangeError(i18nextGS1.t("CharacterSetValidator.invalidCharacterAtPosition", {
-                ns: utilityNS,
+            throw new RangeError(i18nextUtilityT("CharacterSetValidator.invalidCharacterAtPosition", {
                 c: "=",
                 position: equalIndex
             }));
