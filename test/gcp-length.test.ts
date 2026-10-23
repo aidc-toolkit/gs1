@@ -172,7 +172,7 @@ describe("GS1 Company Prefix length", () => {
     afterAll(rmCache);
 
     test("Load", async () => {
-        const appDataStorage = new LocalAppDataStorage(DATA_DIRECTORY);
+        const appDataStorage = await LocalAppDataStorage.get(DATA_DIRECTORY);
 
         const gcpLengthCacheJSON1Source = new GCPLengthCacheJSONSource(appDataStorage, 1);
         const gcpLengthCacheJSON2Source = new GCPLengthCacheJSONSource(appDataStorage, 2);
@@ -271,7 +271,7 @@ describe("GS1 Company Prefix length", () => {
             override async update(): Promise<void> {
                 return Promise.resolve();
             }
-        }(new LocalAppDataStorage(DATA_DIRECTORY), 2);
+        }(await LocalAppDataStorage.get(DATA_DIRECTORY), 2);
 
         const gcpLengthJSON2Source = new GCPLength(gcpLengthCacheJSON2Source);
 
@@ -344,7 +344,7 @@ describe("GS1 Company Prefix length", () => {
 
                 return Promise.resolve();
             }
-        }(new LocalAppDataStorage(DATA_DIRECTORY));
+        }(await LocalAppDataStorage.get(DATA_DIRECTORY));
 
         const gcpLength = new GCPLength(gcpLengthCache);
 
