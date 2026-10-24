@@ -12,6 +12,9 @@ import { i18nextGS1T } from "./locale/i18n.js";
  * Leaf of GS1 Company Prefix length tree.
  */
 interface Leaf {
+    /**
+     * GS1 Company Prefix length.
+     */
     readonly length: number;
 }
 
@@ -19,6 +22,9 @@ interface Leaf {
  * Branch of GS1 Company Prefix length tree.
  */
 interface Branch {
+    /**
+     * Child nodes.
+     */
     readonly childNodes: ReadonlyArray<Node | undefined>;
 }
 
@@ -50,6 +56,9 @@ function isLeaf(node: Node): node is Leaf {
  * Interim branch of GS1 Company Prefix length tree with writeable child nodes.
  */
 export interface InterimBranch {
+    /**
+     * Child nodes.
+     */
     readonly childNodes: Array<InterimBranch | Leaf | undefined>;
 }
 
