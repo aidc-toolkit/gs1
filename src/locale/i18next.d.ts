@@ -10,23 +10,10 @@ declare module "i18next" {
      * Custom type options for this package.
      */
     interface CustomTypeOptions {
-        /**
-         * Resources override.
-         */
+        defaultNS: "aidct_gs1";
         resources: {
-            /**
-             * Core locale resources.
-             */
             aidct_core: CoreLocaleResources;
-
-            /**
-             * Utility locale resources.
-             */
             aidct_utility: UtilityLocaleResources;
-
-            /**
-             * GS1 locale resources.
-             */
             aidct_gs1: GS1LocaleResources;
         };
     }
