@@ -294,8 +294,10 @@ describe("GS1 Company Prefix length", () => {
         const entries = gcpLengthJSON.GCPPrefixFormatList.entry;
 
         for (let i = 0; i < 1000; i++) {
-            const entryIndex = Math.floor(Math.random() * entries.length);
+            // First entry is in range of "unused to avoid collision with GTIN-8".
+            const entryIndex = Math.floor(Math.random() * (entries.length - 1)) + 1;
             const gcpLengthJSONEntry = entries[entryIndex];
+
             const prefixLength = gcpLengthJSONEntry.gcpLength;
             const testPrefixLength = prefixLength !== 0 ? prefixLength : Math.max(PrefixValidator.GS1_COMPANY_PREFIX_MINIMUM_LENGTH, PrefixValidator.UPC_COMPANY_PREFIX_MINIMUM_LENGTH + 1, PrefixValidator.GS1_8_PREFIX_MINIMUM_LENGTH + 5);
 
