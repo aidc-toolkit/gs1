@@ -50,7 +50,7 @@ export abstract class GCPLengthCache extends Cache<GCPLengthData, GCPLengthData 
     /**
      * GS1 Company Prefix application data.
      */
-    #cacheGCPLengthAppData?: GCPLengthAppData | undefined;
+    #cacheGCPLengthAppData?: GCPLengthAppData;
 
     /**
      * Constructor.
@@ -188,7 +188,7 @@ export class RemoteGCPLengthCache extends GCPLengthCache {
     /**
      * Remote GS1 Company Prefix header data.
      */
-    #remoteGCPLengthHeader?: GCPLengthHeader | undefined;
+    #remoteGCPLengthHeader?: GCPLengthHeader;
 
     /**
      * Constructor.

@@ -326,9 +326,9 @@ describe("GS1 Company Prefix length", () => {
     });
 
     test("Remote", async () => {
-        let savedNextCheckDateTime: Date | undefined = undefined;
-        let savedCacheDateTime: Date | undefined = undefined;
-        let savedCacheData: GCPLengthData | undefined = undefined;
+        let savedNextCheckDateTime: Date | undefined;
+        let savedCacheDateTime: Date | undefined;
+        let savedCacheData: GCPLengthData | undefined;
 
         const gcpLengthCache = new class extends RemoteGCPLengthCache {
             override get nextCheckDateTime(): Promise<Date | undefined> {
