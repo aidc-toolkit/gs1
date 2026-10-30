@@ -1,6 +1,6 @@
-import { NUMERIC_CREATOR, utilityNS } from "@aidc-toolkit/utility";
+import { i18nextUtilityT, NUMERIC_CREATOR } from "@aidc-toolkit/utility";
 import { AI82_CREATOR } from "./character-set.js";
-import { i18nextGS1 } from "./locale/i18n.js";
+import { i18nextGS1T } from "./locale/i18n.js";
 
 /**
  * Results of multiplying digits by 3.
@@ -57,8 +57,7 @@ export function checkDigitSum(exchangeWeights: boolean, s: string): number {
     // Calculate sum of each character value multiplied by the weight at its position.
     return NUMERIC_CREATOR.characterIndexes(s).reduce<number>((accumulator, characterIndex, index) => {
         if (characterIndex === undefined) {
-            throw new RangeError(i18nextGS1.t("CharacterSetValidator.invalidCharacterAtPosition", {
-                ns: utilityNS,
+            throw new RangeError(i18nextUtilityT("CharacterSetValidator.invalidCharacterAtPosition", {
                 c: s.charAt(index),
                 position: index + 1
             }));
@@ -115,11 +114,10 @@ function priceOrWeightSum(weightsResults: ReadonlyArray<readonly number[]>, s: s
     // Calculate sum of each weight result for each digit at its position.
     return NUMERIC_CREATOR.characterIndexes(s).reduce<number>((accumulator, characterIndex, index) => {
         if (characterIndex === undefined) {
-            throw new RangeError(i18nextGS1.t("CharacterSetValidator.invalidCharacterAtPositionOfComponent", {
-                ns: utilityNS,
+            throw new RangeError(i18nextUtilityT("CharacterSetValidator.invalidCharacterAtPositionOfComponent", {
                 c: s.charAt(index),
                 position: index + 1,
-                component: i18nextGS1.t("Check.priceOrWeightComponent")
+                component: i18nextGS1T("Check.priceOrWeightComponent")
             }));
         }
 
@@ -151,7 +149,7 @@ export function priceOrWeightCheckDigit(s: string): string {
             break;
 
         default:
-            throw new RangeError(i18nextGS1.t("Check.lengthOfStringForPriceOrWeightMustBeExactly", {
+            throw new RangeError(i18nextGS1T("Check.lengthOfStringForPriceOrWeightMustBeExactly", {
                 length: s.length
             }));
     }
@@ -205,7 +203,7 @@ export function checkCharacterPair(s: string): string {
     const weightIndexStart = CHECK_CHARACTER_WEIGHTS.length - s.length;
 
     if (weightIndexStart < 0) {
-        throw new RangeError(i18nextGS1.t("Check.lengthOfStringForCheckCharacterPairMustBeLessThanOrEqualTo", {
+        throw new RangeError(i18nextGS1T("Check.lengthOfStringForCheckCharacterPairMustBeLessThanOrEqualTo", {
             length: s.length,
             maximumLength: CHECK_CHARACTER_WEIGHTS.length
         }));
@@ -214,8 +212,7 @@ export function checkCharacterPair(s: string): string {
     // Calculate sum of each character value multiplied by the weight at its position, mod 1021.
     const checkCharacterPairSum = AI82_CREATOR.characterIndexes(s).reduce<number>((accumulator, characterIndex, index) => {
         if (characterIndex === undefined) {
-            throw new RangeError(i18nextGS1.t("CharacterSetValidator.invalidCharacterAtPosition", {
-                ns: utilityNS,
+            throw new RangeError(i18nextUtilityT("CharacterSetValidator.invalidCharacterAtPosition", {
                 c: s.charAt(index),
                 position: index + 1
             }));

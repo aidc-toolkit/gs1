@@ -1,6 +1,6 @@
 import { NUMERIC_CREATOR } from "@aidc-toolkit/utility";
 import { checkDigit, hasValidCheckDigit, isValidPriceOrWeightCheckDigit, priceOrWeightCheckDigit } from "./check.js";
-import { i18nextGS1 } from "./locale/i18n.js";
+import { i18nextGS1T } from "./locale/i18n.js";
 
 /**
  * Restricted Circulation Number reference.
@@ -57,7 +57,7 @@ export class VariableMeasure {
         const formatLength = format.length;
 
         if (rcn.length !== formatLength) {
-            throw new RangeError(i18nextGS1.t("Identifier.invalidRCNLength"));
+            throw new RangeError(i18nextGS1T("Identifier.invalidRCNLength"));
         }
 
         let validFormat = formatLength === 12 || formatLength === 13;
@@ -129,19 +129,19 @@ export class VariableMeasure {
         validFormat &&= itemReference !== "" && priceOrWeight !== "";
 
         if (!validFormat) {
-            throw new RangeError(i18nextGS1.t("Identifier.invalidVariableMeasureRCNFormat"));
+            throw new RangeError(i18nextGS1T("Identifier.invalidVariableMeasureRCNFormat"));
         }
 
         if (!validRCNPrefix) {
-            throw new RangeError(i18nextGS1.t("Identifier.invalidVariableMeasureRCNPrefix"));
+            throw new RangeError(i18nextGS1T("Identifier.invalidVariableMeasureRCNPrefix"));
         }
 
         if (priceOrWeightCheckDigit !== "" && !isValidPriceOrWeightCheckDigit(priceOrWeight, priceOrWeightCheckDigit)) {
-            throw new RangeError(i18nextGS1.t("Identifier.invalidVariableMeasurePriceOrWeight"));
+            throw new RangeError(i18nextGS1T("Identifier.invalidVariableMeasurePriceOrWeight"));
         }
 
         if (!hasValidCheckDigit(rcn)) {
-            throw new RangeError(i18nextGS1.t("Identifier.invalidCheckDigit"));
+            throw new RangeError(i18nextGS1T("Identifier.invalidCheckDigit"));
         }
 
         return {
@@ -255,7 +255,7 @@ export class VariableMeasure {
         validFormat &&= itemReferenceLength !== 0 && priceOrWeightLength !== 0;
 
         if (!validFormat) {
-            throw new RangeError(i18nextGS1.t("Identifier.invalidVariableMeasureRCNFormat"));
+            throw new RangeError(i18nextGS1T("Identifier.invalidVariableMeasureRCNFormat"));
         }
 
         itemReferenceString = NUMERIC_CREATOR.create(itemReferenceLength, itemReference);
