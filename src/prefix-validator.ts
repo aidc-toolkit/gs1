@@ -220,8 +220,8 @@ export const PrefixValidator = {
         let normalizedPrefixType: PrefixType;
         let normalizedPrefix: string;
 
-        let upcCompanyPrefix: string | undefined = undefined;
-        let gs18Prefix: string | undefined = undefined;
+        let upcCompanyPrefix: string | undefined;
+        let gs18Prefix: string | undefined;
 
         // Determine the prefix type and populate the remaining fields.
         if (!gs1CompanyPrefix.startsWith("0")) {
