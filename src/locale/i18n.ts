@@ -10,24 +10,39 @@ import frLocaleResources from "./fr/locale-resources.js";
 export const gs1NS = "aidct_gs1";
 
 /**
- * GS1 parse keys.
- */
-export type GS1ParseKeys = ParseKeys<typeof gs1NS>;
-
-/**
  * Locale resources type is extracted from the English locale resources object.
  */
 export type GS1LocaleResources = typeof enLocaleResources;
+
+/**
+ * Core locale resources augmentation.
+ */
+declare module "@aidc-toolkit/core" {
+    /**
+     * Internationalization locale resources.
+     */
+    export interface I18nLocaleResources {
+        /**
+         * GS1 locale resources.
+         */
+        [gs1NS]: GS1LocaleResources;
+    }
+}
+
+/**
+ * GS1 parse keys.
+ */
+export type GS1ParseKeys = ParseKeys<typeof gs1NS>;
 
 /**
  * GS1 resource bundle.
  */
 export const gs1ResourceBundle: Resource = {
     en: {
-        aidct_gs1: enLocaleResources
+        [gs1NS]: enLocaleResources
     },
     fr: {
-        aidct_gs1: frLocaleResources
+        [gs1NS]: frLocaleResources
     }
 };
 
