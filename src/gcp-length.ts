@@ -100,7 +100,7 @@ export class GCPLength {
     /**
      * Shared global instance if any.
      */
-    static #instance: GCPLength | undefined;
+    static #instance?: GCPLength;
 
     /**
      * Constructor.
@@ -355,7 +355,7 @@ export class GCPLength {
      * at least a week old, a check for an update was made more than a day ago, and an update is present.
      */
     async load(): Promise<void> {
-        let root: Root | undefined = undefined;
+        let root: Root | undefined;
 
         const gcpLengthCache = this.#gcpLengthCache;
 

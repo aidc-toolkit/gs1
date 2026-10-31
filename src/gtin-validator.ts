@@ -116,7 +116,7 @@ export class GTINValidator extends NumericIdentifierValidator<GTINType> implemen
         // Convert to individual digits.
         const d = Array.from(gtin12);
 
-        let zeroSuppressedGTIN12: string | undefined;
+        let zeroSuppressedGTIN12;
 
         // All rules require that digits in positions 1, 5, and 6 be zero.
         if (d[0] === "0" && d[6] === "0" && d[7] === "0") {
@@ -153,7 +153,7 @@ export class GTINValidator extends NumericIdentifierValidator<GTINType> implemen
         // Convert to individual digits.
         const d = Array.from(zeroSuppressedGTIN12);
 
-        let gtin12: string | undefined;
+        let gtin12;
 
         // Zero-suppressed GTIN-12 always starts with 0.
         if (d[0] === "0") {
