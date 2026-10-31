@@ -26,9 +26,6 @@ export interface NumericIdentifierCreator<TNumericIdentifierType extends Numeric
      */
     set tweak(value: bigint);
 
-    /**
-     * Create an identifier.
-     */
     create: {
         /**
          * Create an identifier with a reference based on a numeric value. The value is converted to a reference of the

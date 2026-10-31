@@ -9,7 +9,7 @@ import {
     type NonGTINCreatorConstructor
 } from "./identifier-creators.js";
 import { type IdentifierType, IdentifierTypes } from "./identifier-type.js";
-import { i18nextGS1T } from "./locale/i18n.js";
+import { i18nextGS1 } from "./locale/i18n.js";
 import type { NonNumericIdentifierCreator } from "./non-numeric-identifier-creator.js";
 import type { NonSerializableNumericIdentifierCreator } from "./non-serializable-numeric-identifier-creator.js";
 import type { NumericIdentifierType } from "./numeric-identifier-type.js";
@@ -250,7 +250,7 @@ export class PrefixManager implements PrefixProvider {
                 creator = new IdentifierCreatorConstructors.GTIN(this, GTIN_BASE_TYPES[this.prefixType]) as IdentifierCreatorsRecord[TIdentifierType];
             } else {
                 if (this.prefixType === PrefixTypes.GS18Prefix) {
-                    throw new RangeError(i18nextGS1T("Prefix.identifierTypeNotSupportedByGS18Prefix", {
+                    throw new RangeError(i18nextGS1.t("Prefix.identifierTypeNotSupportedByGS18Prefix", {
                         identifierType
                     }));
                 }

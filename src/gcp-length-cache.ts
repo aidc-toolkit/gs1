@@ -16,7 +16,7 @@ import {
     isGCPLengthAppData,
     isGCPLengthHeader
 } from "./gcp-length-data.js";
-import { i18nextGS1T } from "./locale/i18n.js";
+import { i18nextGS1 } from "./locale/i18n.js";
 
 /**
  * GS1 Company Prefix length cache.
@@ -45,7 +45,7 @@ export abstract class GCPLengthCache extends Cache<GCPLengthData, GCPLengthData 
     /**
      * Application data storage.
      */
-    readonly #appDataStorage: AppDataStorage;
+    readonly #appDataStorage: AppDataStorage<boolean>;
 
     /**
      * GS1 Company Prefix application data.
@@ -58,7 +58,7 @@ export abstract class GCPLengthCache extends Cache<GCPLengthData, GCPLengthData 
      * @param appDataStorage
      * Application data storage.
      */
-    constructor(appDataStorage: AppDataStorage) {
+    constructor(appDataStorage: AppDataStorage<boolean>) {
         super();
 
         this.#appDataStorage = appDataStorage;
@@ -67,7 +67,7 @@ export abstract class GCPLengthCache extends Cache<GCPLengthData, GCPLengthData 
     /**
      * Get the application data storage.
      */
-    get appDataStorage(): AppDataStorage {
+    get appDataStorage(): AppDataStorage<boolean> {
         return this.#appDataStorage;
     }
 
@@ -203,7 +203,7 @@ export class RemoteGCPLengthCache extends GCPLengthCache {
      * @param httpFetch
      * HTTP fetch function.
      */
-    constructor(appDataStorage: AppDataStorage, baseURL: string = RemoteGCPLengthCache.DEFAULT_BASE_URL, httpFetch: HTTPFetch = defaultHTTPFetch) {
+    constructor(appDataStorage: AppDataStorage<boolean>, baseURL: string = RemoteGCPLengthCache.DEFAULT_BASE_URL, httpFetch: HTTPFetch = defaultHTTPFetch) {
         super(appDataStorage);
 
         this.#remoteAppDataStorage = new RemoteAppDataStorage(baseURL, httpFetch);
@@ -228,7 +228,7 @@ export class RemoteGCPLengthCache extends GCPLengthCache {
     async #getRemoteAppData<T>(pathKey: string, asBinary: boolean, callback: (appData: AppData) => T): Promise<T> {
         return this.#remoteAppDataStorage.read(pathKey, asBinary).then((appData) => {
             if (appData === undefined) {
-                throw new RangeError(i18nextGS1T("GCPLength.lengthDataFileNotFound", {
+                throw new RangeError(i18nextGS1.t("GCPLength.lengthDataFileNotFound", {
                     key: pathKey
                 }));
             }

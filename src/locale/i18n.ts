@@ -4,9 +4,6 @@ import type { i18n, ParseKeys, Resource, TFunction } from "i18next";
 import enLocaleResources from "./en/locale-resources.js";
 import frLocaleResources from "./fr/locale-resources.js";
 
-/**
- * GS1 namespace.
- */
 export const gs1NS = "aidct_gs1";
 
 /**
