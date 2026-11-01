@@ -5,5 +5,9 @@
     {
       "path": "./tsconfig-src.json"
     }
-  ]
+  ],
+  "compilerOptions": {
+    // Modules.
+    "types": ["node"]
+  }
 }
