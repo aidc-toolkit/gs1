@@ -1,6 +1,6 @@
 {
   "name": "@aidc-toolkit/gs1",
-  "version": "1.0.54-beta",
+  "version": "1.0.54",
   "description": "GS1 AIDC Toolkit",
   "type": "module",
   "main": "dist/index.js",
@@ -33,8 +33,8 @@
     "vitest": "^4.1.12"
   },
   "dependencies": {
-    "@aidc-toolkit/core": "1.0.52-beta",
-    "@aidc-toolkit/utility": "1.0.53-beta"
+    "@aidc-toolkit/core": "^1.0.52",
+    "@aidc-toolkit/utility": "^1.0.53"
   },
   "allowScripts": {
     "esbuild": true,
