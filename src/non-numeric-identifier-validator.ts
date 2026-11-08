@@ -52,7 +52,7 @@ export class NonNumericIdentifierValidator extends IdentifierValidator<NonNumeri
     }
 
     /**
-     * Determine if the identifier requires a check character pair.
+     * True if the identifier requires a check character pair.
      */
     get requiresCheckCharacterPair(): boolean {
         return this.#requiresCheckCharacterPair;

@@ -12,17 +12,17 @@ import type { NumericIdentifierValidation, NumericIdentifierValidator } from "./
  */
 export interface NumericIdentifierCreator<TNumericIdentifierType extends NumericIdentifierType = NumericIdentifierType> extends NumericIdentifierValidator<TNumericIdentifierType>, IdentifierCreator<TNumericIdentifierType, NumericIdentifierValidation> {
     /**
-     * Get the capacity (`10**referenceLength`).
+     * Capacity (`10**referenceLength`).
      */
     get capacity(): number;
 
     /**
-     * Get the tweak for sparse creation.
+     * Tweak for sparse creation.
      */
     get tweak(): bigint;
 
     /**
-     * Set the tweak for sparse creation.
+     * Tweak for sparse creation.
      */
     set tweak(value: bigint);
 

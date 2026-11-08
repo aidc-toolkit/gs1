@@ -16,18 +16,18 @@ import type { PrefixProvider } from "./prefix-provider.js";
  */
 export interface IdentifierCreator<TIdentifierType extends IdentifierType = IdentifierType, TIdentifierValidation extends IdentifierValidation = IdentifierValidation> extends IdentifierValidator<TIdentifierType, TIdentifierValidation> {
     /**
-     * Get the prefix provider to which this identifier creator is bound.
+     * Prefix provider to which this identifier creator is bound.
      */
     get prefixProvider(): PrefixProvider;
 
     /**
-     * Get the prefix, equivalent to calling {@linkcode PrefixProvider.prefix | prefixProvider.prefix} for a GTIN or
+     * Prefix, equivalent to accessing {@linkcode PrefixProvider.prefix | prefixProvider.prefix} for a GTIN or
      * {@linkcode PrefixProvider.gs1CompanyPrefix | prefixProvider.gs1CompanyPrefix} for all other identifier types.
      */
     get prefix(): string;
 
     /**
-     * Get the reference length.
+     * Reference length.
      */
     get referenceLength(): number;
 }

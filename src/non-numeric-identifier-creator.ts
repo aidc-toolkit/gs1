@@ -43,7 +43,7 @@ export class NonNumericIdentifierCreator extends MixinAbstractIdentifierCreator<
     }
 
     /**
-     * Get the reference validation parameters.
+     * Reference validation parameters.
      */
     protected get referenceValidation(): CharacterSetValidation {
         return this.#referenceValidation;

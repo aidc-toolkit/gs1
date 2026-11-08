@@ -59,16 +59,15 @@ export abstract class IdentifierValidator<TIdentifierType extends IdentifierType
     }
 
     /**
-     * Get the identifier type. Per the GS1 General Specifications, the identifier type determines the remaining
-     * properties.
+     * Identifier type. Per the GS1 General Specifications, the identifier type determines the remaining properties.
      */
     get identifierType(): IdentifierTypeDescriptor<TIdentifierType>["identifierType"] {
         return this.#identifierType;
     }
 
     /**
-     * Get the prefix type supported by the identifier type. For all identifier types except the GTIN, this is a GS1
-     * Company Prefix. For the GTIN, the prefix type determines the length.
+     * Prefix type supported by the identifier type. For all identifier types except the GTIN, this is a GS1 Company
+     * Prefix. For the GTIN, the prefix type determines the length.
      */
     get prefixType(): IdentifierTypeDescriptor<TIdentifierType>["prefixType"] {
         // All identifier types except GTIN support only the GS1 Company Prefix.
@@ -76,22 +75,22 @@ export abstract class IdentifierValidator<TIdentifierType extends IdentifierType
     }
 
     /**
-     * Get the length. For numeric identifier types, the length is fixed; for alphanumeric identifier types, the length
-     * is the maximum.
+     * Length. For numeric identifier types, the length is fixed; for alphanumeric identifier types, the length is the
+     * maximum.
      */
     get length(): IdentifierTypeDescriptor<TIdentifierType>["length"] {
         return this.#length;
     }
 
     /**
-     * Get the reference character set.
+     * Reference character set.
      */
     get referenceCharacterSet(): IdentifierTypeDescriptor<TIdentifierType>["referenceCharacterSet"] {
         return this.#referenceCharacterSet;
     }
 
     /**
-     * Get the reference creator.
+     * Reference creator.
      */
     get referenceCreator(): CharacterSetCreator {
         return this.#referenceCreator;

@@ -146,9 +146,6 @@ export class GCPLength {
     }
 
     /**
-     * Get the GS1 Company Prefix length tree root.
-     *
-     * @returns
      * GS1 Company Prefix length tree root.
      */
     get root(): Root {
@@ -160,14 +157,14 @@ export class GCPLength {
     }
 
     /**
-     * Get the date/time the GS1 Company Prefix length data was last updated.
+     * Date/time the GS1 Company Prefix length data was last updated.
      */
     get dateTime(): Date {
         return this.root.dateTime;
     }
 
     /**
-     * Get the disclaimer for the GS1 Company Prefix length data.
+     * Disclaimer for the GS1 Company Prefix length data.
      */
     get disclaimer(): string {
         return this.root.disclaimer;

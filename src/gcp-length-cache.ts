@@ -65,7 +65,7 @@ export abstract class GCPLengthCache extends Cache<GCPLengthData, GCPLengthData 
     }
 
     /**
-     * Get the application data storage.
+     * Application data storage.
      */
     get appDataStorage(): AppDataStorage {
         return this.#appDataStorage;

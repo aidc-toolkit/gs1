@@ -5,12 +5,12 @@ import type { AppData } from "@aidc-toolkit/core";
  */
 export interface GCPLengthHeader {
     /**
-     * Date/time the data was last updated.
+     * Date/time the GS1 Company Prefix length data was last updated.
      */
     readonly dateTime: Date;
 
     /**
-     * Disclaimer.
+     * Disclaimer for the GS1 Company Prefix length data.
      */
     readonly disclaimer: string;
 }

@@ -72,28 +72,28 @@ export class SerializableNumericIdentifierValidator extends NonGTINNumericIdenti
     }
 
     /**
-     * Get the serial component length.
+     * Serial component length.
      */
     get serialComponentLength(): number {
         return this.#serialComponentLength;
     }
 
     /**
-     * Get the serial component character set.
+     * Serial component character set.
      */
     get serialComponentCharacterSet(): ContentCharacterSet {
         return this.#serialComponentCharacterSet;
     }
 
     /**
-     * Get the serial component validation parameters.
+     * Serial component validation parameters.
      */
     protected get serialComponentValidation(): CharacterSetValidation {
         return this.#serialComponentValidation;
     }
 
     /**
-     * Get the serial component creator.
+     * Serial component creator.
      */
     get serialComponentCreator(): CharacterSetCreator {
         return this.#serialComponentCreator;

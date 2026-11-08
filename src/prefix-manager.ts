@@ -124,35 +124,35 @@ export class PrefixManager implements PrefixProvider {
     }
 
     /**
-     * Get the prefix type.
+     * Normalized prefix type.
      */
     get prefixType(): PrefixType {
         return this.#prefixType;
     }
 
     /**
-     * Get the prefix.
+     * Normalized prefix.
      */
     get prefix(): string {
         return this.#prefix;
     }
 
     /**
-     * Get the GS1 Company Prefix.
+     * Prefix as GS1 Company Prefix.
      */
     get gs1CompanyPrefix(): string {
         return this.#gs1CompanyPrefix;
     }
 
     /**
-     * Get the U.P.C. Company Prefix if prefix type is {@linkcode PrefixTypes.UPCCompanyPrefix} or undefined if not.
+     * U.P.C. Company Prefix if prefix type is {@linkcode PrefixTypes.UPCCompanyPrefix}.
      */
     get upcCompanyPrefix(): string | undefined {
         return this.#upcCompanyPrefix;
     }
 
     /**
-     * Get the GS1-8 Prefix if prefix type is {@linkcode PrefixTypes.GS18Prefix} or undefined if not.
+     * GS1-8 Prefix if prefix type is {@linkcode PrefixTypes.GS18Prefix}.
      */
     get gs18Prefix(): string | undefined {
         return this.#gs18Prefix;
@@ -172,16 +172,13 @@ export class PrefixManager implements PrefixProvider {
     }
 
     /**
-     * Get the tweak factor.
+     * Tweak factor.
      */
     get tweakFactor(): bigint {
         return this.#tweakFactor;
     }
 
     /**
-     * Set the tweak factor.
-     *
-     * @param value
      * Tweak factor.
      */
     set tweakFactor(value: number | bigint) {
@@ -268,84 +265,84 @@ export class PrefixManager implements PrefixProvider {
     }
 
     /**
-     * Get GTIN creator.
+     * GTIN creator.
      */
     get gtinCreator(): GTINCreator {
         return this.getIdentifierCreator(IdentifierTypes.GTIN);
     }
 
     /**
-     * Get GLN creator.
+     * GLN creator.
      */
     get glnCreator(): NonSerializableNumericIdentifierCreator {
         return this.getIdentifierCreator(IdentifierTypes.GLN);
     }
 
     /**
-     * Get SSCC creator.
+     * SSCC creator.
      */
     get ssccCreator(): NonSerializableNumericIdentifierCreator {
         return this.getIdentifierCreator(IdentifierTypes.SSCC);
     }
 
     /**
-     * Get GRAI creator.
+     * GRAI creator.
      */
     get graiCreator(): SerializableNumericIdentifierCreator {
         return this.getIdentifierCreator(IdentifierTypes.GRAI);
     }
 
     /**
-     * Get GIAI creator.
+     * GIAI creator.
      */
     get giaiCreator(): NonNumericIdentifierCreator {
         return this.getIdentifierCreator(IdentifierTypes.GIAI);
     }
 
     /**
-     * Get GSRN creator.
+     * GSRN creator.
      */
     get gsrnCreator(): NonSerializableNumericIdentifierCreator {
         return this.getIdentifierCreator(IdentifierTypes.GSRN);
     }
 
     /**
-     * Get GDTI creator.
+     * GDTI creator.
      */
     get gdtiCreator(): SerializableNumericIdentifierCreator {
         return this.getIdentifierCreator(IdentifierTypes.GDTI);
     }
 
     /**
-     * Get GINC creator.
+     * GINC creator.
      */
     get gincCreator(): NonNumericIdentifierCreator {
         return this.getIdentifierCreator(IdentifierTypes.GINC);
     }
 
     /**
-     * Get GSIN creator.
+     * GSIN creator.
      */
     get gsinCreator(): NonSerializableNumericIdentifierCreator {
         return this.getIdentifierCreator(IdentifierTypes.GSIN);
     }
 
     /**
-     * Get GCN creator.
+     * GCN creator.
      */
     get gcnCreator(): SerializableNumericIdentifierCreator {
         return this.getIdentifierCreator(IdentifierTypes.GCN);
     }
 
     /**
-     * Get CPID creator.
+     * CPID creator.
      */
     get cpidCreator(): NonNumericIdentifierCreator {
         return this.getIdentifierCreator(IdentifierTypes.CPID);
     }
 
     /**
-     * Get GMN creator.
+     * GMN creator.
      */
     get gmnCreator(): NonNumericIdentifierCreator {
         return this.getIdentifierCreator(IdentifierTypes.GMN);
