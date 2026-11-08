@@ -37,7 +37,7 @@ const NumericIdentifierTypeValues = Object.values<string>(NumericIdentifierTypes
  * Identifier type.
  *
  * @returns
- * True if identifier type is a valid numeric identifier type.
+ * True if identifier type is a numeric identifier type.
  */
 export function isNumericIdentifierType(identifierType: string): identifierType is NumericIdentifierType {
     return NumericIdentifierTypeValues.includes(identifierType);

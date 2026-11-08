@@ -38,7 +38,7 @@ export interface NumericIdentifierCreator<TNumericIdentifierType extends Numeric
          * Numeric value.
          *
          * @param sparse
-         * If true, the value is mapped to a sparse sequence resistant to discovery.
+         * True if the value should be mapped to a sparse sequence resistant to discovery.
          *
          * @returns
          * Identifier.
@@ -53,7 +53,7 @@ export interface NumericIdentifierCreator<TNumericIdentifierType extends Numeric
          * Numeric values.
          *
          * @param sparse
-         * If true, the values are mapped to a sparse sequence resistant to discovery.
+         * True if the values are mapped to a sparse sequence resistant to discovery.
          *
          * @returns
          * Identifiers.

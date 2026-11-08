@@ -73,7 +73,7 @@ export class SerializableNumericIdentifierCreator extends MixinAbstractNonGTINNu
      * Serial component.
      *
      * @param sparse
-     * If true, the value is mapped to a sparse sequence resistant to discovery.
+     * True if the value should be mapped to a sparse sequence resistant to discovery.
      *
      * @returns
      * Serialized identifier.
@@ -91,7 +91,7 @@ export class SerializableNumericIdentifierCreator extends MixinAbstractNonGTINNu
      * Serial components.
      *
      * @param sparse
-     * If true, the value is mapped to a sparse sequence resistant to discovery.
+     * True if the value should be mapped to a sparse sequence resistant to discovery.
      *
      * @returns
      * Serialized identifiers.

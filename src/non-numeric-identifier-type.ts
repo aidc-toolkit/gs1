@@ -29,7 +29,7 @@ const NonNumericIdentifierTypeValues = Object.values<string>(NonNumericIdentifie
  * Identifier type.
  *
  * @returns
- * True if identifier type is a valid non-numeric identifier type.
+ * True if identifier type is a non-numeric identifier type.
  */
 export function isNonNumericIdentifierType(identifierType: string): identifierType is NonNumericIdentifierType {
     return NonNumericIdentifierTypeValues.includes(identifierType);

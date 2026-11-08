@@ -29,7 +29,7 @@ const SerializableNumericIdentifierTypeValues = Object.values<string>(Serializab
  * Identifier type.
  *
  * @returns
- * True if identifier type is a valid serializable numeric identifier type.
+ * True if identifier type is a serializable numeric identifier type.
  */
 export function isSerializableNumericIdentifierType(identifierType: string): identifierType is SerializableNumericIdentifierType {
     return SerializableNumericIdentifierTypeValues.includes(identifierType);

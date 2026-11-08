@@ -33,7 +33,7 @@ const NonSerializableNumericIdentifierTypeValues = Object.values<string>(NonSeri
  * Identifier type.
  *
  * @returns
- * True if identifier type is a valid non-serializable numeric identifier type.
+ * True if identifier type is a non-serializable numeric identifier type.
  */
 export function isNonSerializableNumericIdentifierType(identifierType: string): identifierType is NonSerializableNumericIdentifierType {
     return NonSerializableNumericIdentifierTypeValues.includes(identifierType);

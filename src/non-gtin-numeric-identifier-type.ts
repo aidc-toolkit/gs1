@@ -29,7 +29,7 @@ const NonGTINNumericIdentifierTypeValues = Object.values<string>(NonGTINNumericI
  * Identifier type.
  *
  * @returns
- * True if identifier type is a valid non-GTIN numeric identifier type.
+ * True if identifier type is a non-GTIN numeric identifier type.
  */
 export function isNonGTINNumericIdentifierType(identifierType: string): identifierType is NonGTINNumericIdentifierType {
     return NonGTINNumericIdentifierTypeValues.includes(identifierType);

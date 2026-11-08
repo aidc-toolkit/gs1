@@ -116,19 +116,19 @@ export const PrefixValidator = {
      * Prefix type.
      *
      * @param allowUPCCompanyPrefix
-     * If true, a U.P.C. Company Prefix expressed as a GS1 Company Prefix is permitted.
+     * True if a U.P.C. Company Prefix expressed as a GS1 Company Prefix should be allowed.
      *
      * @param allowGS18Prefix
-     * If true, a GS1-8 Prefix expressed as a GS1 Company Prefix is permitted.
+     * True if a GS1-8 Prefix expressed as a GS1 Company Prefix should be allowed.
      *
      * @param prefix
      * Prefix.
      *
      * @param isFromIdentifier
-     * If true, the prefix is from an identifier and should be trimmed before its character set is validated.
+     * True if the prefix is from an identifier and should be trimmed before its character set is validated.
      *
      * @param isNumericIdentifier
-     * If true, the prefix is from a numeric identifier and its character set will be validated by the caller.
+     * True if the prefix is from a numeric identifier and its character set will be validated by the caller.
      *
      * @param errorMessageParseKey
      * Parse key for error message when validating GS1 Company Prefix type.

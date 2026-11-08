@@ -42,7 +42,7 @@ const INVERSE_FIVE_MINUS_WEIGHT_RESULTS: readonly number[] = [
  * https://ref.gs1.org/standards/genspecs/ | GS1 General Specifications}.
  *
  * @param exchangeWeights
- * If true, start the weights at 1 instead of 3 on the right.
+ * True if weights should start at 1 instead of 3 on the right.
  *
  * @param s
  * Numeric string.
