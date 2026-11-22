@@ -22,8 +22,8 @@ export * from "./character-set.js";
 export * from "./check.js";
 
 export * from "./prefix-type.js";
-export type * from "./prefix-provider.js";
-export * from "./prefix-validator.js";
+export type * from "./validator/prefix-provider.js";
+export * from "./validator/prefix-validator.js";
 
 export * from "./content-character-set.js";
 
@@ -36,40 +36,40 @@ export * from "./non-serializable-numeric-identifier-type.js";
 export * from "./serializable-numeric-identifier-type.js";
 export * from "./non-numeric-identifier-type.js";
 
-export type * from "./identifier-descriptor.js";
-export type * from "./numeric-identifier-descriptor.js";
+export type * from "./descriptor/identifier-descriptor.js";
+export type * from "./descriptor/numeric-identifier-descriptor.js";
 export * from "./gtin-length.js";
-export type * from "./gtin-descriptor.js";
-export type * from "./non-gtin-numeric-identifier-descriptor.js";
-export type * from "./non-serializable-numeric-identifier-descriptor.js";
-export type * from "./serializable-numeric-identifier-descriptor.js";
-export type * from "./non-numeric-identifier-descriptor.js";
-export * from "./identifier-descriptors.js";
+export type * from "./descriptor/gtin-descriptor.js";
+export type * from "./descriptor/non-gtin-numeric-identifier-descriptor.js";
+export type * from "./descriptor/non-serializable-numeric-identifier-descriptor.js";
+export type * from "./descriptor/serializable-numeric-identifier-descriptor.js";
+export type * from "./descriptor/non-numeric-identifier-descriptor.js";
+export * from "./descriptor/identifier-descriptors.js";
 
-export * from "./identifier-validator.js";
-export * from "./numeric-identifier-validator.js";
-export { GTINLevels, type GTINLevelKey, type GTINLevel, GTINValidator } from "./gtin-validator.js";
-export * from "./non-gtin-numeric-identifier-validator.js";
-export * from "./non-serializable-numeric-identifier-validator.js";
-export * from "./serializable-numeric-identifier-validator.js";
-export * from "./non-numeric-identifier-validator.js";
-export * from "./identifier-validators.js";
+export * from "./validator/identifier-validator.js";
+export * from "./validator/numeric-identifier-validator.js";
+export { GTINLevels, type GTINLevelKey, type GTINLevel, GTINValidator } from "./validator/gtin-validator.js";
+export * from "./validator/non-gtin-numeric-identifier-validator.js";
+export * from "./validator/non-serializable-numeric-identifier-validator.js";
+export * from "./validator/serializable-numeric-identifier-validator.js";
+export * from "./validator/non-numeric-identifier-validator.js";
+export * from "./validator/identifier-validators.js";
 
-export * from "./verified-by-gs1.js";
+export * from "./service/verified-by-gs1.js";
 
-export type * from "./identifier-creator.js";
-export type * from "./numeric-identifier-creator.js";
-export * from "./gtin-creator.js";
-export type * from "./non-gtin-numeric-identifier-creator.js";
-export * from "./non-serializable-numeric-identifier-creator.js";
-export * from "./serializable-numeric-identifier-creator.js";
-export * from "./non-numeric-identifier-creator.js";
-export * from "./identifier-creators.js";
+export type * from "./creator/identifier-creator.js";
+export type * from "./creator/numeric-identifier-creator.js";
+export * from "./creator/gtin-creator.js";
+export type * from "./creator/non-gtin-numeric-identifier-creator.js";
+export * from "./creator/non-serializable-numeric-identifier-creator.js";
+export * from "./creator/serializable-numeric-identifier-creator.js";
+export * from "./creator/non-numeric-identifier-creator.js";
+export * from "./creator/identifier-creators.js";
 
-export * from "./variable-measure.js";
+export * from "./misc/variable-measure.js";
 
-export * from "./prefix-manager.js";
+export * from "./creator/prefix-manager.js";
 
-export * from "./gcp-length-data.js";
-export * from "./gcp-length-cache.js";
-export * from "./gcp-length.js";
+export * from "./service/gcp-length-data.js";
+export * from "./service/gcp-length-cache.js";
+export * from "./service/gcp-length.js";
