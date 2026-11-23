@@ -1,11 +1,11 @@
 import { describe, expect, test } from "vitest";
-import { PrefixManager, PrefixTypes } from "../src/index.js";
+import { type GTINBaseLength, GTINBaseLengths, PrefixManager, PrefixTypes } from "../src/index.js";
 import { validateIdentifierCreators } from "./identifier-creator.js";
 
 describe("Prefix manager", () => {
     let prefixManager: PrefixManager;
 
-    function validateGTINStartsWithPrefix(length: number): void {
+    function validateGTINStartsWithPrefix(length: GTINBaseLength): void {
         expect(prefixManager.gtinCreator.length).toBe(length);
 
         const gtin = prefixManager.gtinCreator.create(0);
@@ -53,7 +53,7 @@ describe("Prefix manager", () => {
         expect(prefixManager.upcCompanyPrefix).toBeUndefined();
         expect(prefixManager.gs18Prefix).toBeUndefined();
 
-        validateGTINStartsWithPrefix(13);
+        validateGTINStartsWithPrefix(GTINBaseLengths.GTIN13);
         validateNonGTINStartsWithGS1CompanyPrefix();
 
         validateIdentifierCreators(prefixManager);
@@ -68,7 +68,7 @@ describe("Prefix manager", () => {
         expect(prefixManager.upcCompanyPrefix).toBe(prefixManager.prefix);
         expect(prefixManager.gs18Prefix).toBeUndefined();
 
-        validateGTINStartsWithPrefix(12);
+        validateGTINStartsWithPrefix(GTINBaseLengths.GTIN12);
         validateNonGTINStartsWithGS1CompanyPrefix();
 
         validateIdentifierCreators(prefixManager);
@@ -83,7 +83,7 @@ describe("Prefix manager", () => {
         expect(prefixManager.upcCompanyPrefix).toBeUndefined();
         expect(prefixManager.gs18Prefix).toBe(prefixManager.prefix);
 
-        validateGTINStartsWithPrefix(8);
+        validateGTINStartsWithPrefix(GTINBaseLengths.GTIN8);
 
         validateIdentifierCreators(prefixManager);
     });

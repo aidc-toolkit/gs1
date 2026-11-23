@@ -3,13 +3,14 @@ import {
     type GTINValidator,
     type IdentifierCreator,
     IdentifierTypes,
+    type IdentifierValidator,
     IdentifierValidators,
     PrefixManager,
     PrefixTypes
 } from "../src/index.js";
 
 describe("Mixins", () => {
-    function validate<TValidator extends object, TCreator extends TValidator & IdentifierCreator>(validator: TValidator, creator: TCreator): void {
+    function validate<TIdentifierValidator extends IdentifierValidator, TIdentifierCreator extends TIdentifierValidator & IdentifierCreator>(validator: TIdentifierValidator, creator: TIdentifierCreator): void {
         for (const key of Object.keys(validator)) {
             expect(key in creator, key).toBe(true);
         }

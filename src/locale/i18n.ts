@@ -44,7 +44,7 @@ export const gs1ResourceBundle: Resource = {
     fr: {
         [gs1NS]: frLocaleResources
     }
-};
+} as const;
 
 /**
  * GS1 i18next translator function.
