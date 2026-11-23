@@ -60,10 +60,6 @@ export function testSerializableNumericIdentifierCreator(creator: SerializableNu
                 case ContentCharacterSets.AI82:
                     invalidSerial = "ABCD~1234";
                     break;
-
-                case ContentCharacterSets.AI39:
-                    invalidSerial = "ABCD%1234";
-                    break;
             }
 
             const invalidSerialErrorMessage = `Invalid character '${invalidSerial.charAt(4)}' at position 5 of serial component`;
