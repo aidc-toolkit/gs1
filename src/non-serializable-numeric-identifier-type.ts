@@ -1,10 +1,11 @@
-import { pick } from "@aidc-toolkit/core";
+import { isValueType, pick, readonlyObjectValues } from "@aidc-toolkit/core";
 import { NonGTINNumericIdentifierTypes } from "./non-gtin-numeric-identifier-type.js";
 
 /**
  * Non-serializable numeric identifier types.
  */
-export const NonSerializableNumericIdentifierTypes = pick(NonGTINNumericIdentifierTypes,
+export const NonSerializableNumericIdentifierTypes = pick(
+    NonGTINNumericIdentifierTypes,
     NonGTINNumericIdentifierTypes.GLN,
     NonGTINNumericIdentifierTypes.SSCC,
     NonGTINNumericIdentifierTypes.GSRN,
@@ -24,7 +25,7 @@ export type NonSerializableNumericIdentifierType = typeof NonSerializableNumeric
 /**
  * Non-serializable numeric identifier type values.
  */
-const NonSerializableNumericIdentifierTypeValues = Object.values<string>(NonSerializableNumericIdentifierTypes);
+export const NonSerializableNumericIdentifierTypeValues = readonlyObjectValues<NonSerializableNumericIdentifierType>(NonSerializableNumericIdentifierTypes);
 
 /**
  * Determine if identifier type is a valid non-serializable numeric identifier type.
@@ -36,5 +37,5 @@ const NonSerializableNumericIdentifierTypeValues = Object.values<string>(NonSeri
  * True if identifier type is a non-serializable numeric identifier type.
  */
 export function isNonSerializableNumericIdentifierType(identifierType: string): identifierType is NonSerializableNumericIdentifierType {
-    return NonSerializableNumericIdentifierTypeValues.includes(identifierType);
+    return isValueType(NonSerializableNumericIdentifierTypeValues, identifierType);
 }

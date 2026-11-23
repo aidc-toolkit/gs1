@@ -3,64 +3,10 @@ import { mapIterable } from "@aidc-toolkit/utility";
 import { type IdentifierType, IdentifierTypes } from "../identifier-type.js";
 import { LeaderTypes } from "../leader-type.js";
 import { i18nextGS1T } from "../locale/i18n.js";
-import { GTINValidator } from "../validator/gtin-validator.js";
-import { IdentifierValidators, isNumericIdentifierValidator } from "../validator/identifier-validators.js";
+import { GTINValidator, IdentifierValidators, isNumericIdentifierValidator } from "../validator/index.js";
 import type { GCPLengthCache } from "./gcp-length-cache.js";
-import { type GCPLengthData, type GCPLengthHeader, isGCPLengthData } from "./gcp-length-data.js";
-
-/**
- * Leaf of GS1 Company Prefix length tree.
- */
-interface Leaf {
-    /**
-     * GS1 Company Prefix length.
-     */
-    readonly length: number;
-}
-
-/**
- * Branch of GS1 Company Prefix length tree.
- */
-interface Branch {
-    /**
-     * Child nodes.
-     */
-    readonly childNodes: ReadonlyArray<Node | undefined>;
-}
-
-/**
- * Root of GS1 Company Prefix length tree.
- */
-interface Root extends GCPLengthHeader, Branch {
-}
-
-/**
- * Node in GS1 Company Prefix length tree.
- */
-type Node = Branch | Leaf;
-
-/**
- * Determine if a node is a leaf.
- *
- * @param node
- * Node.
- *
- * @returns
- * True if node is a leaf.
- */
-function isLeaf(node: Node): node is Leaf {
-    return "length" in node;
-}
-
-/**
- * Interim branch of GS1 Company Prefix length tree with writeable child nodes.
- */
-export interface InterimBranch {
-    /**
-     * Child nodes.
-     */
-    readonly childNodes: Array<InterimBranch | Leaf | undefined>;
-}
+import { type GCPLengthData, isGCPLengthData } from "./gcp-length-data.js";
+import { type Branch, type InterimBranch, isLeaf, type Node, type Root } from "./gcp-length-tree.js";
 
 /**
  * GS1 Company Prefix length service. The constructor takes a {@linkcode GCPLengthCache} object, which is responsible
@@ -242,43 +188,38 @@ export class GCPLength {
      * Number of branches added; used to determine size of binary array.
      */
     static #addEntry(branch: InterimBranch, prefix: string, length: number): number {
+        const childNodes = branch.childNodes;
         const digit = Number(prefix.charAt(0));
-
-        const existingChildNode = branch.childNodes[digit];
 
         let branchesAdded = 0;
 
-        if (prefix.length !== 1) {
-            let childBranch: InterimBranch;
+        // Node at digit is defined if another prefix with the same start digits got here first.
+        let childBranch = childNodes[digit];
 
-            if (existingChildNode === undefined) {
+        if (prefix.length !== 1) {
+            if (childBranch === undefined) {
                 childBranch = {
                     childNodes: []
                 };
 
+                // Add the child branch.
+                childNodes[digit] = childBranch;
+
                 branchesAdded++;
-            } else {
-                if (isLeaf(existingChildNode)) {
-                    // File format error or application bug; localization not necessary.
-                    throw new Error("Overlapping entry");
-                }
-
-                childBranch = existingChildNode;
+            } else if (isLeaf(childBranch)) {
+                // File format error or application bug; localization not necessary.
+                throw new Error("Overlapping entry");
             }
-
-            // eslint-disable-next-line no-param-reassign -- Purpose is to build tree.
-            branch.childNodes[digit] = childBranch;
 
             // Continue with remainder of prefix.
             branchesAdded += GCPLength.#addEntry(childBranch, prefix.substring(1), length);
         } else {
-            if (existingChildNode !== undefined) {
+            if (childBranch !== undefined) {
                 // File format error or application bug; localization not necessary.
                 throw new Error("Duplicate entry");
             }
 
-            // eslint-disable-next-line no-param-reassign -- Purpose is to build tree.
-            branch.childNodes[digit] = {
+            childNodes[digit] = {
                 length
             };
         }

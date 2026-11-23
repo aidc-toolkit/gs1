@@ -1,3 +1,5 @@
+import { isValueType, readonlyObjectValues } from "@aidc-toolkit/core";
+
 /**
  * Identifier types.
  */
@@ -76,7 +78,7 @@ export type IdentifierType = typeof IdentifierTypes[IdentifierTypeKey];
 /**
  * Identifier type values.
  */
-const IdentifierTypeValues = Object.values<string>(IdentifierTypes);
+export const IdentifierTypeValues = readonlyObjectValues<IdentifierType>(IdentifierTypes);
 
 /**
  * Determine if identifier type is a valid identifier type.
@@ -88,5 +90,5 @@ const IdentifierTypeValues = Object.values<string>(IdentifierTypes);
  * True if identifier type is a valid identifier type.
  */
 export function isIdentifierType(identifierType: string): identifierType is IdentifierType {
-    return IdentifierTypeValues.includes(identifierType);
+    return isValueType(IdentifierTypeValues, identifierType);
 }

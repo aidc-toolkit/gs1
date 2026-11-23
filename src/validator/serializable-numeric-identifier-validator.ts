@@ -1,135 +1,72 @@
-import type { CharacterSetCreator, CharacterSetValidation } from "@aidc-toolkit/utility";
-import { CONTENT_CHARACTER_SET_CREATORS } from "../content-character-set-creators.js";
-import type { ContentCharacterSet } from "../content-character-set.js";
-import { IdentifierDescriptors } from "../descriptor/identifier-descriptors.js";
+import type { ContentCharacterSets } from "../content-character-set.js";
+import { GCN_DESCRIPTOR, GDTI_DESCRIPTOR, GRAI_DESCRIPTOR } from "../descriptor/index.js";
+import {
+    type SerializableNumericIdentifierType,
+    SerializableNumericIdentifierTypes
+} from "../serializable-numeric-identifier-type.js";
 import type {
-    SerializableNumericIdentifierDescriptor
-} from "../descriptor/serializable-numeric-identifier-descriptor.js";
-import { i18nextGS1T } from "../locale/i18n.js";
-import type { SerializableNumericIdentifierType } from "../serializable-numeric-identifier-type.js";
-import type { IdentifierValidation } from "./identifier-validator.js";
-import { NonGTINNumericIdentifierValidator } from "./non-gtin-numeric-identifier-validator.js";
+    BaseSerializableNumericIdentifierValidator,
+    SerializableNumericIdentifierSplit
+} from "./base-serializable-numeric-identifier-validator.js";
+import {
+    ConcreteSerializableNumericIdentifierValidator
+} from "./concrete-serializable-numeric-identifier-validator.js";
+
+export type { SerializableNumericIdentifierSplit };
 
 /**
- * Serializable numeric identifier split.
+ * GRAI validator.
  */
-export interface SerializableNumericIdentifierSplit {
-    /**
-     * Base identifier.
-     */
-    baseIdentifier: string;
+export type GRAIValidator = BaseSerializableNumericIdentifierValidator<typeof SerializableNumericIdentifierTypes.GRAI, typeof ContentCharacterSets.AI82>;
 
-    /**
-     * Serial component.
-     */
-    serialComponent: string;
-}
+/**
+ * GRAI validator.
+ */
+export const GRAI_VALIDATOR: GRAIValidator = new ConcreteSerializableNumericIdentifierValidator(GRAI_DESCRIPTOR);
+
+/**
+ * GDTI validator.
+ */
+export type GDTIValidator = BaseSerializableNumericIdentifierValidator<typeof SerializableNumericIdentifierTypes.GDTI, typeof ContentCharacterSets.AI82>;
+
+/**
+ * GDTI validator.
+ */
+export const GDTI_VALIDATOR: GDTIValidator = new ConcreteSerializableNumericIdentifierValidator(GDTI_DESCRIPTOR);
+
+/**
+ * GCN validator.
+ */
+export type GCNValidator = BaseSerializableNumericIdentifierValidator<typeof SerializableNumericIdentifierTypes.GCN, typeof ContentCharacterSets.Numeric>;
+
+/**
+ * GCN validator.
+ */
+export const GCN_VALIDATOR: GCNValidator = new ConcreteSerializableNumericIdentifierValidator(GCN_DESCRIPTOR);
 
 /**
  * Serializable numeric identifier validator. Validates both serialized and non-serialized forms of numeric identifiers
  * that support serialization.
  */
-export class SerializableNumericIdentifierValidator extends NonGTINNumericIdentifierValidator<SerializableNumericIdentifierType> implements SerializableNumericIdentifierDescriptor {
-    /**
-     * Serial component length.
-     */
-    readonly #serialComponentLength: number;
+export type SerializableNumericIdentifierValidator = GRAIValidator | GDTIValidator | GCNValidator;
 
-    /**
-     * Serial component character set.
-     */
-    readonly #serialComponentCharacterSet: ContentCharacterSet;
+/**
+ * Serializable numeric identifier validator by identifier type.
+ */
+export type SerializableNumericIdentifierTypeValidator<TIdentifierType extends SerializableNumericIdentifierType> =
+    TIdentifierType extends typeof SerializableNumericIdentifierTypes.GRAI ?
+        GRAIValidator :
+        TIdentifierType extends typeof SerializableNumericIdentifierTypes.GDTI ?
+            GDTIValidator :
+            TIdentifierType extends typeof SerializableNumericIdentifierTypes.GCN ?
+                GCNValidator :
+                never;
 
-    /**
-     * Serial component validation parameters.
-     */
-    readonly #serialComponentValidation: CharacterSetValidation;
-
-    /**
-     * Serial component creator.
-     */
-    readonly #serialComponentCreator: CharacterSetCreator;
-
-    /**
-     * Constructor.
-     *
-     * @param identifierType
-     * Identifier type.
-     */
-    constructor(identifierType: SerializableNumericIdentifierType) {
-        const identifierDescriptor = IdentifierDescriptors[identifierType];
-
-        super(identifierDescriptor);
-
-        this.#serialComponentLength = identifierDescriptor.serialComponentLength;
-        this.#serialComponentCharacterSet = identifierDescriptor.serialComponentCharacterSet;
-
-        this.#serialComponentValidation = {
-            minimumLength: 1,
-            maximumLength: identifierDescriptor.serialComponentLength,
-            component: () => i18nextGS1T("Identifier.serialComponent")
-        };
-
-        this.#serialComponentCreator = CONTENT_CHARACTER_SET_CREATORS[identifierDescriptor.serialComponentCharacterSet];
-    }
-
-    /**
-     * Serial component length.
-     */
-    get serialComponentLength(): number {
-        return this.#serialComponentLength;
-    }
-
-    /**
-     * Serial component character set.
-     */
-    get serialComponentCharacterSet(): ContentCharacterSet {
-        return this.#serialComponentCharacterSet;
-    }
-
-    /**
-     * Serial component validation parameters.
-     */
-    protected get serialComponentValidation(): CharacterSetValidation {
-        return this.#serialComponentValidation;
-    }
-
-    /**
-     * Serial component creator.
-     */
-    get serialComponentCreator(): CharacterSetCreator {
-        return this.#serialComponentCreator;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    override validate(identifier: string, validation?: IdentifierValidation): void {
-        super.validate(identifier.substring(0, this.length), validation);
-
-        if (identifier.length > this.length) {
-            this.serialComponentCreator.validate(identifier.substring(this.length), this.#serialComponentValidation);
-        }
-    }
-
-    /**
-     * Split a serializable numeric identifier into its component parts.
-     *
-     * @param identifier
-     * Identifier.
-     *
-     * @param validation
-     * Identifier validation parameters.
-     *
-     * @returns
-     * Base identifier and serial component (possibly empty) as object.
-     */
-    split(identifier: string, validation?: IdentifierValidation): SerializableNumericIdentifierSplit {
-        this.validate(identifier, validation);
-
-        return {
-            baseIdentifier: identifier.substring(0, this.length),
-            serialComponent: identifier.substring(this.length)
-        };
-    }
-}
+/**
+ * Serializable numeric identifier validators indexed by identifier type.
+ */
+export const SerializableNumericIdentifierValidators = {
+    [SerializableNumericIdentifierTypes.GRAI]: GRAI_VALIDATOR,
+    [SerializableNumericIdentifierTypes.GDTI]: GDTI_VALIDATOR,
+    [SerializableNumericIdentifierTypes.GCN]: GCN_VALIDATOR
+} as const;

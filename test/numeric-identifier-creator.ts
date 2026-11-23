@@ -5,12 +5,11 @@ import {
     isGTINCreator,
     isNumericIdentifierCreator,
     LeaderTypes,
-    type NumericIdentifierCreator,
-    type NumericIdentifierType
+    type NumericIdentifierCreator
 } from "../src/index.js";
 import { testIdentifierCreatorCallback } from "./identifier-creator.js";
 
-export function testNumericIdentifierCreator<TNumericIdentifierType extends NumericIdentifierType>(creator: NumericIdentifierCreator<TNumericIdentifierType>, preTestCallback?: () => void, postTestCallback?: () => void): void {
+export function testNumericIdentifierCreator(creator: NumericIdentifierCreator, preTestCallback?: () => void, postTestCallback?: () => void): void {
     describe(isGTINCreator(creator) ? `${creator.identifierType}-${creator.length}` : creator.identifierType as string, () => {
         testIdentifierCreatorCallback(preTestCallback);
 

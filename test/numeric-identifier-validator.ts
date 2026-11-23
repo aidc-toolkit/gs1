@@ -3,14 +3,13 @@ import { expect } from "vitest";
 import {
     ContentCharacterSets,
     type IdentifierType,
-    type IdentifierTypeValidator,
     type LeaderType,
-    type NumericIdentifierType,
+    type NumericIdentifierValidator,
     type PrefixType
 } from "../src/index.js";
 import { validateIdentifierValidator } from "./identifier-validator.js";
 
-export function validateNumericIdentifierValidator<TNumericIdentifierType extends NumericIdentifierType>(validator: IdentifierTypeValidator<TNumericIdentifierType>, identifierType: IdentifierType, prefixType: PrefixType, length: number, leaderType: LeaderType): void {
+export function validateNumericIdentifierValidator(validator: NumericIdentifierValidator, identifierType: IdentifierType, prefixType: PrefixType, length: number, leaderType: LeaderType): void {
     validateIdentifierValidator(validator, identifierType, prefixType, length);
 
     expect(validator.leaderType).toBe(leaderType);

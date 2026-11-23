@@ -1,7 +1,6 @@
 import type { Hyperlink } from "@aidc-toolkit/core";
 import { type IdentifierType, IdentifierTypes } from "../identifier-type.js";
-import { GTINValidator } from "../validator/gtin-validator.js";
-import { IdentifierValidators } from "../validator/identifier-validators.js";
+import { GTINValidator, IdentifierValidators } from "../validator/index.js";
 
 const VERIFIED_BY_GS1_REFERENCE_BASE = "https://www.gs1.org/services/verified-by-gs1/results?";
 

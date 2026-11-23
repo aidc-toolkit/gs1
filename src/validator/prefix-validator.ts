@@ -1,7 +1,7 @@
 import { type CharacterSetValidation, NUMERIC_CREATOR } from "@aidc-toolkit/utility";
-import type { PrefixProvider } from "../creator/prefix-provider.js";
 import { type GS1ParseKeys, i18nextGS1T } from "../locale/i18n.js";
 import { type PrefixType, PrefixTypes } from "../prefix-type.js";
+import type { PrefixProvider } from "./prefix-provider.js";
 
 /**
  * Prefix validation parameters.

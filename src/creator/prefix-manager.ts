@@ -1,22 +1,14 @@
-import { GTIN_BASE_TYPES } from "../gtin-length.js";
-import type { GTINType } from "../gtin-type.js";
 import { type IdentifierType, IdentifierTypes } from "../identifier-type.js";
-import { i18nextGS1T } from "../locale/i18n.js";
 import type { NumericIdentifierType } from "../numeric-identifier-type.js";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Used in JSDoc.
 import { type PrefixType, PrefixTypes } from "../prefix-type.js";
-import { PrefixValidator } from "../validator/prefix-validator.js";
+import { type PrefixProvider, PrefixValidator } from "../validator/index.js";
 import type { GTINCreator } from "./gtin-creator.js";
-import type { IdentifierCreator } from "./identifier-creator.js";
-import {
-    IdentifierCreatorConstructors,
-    type IdentifierCreatorsRecord,
-    isNumericIdentifierCreator,
-    type NonGTINCreatorConstructor
-} from "./identifier-creators.js";
-import type { NonNumericIdentifierCreator } from "./non-numeric-identifier-creator.js";
-import type { NonSerializableNumericIdentifierCreator } from "./non-serializable-numeric-identifier-creator.js";
-import type { PrefixProvider } from "./prefix-provider.js";
-import type { SerializableNumericIdentifierCreator } from "./serializable-numeric-identifier-creator.js";
+import { IdentifierCreatorManager } from "./identifier-creator-manager.js";
+import { type IdentifierCreator, type IdentifierCreators, isNumericIdentifierCreator } from "./identifier-creator.js";
+import type { CPIDCreator, GIAICreator, GINCCreator, GMNCreator } from "./non-numeric-identifier-creator.js";
+import type { GLNCreator, GSINCreator, GSRNCreator, SSCCCreator } from "./non-serializable-numeric-identifier-creator.js";
+import type { GCNCreator, GDTICreator, GRAICreator } from "./serializable-numeric-identifier-creator.js";
 
 /**
  * Prefix manager. This is the core class for identifier creation.
@@ -95,9 +87,9 @@ export class PrefixManager implements PrefixProvider {
     #tweakFactor = 0n;
 
     /**
-     * Cached identifier creators.
+     * Identifier creator manager.
      */
-    readonly #identifierCreators: Partial<IdentifierCreatorsRecord> = {};
+    readonly #identifierCreatorManager: IdentifierCreatorManager;
 
     /**
      * Constructor.
@@ -119,6 +111,8 @@ export class PrefixManager implements PrefixProvider {
 
         // Default tweak factor is the numeric value of the GS1 Company Prefix preceded by '1'.
         this.#defaultTweakFactor = BigInt(`1${this.gs1CompanyPrefix}`);
+        
+        this.#identifierCreatorManager = new IdentifierCreatorManager(this, this.#setCreatorTweak.bind(this));
 
         this.resetTweakFactor();
     }
@@ -186,10 +180,8 @@ export class PrefixManager implements PrefixProvider {
 
         if (this.#tweakFactor !== tweakFactor) {
             this.#tweakFactor = tweakFactor;
-
-            for (const creator of Object.values(this.#identifierCreators)) {
-                this.#setCreatorTweak(creator);
-            }
+            
+            this.#identifierCreatorManager.reinitializeAll();
         }
     }
 
@@ -229,39 +221,14 @@ export class PrefixManager implements PrefixProvider {
     /**
      * Get an identifier creator.
      *
-     * @template TIdentifierType
-     * Identifier type type.
-     *
      * @param identifierType
      * Identifier type for which to retrieve or construct identifier creator.
      *
      * @returns
      * Identifier creator.
      */
-    getIdentifierCreator<TIdentifierType extends IdentifierType>(identifierType: TIdentifierType): IdentifierCreatorsRecord[TIdentifierType] {
-        let creator: IdentifierCreatorsRecord[TIdentifierType] | undefined = this.#identifierCreators[identifierType];
-
-        if (creator === undefined) {
-            if (identifierType === IdentifierTypes.GTIN) {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Types are known to match.
-                creator = new IdentifierCreatorConstructors.GTIN(this, GTIN_BASE_TYPES[this.prefixType]) as IdentifierCreatorsRecord[TIdentifierType];
-            } else {
-                if (this.prefixType === PrefixTypes.GS18Prefix) {
-                    throw new RangeError(i18nextGS1T("Prefix.identifierTypeNotSupportedByGS18Prefix", {
-                        identifierType
-                    }));
-                }
-
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Types are known to match.
-                creator = new (IdentifierCreatorConstructors[identifierType] as unknown as NonGTINCreatorConstructor<Exclude<TIdentifierType, GTINType>>)(this, identifierType as Exclude<TIdentifierType, GTINType>);
-            }
-
-            this.#setCreatorTweak(creator);
-
-            this.#identifierCreators[identifierType] = creator;
-        }
-
-        return creator;
+    getIdentifierCreator<TIdentifierType extends IdentifierType>(identifierType: TIdentifierType): IdentifierCreators[TIdentifierType] {
+        return this.#identifierCreatorManager.get(identifierType);
     }
 
     /**
@@ -274,77 +241,77 @@ export class PrefixManager implements PrefixProvider {
     /**
      * GLN creator.
      */
-    get glnCreator(): NonSerializableNumericIdentifierCreator {
+    get glnCreator(): GLNCreator {
         return this.getIdentifierCreator(IdentifierTypes.GLN);
     }
 
     /**
      * SSCC creator.
      */
-    get ssccCreator(): NonSerializableNumericIdentifierCreator {
+    get ssccCreator(): SSCCCreator {
         return this.getIdentifierCreator(IdentifierTypes.SSCC);
     }
 
     /**
      * GRAI creator.
      */
-    get graiCreator(): SerializableNumericIdentifierCreator {
+    get graiCreator(): GRAICreator {
         return this.getIdentifierCreator(IdentifierTypes.GRAI);
     }
 
     /**
      * GIAI creator.
      */
-    get giaiCreator(): NonNumericIdentifierCreator {
+    get giaiCreator(): GIAICreator {
         return this.getIdentifierCreator(IdentifierTypes.GIAI);
     }
 
     /**
      * GSRN creator.
      */
-    get gsrnCreator(): NonSerializableNumericIdentifierCreator {
+    get gsrnCreator(): GSRNCreator {
         return this.getIdentifierCreator(IdentifierTypes.GSRN);
     }
 
     /**
      * GDTI creator.
      */
-    get gdtiCreator(): SerializableNumericIdentifierCreator {
+    get gdtiCreator(): GDTICreator {
         return this.getIdentifierCreator(IdentifierTypes.GDTI);
     }
 
     /**
      * GINC creator.
      */
-    get gincCreator(): NonNumericIdentifierCreator {
+    get gincCreator(): GINCCreator {
         return this.getIdentifierCreator(IdentifierTypes.GINC);
     }
 
     /**
      * GSIN creator.
      */
-    get gsinCreator(): NonSerializableNumericIdentifierCreator {
+    get gsinCreator(): GSINCreator {
         return this.getIdentifierCreator(IdentifierTypes.GSIN);
     }
 
     /**
      * GCN creator.
      */
-    get gcnCreator(): SerializableNumericIdentifierCreator {
+    get gcnCreator(): GCNCreator {
         return this.getIdentifierCreator(IdentifierTypes.GCN);
     }
 
     /**
      * CPID creator.
      */
-    get cpidCreator(): NonNumericIdentifierCreator {
+    get cpidCreator(): CPIDCreator {
         return this.getIdentifierCreator(IdentifierTypes.CPID);
     }
 
     /**
      * GMN creator.
      */
-    get gmnCreator(): NonNumericIdentifierCreator {
+    get gmnCreator(): GMNCreator {
         return this.getIdentifierCreator(IdentifierTypes.GMN);
     }
 }

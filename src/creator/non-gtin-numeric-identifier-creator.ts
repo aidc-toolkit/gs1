@@ -1,12 +1,18 @@
-import type { NonGTINNumericIdentifierType } from "../non-gtin-numeric-identifier-type.js";
-import type { NonGTINNumericIdentifierValidator } from "../validator/non-gtin-numeric-identifier-validator.js";
-import type { NumericIdentifierCreator } from "./numeric-identifier-creator.js";
+import type {
+    NonSerializableNumericIdentifierCreator,
+    NonSerializableNumericIdentifierCreators
+} from "./non-serializable-numeric-identifier-creator.js";
+import type {
+    SerializableNumericIdentifierCreator,
+    SerializableNumericIdentifierCreators
+} from "./serializable-numeric-identifier-creator.js";
 
 /**
- * Non-GTIN numeric identifier creator. Creates one or many non-GTIN numeric identifiers.
- *
- * @template TNonGTINNumericIdentifierType
- * Non-GTIN numeric identifier type type.
+ * Non-GTIN numeric identifier creator.
  */
-export interface NonGTINNumericIdentifierCreator<TNonGTINNumericIdentifierType extends NonGTINNumericIdentifierType = NonGTINNumericIdentifierType> extends NonGTINNumericIdentifierValidator<TNonGTINNumericIdentifierType>, NumericIdentifierCreator<TNonGTINNumericIdentifierType> {
-}
+export type NonGTINNumericIdentifierCreator = NonSerializableNumericIdentifierCreator | SerializableNumericIdentifierCreator;
+
+/**
+ * Non-GTIN numeric identifier creators indexed by identifier type.
+ */
+export type NonGTINNumericIdentifierCreators = NonSerializableNumericIdentifierCreators & SerializableNumericIdentifierCreators;

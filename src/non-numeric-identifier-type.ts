@@ -1,4 +1,4 @@
-import { exclude } from "@aidc-toolkit/core";
+import { exclude, isValueType, readonlyObjectValues } from "@aidc-toolkit/core";
 import { IdentifierTypes } from "./identifier-type.js";
 import { NumericIdentifierTypes } from "./numeric-identifier-type.js";
 
@@ -20,7 +20,7 @@ export type NonNumericIdentifierType = typeof NonNumericIdentifierTypes[NonNumer
 /**
  * Non-numeric identifier type values.
  */
-const NonNumericIdentifierTypeValues = Object.values<string>(NonNumericIdentifierTypes);
+export const NonNumericIdentifierTypeValues = readonlyObjectValues<NonNumericIdentifierType>(NonNumericIdentifierTypes);
 
 /**
  * Determine if identifier type is a valid non-numeric identifier type.
@@ -32,5 +32,5 @@ const NonNumericIdentifierTypeValues = Object.values<string>(NonNumericIdentifie
  * True if identifier type is a non-numeric identifier type.
  */
 export function isNonNumericIdentifierType(identifierType: string): identifierType is NonNumericIdentifierType {
-    return NonNumericIdentifierTypeValues.includes(identifierType);
+    return isValueType(NonNumericIdentifierTypeValues, identifierType);
 }

@@ -1,10 +1,11 @@
-import { pick } from "@aidc-toolkit/core";
+import { isValueType, pick, readonlyObjectValues } from "@aidc-toolkit/core";
 import { IdentifierTypes } from "./identifier-type.js";
 
 /**
  * Numeric identifier types.
  */
-export const NumericIdentifierTypes = pick(IdentifierTypes,
+export const NumericIdentifierTypes = pick(
+    IdentifierTypes,
     IdentifierTypes.GTIN,
     IdentifierTypes.GLN,
     IdentifierTypes.SSCC,
@@ -28,7 +29,7 @@ export type NumericIdentifierType = typeof NumericIdentifierTypes[NumericIdentif
 /**
  * Numeric identifier type values.
  */
-const NumericIdentifierTypeValues = Object.values<string>(NumericIdentifierTypes);
+export const NumericIdentifierTypeValues = readonlyObjectValues<NumericIdentifierType>(NumericIdentifierTypes);
 
 /**
  * Determine if identifier type is a valid numeric identifier type.
@@ -40,5 +41,5 @@ const NumericIdentifierTypeValues = Object.values<string>(NumericIdentifierTypes
  * True if identifier type is a numeric identifier type.
  */
 export function isNumericIdentifierType(identifierType: string): identifierType is NumericIdentifierType {
-    return NumericIdentifierTypeValues.includes(identifierType);
+    return isValueType(NumericIdentifierTypeValues, identifierType);
 }

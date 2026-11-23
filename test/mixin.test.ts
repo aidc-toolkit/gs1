@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import {
-    GTINBaseLengths,
+    type GTINValidator,
     type IdentifierCreator,
     IdentifierTypes,
     IdentifierValidators,
@@ -18,7 +18,7 @@ describe("Mixins", () => {
     const prefixManager = PrefixManager.get(PrefixTypes.GS1CompanyPrefix, "9521234");
 
     test(IdentifierTypes.GTIN, () => {
-        validate(IdentifierValidators.GTIN[GTINBaseLengths.GTIN13], prefixManager.gtinCreator);
+        validate(IdentifierValidators.GTIN[PrefixTypes.GS1CompanyPrefix] as GTINValidator, prefixManager.gtinCreator);
     });
 
     test("Non-serialized numeric", () => {

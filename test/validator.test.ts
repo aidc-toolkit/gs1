@@ -30,7 +30,9 @@ describe("Validators", () => {
             expect(validatorsOrValidator).toBe(expectedIdentifierValidatorsOrValidator);
 
             if (isGTINValidators(validatorsOrValidator)) {
-                for (const validator of Object.values(validatorsOrValidator)) {
+                for (const prefixType of PrefixTypeValues) {
+                    const validator = validatorsOrValidator[prefixType];
+
                     for (const isIdentifierValidatorType of isIdentifierValidatorTypes) {
                         expect(isIdentifierValidatorType(validator)).toBe(true);
                     }

@@ -2,6 +2,8 @@ import { i18nextUtilityT, NUMERIC_CREATOR } from "@aidc-toolkit/utility";
 import { AI82_CREATOR } from "./character-set.js";
 import { i18nextGS1T } from "./locale/i18n.js";
 
+/* eslint-disable @stylistic/list-style -- Arrays formatted for readability. */
+
 /**
  * Results of multiplying digits by 3.
  */
@@ -36,6 +38,8 @@ const FIVE_MINUS_WEIGHT_RESULTS: readonly number[] = [
 const INVERSE_FIVE_MINUS_WEIGHT_RESULTS: readonly number[] = [
     0, 9, 7, 5, 3, 1, 8, 6, 4, 2
 ];
+
+/* eslint-enable @stylistic/list-style */
 
 /**
  * Calculate the check digit sum for a numeric string as per section 7.9.1 of the {@link
@@ -173,20 +177,24 @@ export function isValidPriceOrWeightCheckDigit(s: string, checkDigit: string): b
     return priceOrWeightCheckDigit(s) === checkDigit;
 }
 
+/* eslint-disable @stylistic/list-style -- Arrays formatted for readability. */
+
 /**
  * Weights for check character pair calculation.
  */
-const CHECK_CHARACTER_WEIGHTS = [
+const CHECK_CHARACTER_WEIGHTS: readonly number[] = [
     107, 103, 101, 97, 89, 83, 79, 73, 71, 67, 61, 59, 53, 47, 43, 41, 37, 31, 29, 23, 19, 17, 13, 11, 7, 5, 3, 2
 ];
 
 /**
  * Characters used to build check character pair.
  */
-const CHECK_CHARACTERS = [
+const CHECK_CHARACTERS: readonly string[] = [
     "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H",
     "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
 ];
+
+/* eslint-enable @stylistic/list-style */
 
 /**
  * Calculate the check character for a GS1 AI encodable character set 82 string as per section 7.9.5 of the {@link

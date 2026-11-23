@@ -1,70 +1,95 @@
 import type { AbstractConstructor } from "@aidc-toolkit/core";
-import type { IdentifierType } from "../identifier-type.js";
-import type { IdentifierValidation, IdentifierValidator } from "../validator/identifier-validator.js";
-import type {
-    IdentifierTypeValidator,
-    IdentifierValidatorConstructorsEntry
-} from "../validator/identifier-validators.js";
-import type { IdentifierCreator } from "./identifier-creator.js";
-import type { PrefixProvider } from "./prefix-provider.js";
+import type { IdentifierDescriptor } from "../descriptor/index.js";
+import type { BaseIdentifierValidator, IdentifierValidation } from "../validator/base-identifier-validator.js";
+import type { IdentifierValidator, PrefixProvider } from "../validator/index.js";
+import type { BaseIdentifierCreator } from "./base-identifier-creator.js";
 
 /**
  * Identifier creator constructor type, which delegates to an identifier validator constructor.
- *
- * @template TIdentifierType
- * Identifier type type.
- *
- * @template TIdentifierValidation
- * Identifier validation type.
- *
- * @template TIdentifierValidator
- * Identifier validator type.
  */
-export type IdentifierCreatorConstructor<
-    TIdentifierType extends IdentifierType,
-    TIdentifierValidation extends IdentifierValidation,
-    TIdentifierValidator extends IdentifierValidator<TIdentifierType, TIdentifierValidation>
+type IdentifierCreatorConstructor<
+    TIdentifierDescriptor extends IdentifierDescriptor,
+    TIdentifierValidator extends TIdentifierDescriptor & IdentifierValidator,
+    TIdentifierValidation extends IdentifierValidation
 > = AbstractConstructor<
-    [prefixProvider: PrefixProvider, prefix: string, checkAllowance: number, ...args: ConstructorParameters<IdentifierValidatorConstructorsEntry<TIdentifierType>>],
-    TIdentifierValidator & IdentifierCreator<TIdentifierType, TIdentifierValidation>
+    [prefixProvider: PrefixProvider, prefix: string, checkAllowance: number, identifierDescriptor: TIdentifierDescriptor],
+    BaseIdentifierCreator<
+        TIdentifierValidator["identifierType"],
+        TIdentifierValidator["prefixType"],
+        TIdentifierValidator["length"],
+        TIdentifierValidator["referenceCharacterSet"],
+        TIdentifierValidation
+    >
 >;
 
 /**
- * Mixin implementation of {@linkcode IdentifierCreator} with an appropriate identifier validator base.
- *
- * @template TIdentifierType
- * Identifier type type.
- *
- * @template TIdentifierValidation
- * Identifier validation type.
+ * Mixin identifier creator constructor type, which includes the identifier validator type.
+ */
+export type MixinIdentifierCreatorConstructor<
+    TIdentifierDescriptor extends IdentifierDescriptor,
+    TIdentifierValidator extends TIdentifierDescriptor & IdentifierValidator,
+    TIdentifierValidation extends IdentifierValidation,
+    TMixinIdentifierValidator extends BaseIdentifierValidator<
+        TIdentifierValidator["identifierType"],
+        TIdentifierValidator["prefixType"],
+        TIdentifierValidator["length"],
+        TIdentifierValidator["referenceCharacterSet"],
+        TIdentifierValidation
+    >
+> = AbstractConstructor<
+    ConstructorParameters<IdentifierCreatorConstructor<TIdentifierDescriptor, TIdentifierValidator, TIdentifierValidation>>,
+    InstanceType<IdentifierCreatorConstructor<TIdentifierDescriptor, TIdentifierValidator, TIdentifierValidation>> & TMixinIdentifierValidator
+>;
+
+/**
+ * Mixin implementation of {@linkcode BaseIdentifierCreator} with an appropriate identifier validator base.
  *
  * @param IdentifierValidatorConstructor
- * Identifier validator base.
+ * Identifier validator constructor.
  *
  * @returns
  * Identifier creator class.
  */
 export function MixinAbstractIdentifierCreator<
-    TIdentifierType extends IdentifierType,
-    TIdentifierValidation extends IdentifierValidation
+    TIdentifierDescriptor extends IdentifierDescriptor,
+    TIdentifierValidator extends TIdentifierDescriptor & IdentifierValidator,
+    TIdentifierValidation extends IdentifierValidation,
+    TIdentifierValidatorClass extends TIdentifierValidator & AbstractConstructor<
+        [identifierDescriptor: TIdentifierDescriptor],
+        TIdentifierValidator
+    >
 >(IdentifierValidatorConstructor: AbstractConstructor<
-    ConstructorParameters<IdentifierValidatorConstructorsEntry<TIdentifierType>>,
-    IdentifierTypeValidator<TIdentifierType>
->): IdentifierCreatorConstructor<
-    TIdentifierType,
+    [identifierDescriptor: TIdentifierDescriptor],
+    TIdentifierValidatorClass
+>): MixinIdentifierCreatorConstructor<
+    TIdentifierDescriptor,
+    TIdentifierValidator,
     TIdentifierValidation,
-    IdentifierTypeValidator<TIdentifierType>
+    TIdentifierValidatorClass
 > {
     /**
      * Abstract numeric identifier creator. Implements common functionality for a numeric identifier creator, mixed in
      * with a matching numeric identifier validator.
      */
     abstract class AbstractIdentifierCreator extends (
+        // Upcast to type with statically known members.
         IdentifierValidatorConstructor as AbstractConstructor<
-            ConstructorParameters<IdentifierValidatorConstructorsEntry<TIdentifierType>>,
-            IdentifierValidator<TIdentifierType>
+            [identifierDescriptor: TIdentifierDescriptor],
+            BaseIdentifierValidator<
+                TIdentifierValidator["identifierType"],
+                TIdentifierValidator["prefixType"],
+                TIdentifierValidator["length"],
+                TIdentifierValidator["referenceCharacterSet"],
+                TIdentifierValidation
+            >
         >
-    ) implements IdentifierCreator<TIdentifierType, TIdentifierValidation> {
+    ) implements BaseIdentifierCreator<
+        TIdentifierValidator["identifierType"],
+        TIdentifierValidator["prefixType"],
+        TIdentifierValidator["length"],
+        TIdentifierValidator["referenceCharacterSet"],
+        TIdentifierValidation
+    > {
         /**
          * Prefix provider.
          */
@@ -86,12 +111,12 @@ export function MixinAbstractIdentifierCreator<
          *
          * @param checkAllowance
          * Number of characters to allow for check digit or check character pair.
-         * 
-         * @param args
-         * Originating constructor arguments.
+         *
+         * @param identifierDescriptor
+         * Identifier descriptor to pass to identifier validator constructor.
          */
-        constructor(prefixProvider: PrefixProvider, prefix: string, checkAllowance: number, ...args: ConstructorParameters<IdentifierValidatorConstructorsEntry<TIdentifierType>>) {
-            super(...args);
+        protected constructor(prefixProvider: PrefixProvider, prefix: string, checkAllowance: number, identifierDescriptor: TIdentifierDescriptor) {
+            super(identifierDescriptor);
 
             this.#prefixProvider = prefixProvider;
 
@@ -121,9 +146,11 @@ export function MixinAbstractIdentifierCreator<
         }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Base class was upcast to type with statically known members for mixin, downcast result.
-    return AbstractIdentifierCreator as AbstractConstructor<
-        ConstructorParameters<typeof AbstractIdentifierCreator>,
-        IdentifierTypeValidator<TIdentifierType> & AbstractIdentifierCreator
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Base class was upcast to type with statically known members for mixin; downcast result.
+    return AbstractIdentifierCreator as unknown as MixinIdentifierCreatorConstructor<
+        TIdentifierDescriptor,
+        TIdentifierValidator,
+        TIdentifierValidation,
+        TIdentifierValidatorClass
     >;
 }

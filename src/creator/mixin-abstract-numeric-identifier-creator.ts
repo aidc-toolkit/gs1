@@ -1,42 +1,55 @@
 import type { AbstractConstructor } from "@aidc-toolkit/core";
 import { CharacterSetCreator, Exclusions, NUMERIC_CREATOR } from "@aidc-toolkit/utility";
 import { checkDigit, checkDigitSum } from "../check.js";
+import type { NumericIdentifierDescriptor } from "../descriptor/index.js";
 import { LeaderTypes } from "../leader-type.js";
-import type { NumericIdentifierType } from "../numeric-identifier-type.js";
 import type {
-    IdentifierTypeValidator,
-    IdentifierValidatorConstructorsEntry
-} from "../validator/identifier-validators.js";
-import type {
-    NumericIdentifierValidation,
-    NumericIdentifierValidator
-} from "../validator/numeric-identifier-validator.js";
-import { type IdentifierCreatorConstructor, MixinAbstractIdentifierCreator } from "./mixin-abstract-identifier-creator.js";
-import type { NumericIdentifierCreator } from "./numeric-identifier-creator.js";
-import type { PrefixProvider } from "./prefix-provider.js";
+    BaseNumericIdentifierValidator,
+    NumericIdentifierValidation
+} from "../validator/base-numeric-identifier-validator.js";
+import type { NumericIdentifierValidator, PrefixProvider } from "../validator/index.js";
+import type { BaseNumericIdentifierCreator } from "./base-numeric-identifier-creator.js";
+import {
+    MixinAbstractIdentifierCreator,
+    type MixinIdentifierCreatorConstructor
+} from "./mixin-abstract-identifier-creator.js";
 
 /**
  * Numeric identifier creator constructor type, which delegates to a numeric identifier validator constructor.
- *
- * @template TNumericIdentifierType
- * Numeric identifier type type.
- *
- * @template TNumericIdentifierValidator
- * Numeric identifier validator type.
  */
-export type NumericIdentifierCreatorConstructor<
-    TNumericIdentifierType extends NumericIdentifierType,
-    TNumericIdentifierValidator extends NumericIdentifierValidator<TNumericIdentifierType>
+type NumericIdentifierCreatorConstructor<
+    TIdentifierDescriptor extends NumericIdentifierDescriptor,
+    TIdentifierValidator extends TIdentifierDescriptor & NumericIdentifierValidator
 > = AbstractConstructor<
-    [prefixProvider: PrefixProvider, prefix: string, ...args: ConstructorParameters<IdentifierValidatorConstructorsEntry<TNumericIdentifierType>>],
-    TNumericIdentifierValidator & NumericIdentifierCreator<TNumericIdentifierType>
+    [prefixProvider: PrefixProvider, prefix: string, identifierDescriptor: TIdentifierDescriptor],
+    BaseNumericIdentifierCreator<
+        TIdentifierValidator["identifierType"],
+        TIdentifierValidator["prefixType"],
+        TIdentifierValidator["length"],
+        TIdentifierValidator["leaderType"]
+    >
 >;
 
 /**
- * Mixin implementation of {@linkcode NumericIdentifierCreator} with an appropriate numeric identifier validator base.
- *
- * @template TNumericIdentifierType
- * Numeric identifier type type.
+ * Mixin numeric identifier creator constructor type, which includes the numeric identifier validator type.
+ */
+export type MixinNumericIdentifierCreatorConstructor<
+    TIdentifierDescriptor extends NumericIdentifierDescriptor,
+    TIdentifierValidator extends TIdentifierDescriptor & NumericIdentifierValidator,
+    TMixinIdentifierValidator extends BaseNumericIdentifierValidator<
+        TIdentifierValidator["identifierType"],
+        TIdentifierValidator["prefixType"],
+        TIdentifierValidator["length"],
+        TIdentifierValidator["leaderType"]
+    >
+> = AbstractConstructor<
+    ConstructorParameters<NumericIdentifierCreatorConstructor<TIdentifierDescriptor, TIdentifierValidator>>,
+    InstanceType<NumericIdentifierCreatorConstructor<TIdentifierDescriptor, TIdentifierValidator>> & TMixinIdentifierValidator
+>;
+
+/**
+ * Mixin implementation of {@linkcode BaseNumericIdentifierCreator} with an appropriate numeric identifier validator
+ * base.
  *
  * @param NumericIdentifierValidatorConstructor
  * Numeric identifier validator base.
@@ -45,25 +58,43 @@ export type NumericIdentifierCreatorConstructor<
  * Numeric identifier creator class.
  */
 export function MixinAbstractNumericIdentifierCreator<
-    TNumericIdentifierType extends NumericIdentifierType
+    TIdentifierDescriptor extends NumericIdentifierDescriptor,
+    TIdentifierValidator extends TIdentifierDescriptor & NumericIdentifierValidator,
+    TIdentifierValidatorClass extends TIdentifierValidator & AbstractConstructor<
+        [identifierDescriptor: TIdentifierDescriptor],
+        TIdentifierValidator
+    >
 >(NumericIdentifierValidatorConstructor: AbstractConstructor<
-    ConstructorParameters<IdentifierValidatorConstructorsEntry<TNumericIdentifierType>>,
-    IdentifierTypeValidator<TNumericIdentifierType>
->): NumericIdentifierCreatorConstructor<
-    TNumericIdentifierType,
-    IdentifierTypeValidator<TNumericIdentifierType>
+    [identifierDescriptor: TIdentifierDescriptor],
+    TIdentifierValidatorClass
+>): MixinNumericIdentifierCreatorConstructor<
+    TIdentifierDescriptor,
+    TIdentifierValidator,
+    TIdentifierValidatorClass
 > {
     /**
      * Abstract numeric identifier creator. Implements common functionality for a numeric identifier creator, mixed in
      * with a matching numeric identifier validator.
      */
     abstract class AbstractNumericIdentifierCreator extends (
-        MixinAbstractIdentifierCreator(NumericIdentifierValidatorConstructor) as IdentifierCreatorConstructor<
-            TNumericIdentifierType,
+        // Upcast to type with statically known members.
+        MixinAbstractIdentifierCreator(NumericIdentifierValidatorConstructor) as MixinIdentifierCreatorConstructor<
+            TIdentifierDescriptor,
+            TIdentifierValidator,
             NumericIdentifierValidation,
-            NumericIdentifierValidator<TNumericIdentifierType>
+            BaseNumericIdentifierValidator<
+                TIdentifierValidator["identifierType"],
+                TIdentifierValidator["prefixType"],
+                TIdentifierValidator["length"],
+                TIdentifierValidator["leaderType"]
+            >
         >
-    ) implements NumericIdentifierCreator<TNumericIdentifierType> {
+    ) implements BaseNumericIdentifierCreator<
+        TIdentifierValidator["identifierType"],
+        TIdentifierValidator["prefixType"],
+        TIdentifierValidator["length"],
+        TIdentifierValidator["leaderType"]
+    > {
         /**
          * Capacity.
          */
@@ -83,11 +114,11 @@ export function MixinAbstractNumericIdentifierCreator<
          * @param prefix
          * Prefix within prefix provider to use to calculate reference length.
          *
-         * @param args
-         * Originating constructor arguments.
+         * @param identifierDescriptor
+         * Identifier descriptor to pass to identifier validator constructor.
          */
-        constructor(prefixProvider: PrefixProvider, prefix: string, ...args: ConstructorParameters<IdentifierValidatorConstructorsEntry<TNumericIdentifierType>>) {
-            super(prefixProvider, prefix, 1, ...args);
+        protected constructor(prefixProvider: PrefixProvider, prefix: string, identifierDescriptor: TIdentifierDescriptor) {
+            super(prefixProvider, prefix, 1, identifierDescriptor);
 
             // Capacity is always in number range.
             this.#capacity = Number(CharacterSetCreator.powerOf10(this.referenceLength));
@@ -216,12 +247,10 @@ export function MixinAbstractNumericIdentifierCreator<
         }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Base class was upcast to type with statically known members for mixin, downcast result.
-    return AbstractNumericIdentifierCreator as AbstractConstructor<
-        ConstructorParameters<typeof AbstractNumericIdentifierCreator>,
-        unknown
-    > as AbstractConstructor<
-        ConstructorParameters<typeof AbstractNumericIdentifierCreator>,
-        IdentifierTypeValidator<TNumericIdentifierType> & AbstractNumericIdentifierCreator
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Base class was upcast to type with statically known members for mixin; downcast result.
+    return AbstractNumericIdentifierCreator as unknown as MixinNumericIdentifierCreatorConstructor<
+        TIdentifierDescriptor,
+        TIdentifierValidator,
+        TIdentifierValidatorClass
     >;
 }

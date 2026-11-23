@@ -1,138 +1,146 @@
-import type { CharacterSetCreator, StringValidation, StringValidator } from "@aidc-toolkit/utility";
-import { CONTENT_CHARACTER_SET_CREATORS } from "../content-character-set-creators.js";
-import { ContentCharacterSets } from "../content-character-set.js";
-import type { IdentifierDescriptor } from "../descriptor/identifier-descriptor.js";
-import type { IdentifierTypeDescriptor } from "../descriptor/identifier-descriptors.js";
+import {
+    isGTINExtension,
+    isNonGTINNumericIdentifierExtension,
+    isNonNumericIdentifierExtension,
+    isNonSerializableNumericIdentifierExtension,
+    isNumericIdentifierExtension,
+    isSerializableNumericIdentifierExtension
+} from "../descriptor/identifier-extension.js";
+import type { GTINType } from "../gtin-type.js";
 import type { IdentifierType } from "../identifier-type.js";
-import { PrefixTypes } from "../prefix-type.js";
-import { PrefixValidator } from "./prefix-validator.js";
+import type { NonNumericIdentifierType } from "../non-numeric-identifier-type.js";
+import type { NumericIdentifierType } from "../numeric-identifier-type.js";
+import type { PrefixType } from "../prefix-type.js";
+import type { IdentifierValidation } from "./base-identifier-validator.js";
+import type { GTINValidator, GTINValidators } from "./gtin-validator.js";
+import type { NonGTINNumericIdentifierValidator } from "./non-gtin-numeric-identifier-validator.js";
+import {
+    type NonNumericIdentifierTypeValidator,
+    type NonNumericIdentifierValidator,
+    NonNumericIdentifierValidators
+} from "./non-numeric-identifier-validator.js";
+import type { NonSerializableNumericIdentifierValidator } from "./non-serializable-numeric-identifier-validator.js";
+import {
+    type NumericIdentifierTypeValidator,
+    type NumericIdentifierValidator,
+    NumericIdentifierValidators
+} from "./numeric-identifier-validator.js";
+import type { SerializableNumericIdentifierValidator } from "./serializable-numeric-identifier-validator.js";
 
-/**
- * Identifier validation parameters.
- */
-export interface IdentifierValidation extends StringValidation {
-}
+export type { IdentifierValidation };
 
 /**
  * Identifier validator. Validates an identifier against its definition in section 3 of the {@link
  * https://ref.gs1.org/standards/genspecs/ | GS1 General Specifications}. Implements common functionality for an
  * identifier validator.
- *
- * @template TIdentifierType
- * Identifier type type.
- *
- * @template TIdentifierValidation
- * Identifier validation type.
  */
-export abstract class IdentifierValidator<TIdentifierType extends IdentifierType = IdentifierType, TIdentifierValidation extends IdentifierValidation = IdentifierValidation> implements IdentifierDescriptor, StringValidator<TIdentifierValidation> {
-    /**
-     * Identifier type.
-     */
-    readonly #identifierType: IdentifierTypeDescriptor<TIdentifierType>["identifierType"];
+export type IdentifierValidator = NumericIdentifierValidator | NonNumericIdentifierValidator;
 
-    /**
-     * Length.
-     */
-    readonly #length: IdentifierTypeDescriptor<TIdentifierType>["length"];
+/**
+ * Identifier validator by identifier type.
+ */
+export type IdentifierTypeValidator<TIdentifierType extends IdentifierType, TPrefixType extends TIdentifierType extends GTINType ? PrefixType : never = never> =
+    TIdentifierType extends NumericIdentifierType ?
+        NumericIdentifierTypeValidator<TIdentifierType, TPrefixType> :
+        TIdentifierType extends NonNumericIdentifierType ?
+            NonNumericIdentifierTypeValidator<TIdentifierType> :
+            never;
 
-    /**
-     * Reference character set.
-     */
-    readonly #referenceCharacterSet: IdentifierTypeDescriptor<TIdentifierType>["referenceCharacterSet"];
+/**
+ * Identifier validators indexed by identifier type.
+ */
+export const IdentifierValidators = {
+    ...NumericIdentifierValidators,
+    ...NonNumericIdentifierValidators
+} as const;
 
-    /**
-     * Reference creator.
-     */
-    readonly #referenceCreator: CharacterSetCreator;
+/**
+ * Determine if identifier validators or validator is GTIN validators.
+ *
+ * @param identifierValidatorsOrValidator
+ * Identifier validators or validator.
+ *
+ * @returns
+ * True if identifier validators or validator is GTIN validators.
+ */
+export function isGTINValidators(identifierValidatorsOrValidator: typeof IdentifierValidators[IdentifierType]): identifierValidatorsOrValidator is typeof GTINValidators {
+    return !("identifierType" in identifierValidatorsOrValidator);
+}
 
-    /**
-     * Constructor.
-     *
-     * @param identifierDescriptor
-     * Identifier descriptor.
-     */
-    protected constructor(identifierDescriptor: IdentifierTypeDescriptor<TIdentifierType>) {
-        this.#identifierType = identifierDescriptor.identifierType;
-        this.#length = identifierDescriptor.length;
-        this.#referenceCharacterSet = identifierDescriptor.referenceCharacterSet;
-        this.#referenceCreator = CONTENT_CHARACTER_SET_CREATORS[identifierDescriptor.referenceCharacterSet];
-    }
+/**
+ * Determine if identifier validator is a numeric identifier validator.
+ *
+ * @param identifierValidator
+ * Identifier validator.
+ *
+ * @returns
+ * True if identifier validator is a numeric identifier validator.
+ */
+export function isNumericIdentifierValidator(identifierValidator: IdentifierValidator): identifierValidator is NumericIdentifierValidator {
+    return isNumericIdentifierExtension(identifierValidator);
+}
 
-    /**
-     * Identifier type. Per the GS1 General Specifications, the identifier type determines the remaining properties.
-     */
-    get identifierType(): IdentifierTypeDescriptor<TIdentifierType>["identifierType"] {
-        return this.#identifierType;
-    }
+/**
+ * Determine if identifier validator is a GTIN validator.
+ *
+ * @param identifierValidator
+ * Identifier validator.
+ *
+ * @returns
+ * True if identifier validator is a GTIN validator.
+ */
+export function isGTINValidator(identifierValidator: IdentifierValidator): identifierValidator is GTINValidator {
+    return isGTINExtension(identifierValidator);
+}
 
-    /**
-     * Prefix type supported by the identifier type. For all identifier types except the GTIN, this is a GS1 Company
-     * Prefix. For the GTIN, the prefix type determines the length.
-     */
-    get prefixType(): IdentifierTypeDescriptor<TIdentifierType>["prefixType"] {
-        // All identifier types except GTIN support only the GS1 Company Prefix.
-        return PrefixTypes.GS1CompanyPrefix;
-    }
+/**
+ * Determine if identifier validator is a non-GTIN numeric identifier validator.
+ *
+ * @param identifierValidator
+ * Identifier validator.
+ *
+ * @returns
+ * True if identifier validator is a non-GTIN numeric identifier validator.
+ */
+export function isNonGTINNumericIdentifierValidator(identifierValidator: IdentifierValidator): identifierValidator is NonGTINNumericIdentifierValidator {
+    return isNonGTINNumericIdentifierExtension(identifierValidator);
+}
 
-    /**
-     * Length. For numeric identifier types, the length is fixed; for alphanumeric identifier types, the length is the
-     * maximum.
-     */
-    get length(): IdentifierTypeDescriptor<TIdentifierType>["length"] {
-        return this.#length;
-    }
+/**
+ * Determine if identifier validator is a non-serializable numeric identifier validator.
+ *
+ * @param identifierValidator
+ * Identifier validator.
+ *
+ * @returns
+ * True if identifier validator is a non-serializable numeric identifier validator.
+ */
+export function isNonSerializableNumericIdentifierValidator(identifierValidator: IdentifierValidator): identifierValidator is NonSerializableNumericIdentifierValidator {
+    return isNonSerializableNumericIdentifierExtension(identifierValidator);
+}
 
-    /**
-     * Reference character set.
-     */
-    get referenceCharacterSet(): IdentifierTypeDescriptor<TIdentifierType>["referenceCharacterSet"] {
-        return this.#referenceCharacterSet;
-    }
+/**
+ * Determine if identifier validator is a serializable numeric identifier validator.
+ *
+ * @param identifierValidator
+ * Identifier validator.
+ *
+ * @returns
+ * True if identifier validator is a serializable numeric identifier validator.
+ */
+export function isSerializableNumericIdentifierValidator(identifierValidator: IdentifierValidator): identifierValidator is SerializableNumericIdentifierValidator {
+    return isSerializableNumericIdentifierExtension(identifierValidator);
+}
 
-    /**
-     * Reference creator.
-     */
-    get referenceCreator(): CharacterSetCreator {
-        return this.#referenceCreator;
-    }
-
-    /**
-     * Pad an identifier on the left with zero-value character for validation purposes. This is done to align an
-     * identifier with a position offset for any error message that may be thrown by the reference validator.
-     *
-     * @param identifier
-     * Identifier.
-     *
-     * @param positionOffset
-     * Position offset within a larger string.
-     *
-     * @returns
-     * Padded identifier.
-     */
-    protected padIdentifier(identifier: string, positionOffset?: number): string {
-        // Identifier is returned as is if position offset is undefined.
-        return positionOffset === undefined ? identifier : this.referenceCreator.character(0).repeat(positionOffset).concat(identifier);
-    }
-
-    /**
-     * Validate the prefix within an identifier.
-     *
-     * @param partialIdentifier
-     * Partial identifier.
-     */
-    protected validatePrefix(partialIdentifier: string): void {
-        // Delegate to prefix validator with support for U.P.C. Company Prefix but not GS1-8 Prefix.
-        PrefixValidator.validate(this.prefixType, true, false, partialIdentifier, true, this.referenceCharacterSet === ContentCharacterSets.Numeric);
-    }
-
-    /**
-     * Validate an identifier and throw an error if validation fails.
-     *
-     * @param identifier
-     * Identifier.
-     *
-     * @param validation
-     * Identifier validation parameters.
-     */
-    abstract validate(identifier: string, validation?: TIdentifierValidation): void;
+/**
+ * Determine if identifier validator is a non-numeric identifier validator.
+ *
+ * @param identifierValidator
+ * Identifier validator.
+ *
+ * @returns
+ * True if identifier validator is a non-numeric identifier validator.
+ */
+export function isNonNumericIdentifierValidator(identifierValidator: IdentifierValidator): identifierValidator is NonNumericIdentifierValidator {
+    return isNonNumericIdentifierExtension(identifierValidator);
 }

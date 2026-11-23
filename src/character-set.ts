@@ -7,6 +7,8 @@ import {
 } from "@aidc-toolkit/utility";
 import { i18nextGS1T } from "./locale/i18n.js";
 
+/* eslint-disable @stylistic/list-style -- Arrays formatted for readability. */
+
 /**
  * GS1 AI encodable character set 82 creator as defined in section 7.11 of the {@link
  * https://ref.gs1.org/standards/genspecs/ | GS1 General Specifications}. Supports {@linkcode Exclusions.AllNumeric}.
@@ -26,7 +28,7 @@ export const AI82_CREATOR = new CharacterSetCreator([
  * GS1 AI encodable character set 82 validator as defined in section 7.11 of the {@link
  * https://ref.gs1.org/standards/genspecs/ | GS1 General Specifications}. Supports {@linkcode Exclusions.AllNumeric}.
  */
-export const AI82_VALIDATOR = AI82_CREATOR as CharacterSetValidator;
+export const AI82_VALIDATOR: CharacterSetValidator = AI82_CREATOR;
 
 /**
  * GS1 AI encodable character set 39 creator as defined in section 7.11 of the {@link
@@ -43,7 +45,7 @@ export const AI39_CREATOR = new CharacterSetCreator([
  * GS1 AI encodable character set 39 validator as defined in section 7.11 of the {@link
  * https://ref.gs1.org/standards/genspecs/ | GS1 General Specifications}. Supports {@linkcode Exclusions.AllNumeric}.
  */
-export const AI39_VALIDATOR = AI39_CREATOR as CharacterSetValidator;
+export const AI39_VALIDATOR: CharacterSetValidator = AI39_CREATOR;
 
 /**
  * GS1 AI encodable character set 64 validator with additional base64 validation of length (multiple of 4) and position
@@ -96,3 +98,5 @@ class AI64CharacterSetValidator extends CharacterSetValidator {
  * https://ref.gs1.org/standards/genspecs/ | GS1 General Specifications}. Doesn't support any exclusions.
  */
 export const AI64_VALIDATOR: CharacterSetValidator = new AI64CharacterSetValidator();
+
+/* eslint-enable @stylistic/list-style */

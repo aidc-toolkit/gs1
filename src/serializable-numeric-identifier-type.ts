@@ -1,4 +1,4 @@
-import { exclude } from "@aidc-toolkit/core";
+import { exclude, isValueType, readonlyObjectValues } from "@aidc-toolkit/core";
 import { NonGTINNumericIdentifierTypes } from "./non-gtin-numeric-identifier-type.js";
 import { NonSerializableNumericIdentifierTypes } from "./non-serializable-numeric-identifier-type.js";
 
@@ -20,7 +20,7 @@ export type SerializableNumericIdentifierType = typeof SerializableNumericIdenti
 /**
  * Serializable numeric identifier type values.
  */
-const SerializableNumericIdentifierTypeValues = Object.values<string>(SerializableNumericIdentifierTypes);
+export const SerializableNumericIdentifierTypeValues = readonlyObjectValues<SerializableNumericIdentifierType>(SerializableNumericIdentifierTypes);
 
 /**
  * Determine if identifier type is a valid serializable numeric identifier type.
@@ -32,5 +32,5 @@ const SerializableNumericIdentifierTypeValues = Object.values<string>(Serializab
  * True if identifier type is a serializable numeric identifier type.
  */
 export function isSerializableNumericIdentifierType(identifierType: string): identifierType is SerializableNumericIdentifierType {
-    return SerializableNumericIdentifierTypeValues.includes(identifierType);
+    return isValueType(SerializableNumericIdentifierTypeValues, identifierType);
 }

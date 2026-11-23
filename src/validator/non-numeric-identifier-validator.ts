@@ -1,89 +1,79 @@
-import { Exclusions, RegExpValidator } from "@aidc-toolkit/utility";
-import { hasValidCheckCharacterPair } from "../check.js";
-import { IdentifierDescriptors } from "../descriptor/identifier-descriptors.js";
-import type { NonNumericIdentifierDescriptor } from "../descriptor/non-numeric-identifier-descriptor.js";
-import { i18nextGS1T } from "../locale/i18n.js";
-import type { NonNumericIdentifierType } from "../non-numeric-identifier-type.js";
-import { type IdentifierValidation, IdentifierValidator } from "./identifier-validator.js";
+import type { ContentCharacterSets } from "../content-character-set.js";
+import { CPID_DESCRIPTOR, GIAI_DESCRIPTOR, GINC_DESCRIPTOR, GMN_DESCRIPTOR } from "../descriptor/index.js";
+import { type NonNumericIdentifierType, NonNumericIdentifierTypes } from "../non-numeric-identifier-type.js";
+import type {
+    BaseNonNumericIdentifierValidator,
+    NonNumericIdentifierValidation
+} from "./base-non-numeric-identifier-validator.js";
+import { ConcreteNonNumericIdentifierValidator } from "./concrete-non-numeric-identifier-validator.js";
+
+export type { NonNumericIdentifierValidation };
 
 /**
- * Non-numeric identifier validation parameters.
+ * GIAI validator.
  */
-export interface NonNumericIdentifierValidation extends IdentifierValidation {
-    /**
-     * Exclusion support for reference. Prevents non-numeric identifier from being mistaken for numeric identifier.
-     */
-    exclusion?: typeof Exclusions.None | typeof Exclusions.AllNumeric | undefined;
-}
+export type GIAIValidator = BaseNonNumericIdentifierValidator<typeof NonNumericIdentifierTypes.GIAI, typeof ContentCharacterSets.AI82>;
+
+/**
+ * GIAI validator.
+ */
+export const GIAI_VALIDATOR: GIAIValidator = new ConcreteNonNumericIdentifierValidator(GIAI_DESCRIPTOR);
+
+/**
+ * GINC validator.
+ */
+export type GINCValidator = BaseNonNumericIdentifierValidator<typeof NonNumericIdentifierTypes.GINC, typeof ContentCharacterSets.AI82>;
+
+/**
+ * GINC validator.
+ */
+export const GINC_VALIDATOR: GINCValidator = new ConcreteNonNumericIdentifierValidator(GINC_DESCRIPTOR);
+
+/**
+ * CPID validator.
+ */
+export type CPIDValidator = BaseNonNumericIdentifierValidator<typeof NonNumericIdentifierTypes.CPID, typeof ContentCharacterSets.AI39>;
+
+/**
+ * CPID validator.
+ */
+export const CPID_VALIDATOR: CPIDValidator = new ConcreteNonNumericIdentifierValidator(CPID_DESCRIPTOR);
+
+/**
+ * GMN validator.
+ */
+export type GMNValidator = BaseNonNumericIdentifierValidator<typeof NonNumericIdentifierTypes.GMN, typeof ContentCharacterSets.AI82>;
+
+/**
+ * GMN validator.
+ */
+export const GMN_VALIDATOR: GMNValidator = new ConcreteNonNumericIdentifierValidator(GMN_DESCRIPTOR);
 
 /**
  * Non-numeric identifier validator.
  */
-export class NonNumericIdentifierValidator extends IdentifierValidator<NonNumericIdentifierType, NonNumericIdentifierValidation> implements NonNumericIdentifierDescriptor {
-    /**
-     * Validator to ensure that an identifier (minus check character pair) is not all numeric.
-     */
-    static readonly #NOT_ALL_NUMERIC_VALIDATOR = new class extends RegExpValidator {
-        /**
-         * @inheritDoc
-         */
-        protected override createErrorMessage(_s: string): string {
-            return i18nextGS1T("Identifier.referenceCantBeAllNumeric");
-        }
-    }(/\D/u);
+export type NonNumericIdentifierValidator = GIAIValidator | GINCValidator | CPIDValidator | GMNValidator;
 
-    /**
-     * True if the identifier requires a check character pair.
-     */
-    readonly #requiresCheckCharacterPair: boolean;
+/**
+ * Non-numeric identifier validator by identifier type.
+ */
+export type NonNumericIdentifierTypeValidator<TIdentifierType extends NonNumericIdentifierType> =
+    TIdentifierType extends typeof NonNumericIdentifierTypes.GIAI ?
+        GIAIValidator :
+        TIdentifierType extends typeof NonNumericIdentifierTypes.GINC ?
+            GINCValidator :
+            TIdentifierType extends typeof NonNumericIdentifierTypes.CPID ?
+                CPIDValidator :
+                TIdentifierType extends typeof NonNumericIdentifierTypes.GMN ?
+                    GMNValidator :
+                    never;
 
-    /**
-     * Constructor.
-     *
-     * @param identifierType
-     * Identifier type.
-     */
-    constructor(identifierType: NonNumericIdentifierType) {
-        const identifierDescriptor = IdentifierDescriptors[identifierType];
-
-        super(identifierDescriptor);
-
-        this.#requiresCheckCharacterPair = identifierDescriptor.requiresCheckCharacterPair;
-    }
-
-    /**
-     * True if the identifier requires a check character pair.
-     */
-    get requiresCheckCharacterPair(): boolean {
-        return this.#requiresCheckCharacterPair;
-    }
-
-    /**
-     * Validate a non-numeric identifier and throw an error if validation fails.
-     *
-     * @param identifier
-     * Identifier.
-     *
-     * @param validation
-     * Validation parameters.
-     */
-    validate(identifier: string, validation?: NonNumericIdentifierValidation): void {
-        const partialIdentifier = this.requiresCheckCharacterPair ? identifier.substring(0, identifier.length - 2) : identifier;
-
-        super.validatePrefix(partialIdentifier);
-
-        if (!this.requiresCheckCharacterPair) {
-            this.referenceCreator.validate(identifier, {
-                maximumLength: this.length
-            });
-            // Validating the check character pair will also validate the characters.
-        } else if (!hasValidCheckCharacterPair(this.padIdentifier(identifier))) {
-            throw new RangeError(i18nextGS1T("Identifier.invalidCheckCharacterPair"));
-        }
-
-        // Check for all-numeric identifier (minus check character pair) if excluded.
-        if (validation?.exclusion === Exclusions.AllNumeric) {
-            NonNumericIdentifierValidator.#NOT_ALL_NUMERIC_VALIDATOR.validate(partialIdentifier);
-        }
-    }
-}
+/**
+ * Non-numeric identifier validators indexed by identifier type.
+ */
+export const NonNumericIdentifierValidators = {
+    [NonNumericIdentifierTypes.GIAI]: GIAI_VALIDATOR,
+    [NonNumericIdentifierTypes.GINC]: GINC_VALIDATOR,
+    [NonNumericIdentifierTypes.CPID]: CPID_VALIDATOR,
+    [NonNumericIdentifierTypes.GMN]: GMN_VALIDATOR
+} as const;

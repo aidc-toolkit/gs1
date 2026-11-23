@@ -1,4 +1,4 @@
-import { exclude } from "@aidc-toolkit/core";
+import { exclude, isValueType, readonlyObjectValues } from "@aidc-toolkit/core";
 import { GTINTypes } from "./gtin-type.js";
 import { NumericIdentifierTypes } from "./numeric-identifier-type.js";
 
@@ -20,7 +20,7 @@ export type NonGTINNumericIdentifierType = typeof NonGTINNumericIdentifierTypes[
 /**
  * Non-GTIN numeric identifier type values.
  */
-const NonGTINNumericIdentifierTypeValues = Object.values<string>(NonGTINNumericIdentifierTypes);
+export const NonGTINNumericIdentifierTypeValues = readonlyObjectValues<NonGTINNumericIdentifierType>(NonGTINNumericIdentifierTypes);
 
 /**
  * Determine if identifier type is a valid non-GTIN numeric identifier type.
@@ -32,5 +32,5 @@ const NonGTINNumericIdentifierTypeValues = Object.values<string>(NonGTINNumericI
  * True if identifier type is a non-GTIN numeric identifier type.
  */
 export function isNonGTINNumericIdentifierType(identifierType: string): identifierType is NonGTINNumericIdentifierType {
-    return NonGTINNumericIdentifierTypeValues.includes(identifierType);
+    return isValueType(NonGTINNumericIdentifierTypeValues, identifierType);
 }

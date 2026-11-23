@@ -1,5 +1,4 @@
 import { omit } from "@aidc-toolkit/core";
-import { type PrefixType, PrefixTypes } from "./prefix-type.js";
 
 /**
  * GTIN lengths. The numeric values are equal to the lengths of the GTINs.
@@ -50,12 +49,3 @@ export type GTINBaseLengthKey = keyof typeof GTINBaseLengths;
  * GTIN length.
  */
 export type GTINBaseLength = typeof GTINBaseLengths[GTINBaseLengthKey];
-
-/**
- * GTIN base lengths by prefix type. Used to determine the GTIN length supported by a prefix type.
- */
-export const GTIN_BASE_TYPES: Readonly<Record<PrefixType, GTINBaseLength>> = {
-    [PrefixTypes.GS1CompanyPrefix]: GTINLengths.GTIN13,
-    [PrefixTypes.UPCCompanyPrefix]: GTINLengths.GTIN12,
-    [PrefixTypes.GS18Prefix]: GTINLengths.GTIN8
-};
