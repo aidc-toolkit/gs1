@@ -38,10 +38,7 @@ export function testNumericIdentifierCreator(creator: NumericIdentifierCreator, 
             expect(hasValidCheckDigit(identifier)).toBe(true);
         }
 
-        test("Straight", {
-            // Test can take a long time.
-            timeout: 20 * 1000
-        }, () => {
+        test("Straight", () => {
             expect(creator.referenceLength).toBe(referenceLength);
             expect(creator.capacity).toBe(Number(CharacterSetCreator.powerOf10(referenceLength)));
 
