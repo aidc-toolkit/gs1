@@ -5,7 +5,7 @@ import { testNonSerializableNumericIdentifierCreator } from "./non-serializable-
 import { testNonNumericIdentifierCreator } from "./non-numeric-identifier-creator.js";
 import { testSerializableNumericIdentifierCreator } from "./serializable-numeric-identifier-creator.js";
 
-describe("Creators", () => {
+describe("Identifier creators", () => {
     testGTINCreator(PrefixManager.get(PrefixTypes.GS1CompanyPrefix, "952123456").gtinCreator);
     testGTINCreator(PrefixManager.get(PrefixTypes.UPCCompanyPrefix, "61414112").gtinCreator);
     testGTINCreator(PrefixManager.get(PrefixTypes.GS18Prefix, "9521").gtinCreator);
