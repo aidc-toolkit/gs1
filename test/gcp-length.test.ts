@@ -143,10 +143,14 @@ describe("GS1 Company Prefix length", () => {
     }
 
     function rmCache(): void {
-        rm(NEXT_CHECK_DATE_TIME_PATH,
-            BINARY_HEADER_PATH, BINARY_DATA_PATH,
-            BINARY_1_HEADER_PATH, BINARY_1_DATA_PATH,
-            BINARY_2_HEADER_PATH, BINARY_2_DATA_PATH
+        rm(
+            NEXT_CHECK_DATE_TIME_PATH,
+            BINARY_HEADER_PATH,
+            BINARY_DATA_PATH,
+            BINARY_1_HEADER_PATH,
+            BINARY_1_DATA_PATH,
+            BINARY_2_HEADER_PATH,
+            BINARY_2_DATA_PATH
         );
     }
 
