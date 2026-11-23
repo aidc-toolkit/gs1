@@ -9,7 +9,7 @@ import {
 } from "../src/index.js";
 import { validateNumericIdentifierValidator } from "./numeric-identifier-validator.js";
 
-export function validateGTINValidator(validator: GTINValidator, isCreator: boolean, gtinBaseLength: GTINBaseLength): void {
+export function validateGTINValidator(validator: GTINValidator, gtinBaseLength: GTINBaseLength): void {
     let prefixType: PrefixType;
 
     switch (gtinBaseLength) {

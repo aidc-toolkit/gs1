@@ -36,7 +36,7 @@ export function validateIdentifierCreators(prefixManager: PrefixManager): void {
     // Validate creator caching.
     expect(prefixManager.gtinCreator).toBe(prefixManager.gtinCreator);
 
-    validateGTINValidator(prefixManager.gtinCreator, true, gtinLength);
+    validateGTINValidator(prefixManager.gtinCreator, gtinLength);
 
     if (prefixManager.prefixType !== PrefixTypes.GS18Prefix) {
         // Validate creator caching.
