@@ -1,13 +1,12 @@
 import { describe, expect, test } from "vitest";
 import {
     ContentCharacterSets,
-    type GTINBaseLength,
     GTINLengths,
     type GTINValidator,
+    IdentifierValidators,
     type IdentifierType,
     IdentifierTypes,
     type IdentifierValidator,
-    IdentifierValidators,
     isGTINValidator,
     isGTINValidators,
     isNonGTINNumericIdentifierValidator,
@@ -15,7 +14,10 @@ import {
     isNonSerializableNumericIdentifierValidator,
     isNumericIdentifierValidator,
     isSerializableNumericIdentifierValidator,
-    LeaderTypes
+    LeaderTypes,
+    type PrefixType,
+    PrefixTypes,
+    PrefixTypeValues
 } from "../src/index.js";
 import { validateGTINValidator } from "./gtin-validator.js";
 import { validateNonNumericIdentifierValidator } from "./non-numeric-identifier-validator.js";
@@ -23,11 +25,11 @@ import { validateNonSerializableNumericIdentifierValidator } from "./non-seriali
 import { validateSerializableNumericIdentifierValidator } from "./serializable-numeric-identifier-validator.js";
 
 describe("Validators", () => {
-    function validateMapping(identifierType: IdentifierType, expectedIdentifierValidatorsOrValidator: Readonly<Record<GTINBaseLength, GTINValidator>> | IdentifierValidator, ...isIdentifierValidatorTypes: Array<(validator: IdentifierValidator) => boolean>): void {
+    function validateMapping(identifierType: IdentifierType, expectedValidatorsOrValidator: Readonly<Record<PrefixType, GTINValidator>> | IdentifierValidator, ...isIdentifierValidatorTypes: Array<(validator: IdentifierValidator) => boolean>): void {
         test(identifierType, () => {
             const validatorsOrValidator = IdentifierValidators[identifierType];
 
-            expect(validatorsOrValidator).toBe(expectedIdentifierValidatorsOrValidator);
+            expect(validatorsOrValidator).toBe(expectedValidatorsOrValidator);
 
             if (isGTINValidators(validatorsOrValidator)) {
                 for (const prefixType of PrefixTypeValues) {
@@ -61,9 +63,9 @@ describe("Validators", () => {
     });
 
     test("Structure", () => {
-        validateGTINValidator(IdentifierValidators.GTIN[GTINLengths.GTIN13], GTINLengths.GTIN13);
-        validateGTINValidator(IdentifierValidators.GTIN[GTINLengths.GTIN12], GTINLengths.GTIN12);
-        validateGTINValidator(IdentifierValidators.GTIN[GTINLengths.GTIN8], GTINLengths.GTIN8);
+        validateGTINValidator(IdentifierValidators.GTIN[PrefixTypes.GS1CompanyPrefix], GTINLengths.GTIN13);
+        validateGTINValidator(IdentifierValidators.GTIN[PrefixTypes.UPCCompanyPrefix], GTINLengths.GTIN12);
+        validateGTINValidator(IdentifierValidators.GTIN[PrefixTypes.GS18Prefix], GTINLengths.GTIN8);
         validateNonSerializableNumericIdentifierValidator(IdentifierValidators.GLN, IdentifierTypes.GLN, 13, LeaderTypes.None);
         validateNonSerializableNumericIdentifierValidator(IdentifierValidators.SSCC, IdentifierTypes.SSCC, 18, LeaderTypes.ExtensionDigit);
         validateSerializableNumericIdentifierValidator(IdentifierValidators.GRAI, false, IdentifierTypes.GRAI, 13, LeaderTypes.None, 16, ContentCharacterSets.AI82);
