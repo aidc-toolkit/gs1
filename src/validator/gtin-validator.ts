@@ -89,7 +89,7 @@ export const GTINValidator = {
      * @returns
      * Zero-suppressed GTIN-12.
      */
-    zeroSuppress: (gtin12: string) => {
+    zeroSuppress: function (gtin12: string): string {
         GTIN12_VALIDATOR.validate(gtin12);
 
         // Convert to individual digits.
@@ -126,7 +126,7 @@ export const GTINValidator = {
      * @returns
      * GTIN-12.
      */
-    zeroExpand: (zeroSuppressedGTIN12: string) => {
+    zeroExpand: function (zeroSuppressedGTIN12: string): string {
         NUMERIC_CREATOR.validate(zeroSuppressedGTIN12, ZERO_SUPPRESSED_GTIN12_VALIDATION);
 
         // Convert to individual digits.
@@ -169,7 +169,7 @@ export const GTINValidator = {
      * @returns
      * GTIN-14.
      */
-    convertToGTIN14: (indicatorDigit: string, gtin: string) => {
+    convertToGTIN14: function (indicatorDigit: string, gtin: string): string {
         NUMERIC_CREATOR.validate(indicatorDigit, OPTIONAL_INDICATOR_DIGIT_VALIDATION);
 
         // Check digit doesn't change by prepending zeros.
@@ -198,7 +198,7 @@ export const GTINValidator = {
      * @returns
      * Normalized GTIN.
      */
-    normalize: (gtin: string) => {
+    normalize: function (gtin: string): string {
         const gtinLength = gtin.length;
 
         let normalizedGTIN: string;
@@ -271,7 +271,7 @@ export const GTINValidator = {
      * @param gtinLevel
      * Level at which GTIN is to be validated.
      */
-    validateAny: (gtin: string, gtinLevel: GTINLevel = GTINLevels.Any) => {
+    validateAny: function (gtin: string, gtinLevel: GTINLevel = GTINLevels.Any): void {
         // Assume length-validated GTIN is the GTIN (true for all except zero-suppressed GTIN-12).
         let lengthValidatedGTIN = gtin;
 
@@ -343,7 +343,7 @@ export const GTINValidator = {
      * @param gtin14
      * GTIN-14.
      */
-    validateGTIN14: (gtin14: string) => {
+    validateGTIN14: function (gtin14: string): void {
         if (gtin14.length !== GTINLengths.GTIN14) {
             throw new RangeError(i18nextGS1T("Identifier.invalidGTIN14Length"));
         }
