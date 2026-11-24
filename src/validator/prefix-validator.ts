@@ -102,11 +102,34 @@ const GS1_8_PREFIX_VALIDATION: Readonly<PrefixValidation> = {
  * Prefix validator.
  */
 export const PrefixValidator = {
+    /**
+     * GS1 Company Prefix minimum length.
+     */
     GS1_COMPANY_PREFIX_MINIMUM_LENGTH,
+
+    /**
+     * GS1 Company Prefix maximum length.
+     */
     GS1_COMPANY_PREFIX_MAXIMUM_LENGTH,
+
+    /**
+     * U.P.C. Company Prefix minimum length.
+     */
     UPC_COMPANY_PREFIX_MINIMUM_LENGTH,
+
+    /**
+     * U.P.C. Company Prefix maximum length.
+     */
     UPC_COMPANY_PREFIX_MAXIMUM_LENGTH,
+
+    /**
+     * GS1-8 Prefix minimum length.
+     */
     GS1_8_PREFIX_MINIMUM_LENGTH,
+
+    /**
+     * GS1-8 Prefix minimum length.
+     */
     GS1_8_PREFIX_MAXIMUM_LENGTH,
 
     /**
