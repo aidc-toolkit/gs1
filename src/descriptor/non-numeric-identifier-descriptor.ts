@@ -73,20 +73,6 @@ export const GMN_DESCRIPTOR: GMNDescriptor = {
 export type NonNumericIdentifierDescriptor = GIAIDescriptor | GINCDescriptor | CPIDDescriptor | GMNDescriptor;
 
 /**
- * Non-numeric identifier descriptor by identifier type.
- */
-export type NonNumericIdentifierTypeDescriptor<TIdentifierType extends NonNumericIdentifierType> =
-    TIdentifierType extends typeof NonNumericIdentifierTypes.GIAI ?
-        GIAIDescriptor :
-        TIdentifierType extends typeof NonNumericIdentifierTypes.GINC ?
-            GINCDescriptor :
-            TIdentifierType extends typeof NonNumericIdentifierTypes.CPID ?
-                CPIDDescriptor :
-                TIdentifierType extends typeof NonNumericIdentifierTypes.GMN ?
-                    GMNDescriptor :
-                    never;
-
-/**
  * Non-numeric identifier descriptors indexed by identifier type.
  */
 export const NonNumericIdentifierDescriptors = {
@@ -95,3 +81,9 @@ export const NonNumericIdentifierDescriptors = {
     [NonNumericIdentifierTypes.CPID]: CPID_DESCRIPTOR,
     [NonNumericIdentifierTypes.GMN]: GMN_DESCRIPTOR
 } as const;
+
+/**
+ * Non-numeric identifier descriptor by identifier type.
+ */
+export type NonNumericIdentifierTypeDescriptor<TIdentifierType extends NonNumericIdentifierType> =
+    typeof NonNumericIdentifierDescriptors[TIdentifierType];

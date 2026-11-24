@@ -79,20 +79,6 @@ export const GSIN_DESCRIPTOR: GSINDescriptor = {
 export type NonSerializableNumericIdentifierDescriptor = GLNDescriptor | SSCCDescriptor | GSRNDescriptor | GSINDescriptor;
 
 /**
- * Non-serializable numeric identifier descriptor by identifier type.
- */
-export type NonSerializableNumericIdentifierTypeDescriptor<TIdentifierType extends NonSerializableNumericIdentifierType> =
-    TIdentifierType extends typeof NonSerializableNumericIdentifierTypes.GLN ?
-        GLNDescriptor :
-        TIdentifierType extends typeof NonSerializableNumericIdentifierTypes.SSCC ?
-            SSCCDescriptor :
-            TIdentifierType extends typeof NonSerializableNumericIdentifierTypes.GSRN ?
-                GSRNDescriptor :
-                TIdentifierType extends typeof NonSerializableNumericIdentifierTypes.GSIN ?
-                    GSINDescriptor :
-                    never;
-
-/**
  * Non-serializable numeric identifier descriptors indexed by identifier type.
  */
 export const NonSerializableNumericIdentifierDescriptors = {
@@ -101,3 +87,9 @@ export const NonSerializableNumericIdentifierDescriptors = {
     [NonSerializableNumericIdentifierTypes.GSRN]: GSRN_DESCRIPTOR,
     [NonSerializableNumericIdentifierTypes.GSIN]: GSIN_DESCRIPTOR
 } as const;
+
+/**
+ * Non-serializable numeric identifier descriptor by identifier type.
+ */
+export type NonSerializableNumericIdentifierTypeDescriptor<TIdentifierType extends NonSerializableNumericIdentifierType> =
+    typeof NonSerializableNumericIdentifierDescriptors[TIdentifierType];

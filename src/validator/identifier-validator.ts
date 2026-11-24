@@ -6,25 +6,18 @@ import {
     isNumericIdentifierExtension,
     isSerializableNumericIdentifierExtension
 } from "../descriptor/identifier-extension.js";
-import type { GTINType } from "../gtin-type.js";
+import { type GTINType, isGTINType } from "../gtin-type.js";
 import type { IdentifierType } from "../identifier-type.js";
-import type { NonNumericIdentifierType } from "../non-numeric-identifier-type.js";
-import type { NumericIdentifierType } from "../numeric-identifier-type.js";
-import type { PrefixType } from "../prefix-type.js";
+import { type PrefixType, PrefixTypes } from "../prefix-type.js";
 import type { IdentifierValidation } from "./base-identifier-validator.js";
 import type { GTINValidator, GTINValidators } from "./gtin-validator.js";
 import type { NonGTINNumericIdentifierValidator } from "./non-gtin-numeric-identifier-validator.js";
 import {
-    type NonNumericIdentifierTypeValidator,
     type NonNumericIdentifierValidator,
     NonNumericIdentifierValidators
 } from "./non-numeric-identifier-validator.js";
 import type { NonSerializableNumericIdentifierValidator } from "./non-serializable-numeric-identifier-validator.js";
-import {
-    type NumericIdentifierTypeValidator,
-    type NumericIdentifierValidator,
-    NumericIdentifierValidators
-} from "./numeric-identifier-validator.js";
+import { type NumericIdentifierValidator, NumericIdentifierValidators } from "./numeric-identifier-validator.js";
 import type { SerializableNumericIdentifierValidator } from "./serializable-numeric-identifier-validator.js";
 
 export type { IdentifierValidation };
@@ -37,22 +30,28 @@ export type { IdentifierValidation };
 export type IdentifierValidator = NumericIdentifierValidator | NonNumericIdentifierValidator;
 
 /**
- * Identifier validator by identifier type.
- */
-export type IdentifierTypeValidator<TIdentifierType extends IdentifierType, TPrefixType extends TIdentifierType extends GTINType ? PrefixType : never = never> =
-    TIdentifierType extends NumericIdentifierType ?
-        NumericIdentifierTypeValidator<TIdentifierType, TPrefixType> :
-        TIdentifierType extends NonNumericIdentifierType ?
-            NonNumericIdentifierTypeValidator<TIdentifierType> :
-            never;
-
-/**
  * Identifier validators indexed by identifier type.
  */
 export const IdentifierValidators = {
     ...NumericIdentifierValidators,
     ...NonNumericIdentifierValidators
 } as const;
+
+/**
+ * Identifier validator by identifier type and prefix type (GTIN identifier type only).
+ */
+export type IdentifierTypeValidator<
+    TIdentifierType extends IdentifierType,
+    TPrefixType extends TIdentifierType extends GTINType ?
+        PrefixType :
+        never = (
+            TIdentifierType extends GTINType ?
+                typeof PrefixTypes.GS1CompanyPrefix :
+                never
+        )
+> = TIdentifierType extends GTINType ?
+    typeof IdentifierValidators[TIdentifierType][TPrefixType] :
+    typeof IdentifierValidators[Exclude<TIdentifierType, GTINType>];
 
 /**
  * Determine if identifier validators or validator is GTIN validators.
@@ -63,8 +62,8 @@ export const IdentifierValidators = {
  * @returns
  * True if identifier validators or validator is GTIN validators.
  */
-export function isGTINValidators(identifierValidatorsOrValidator: typeof IdentifierValidators[IdentifierType]): identifierValidatorsOrValidator is typeof GTINValidators {
-    return !("identifierType" in identifierValidatorsOrValidator);
+export function isGTINValidators(identifierValidatorsOrValidator: typeof GTINValidators | IdentifierTypeValidator<IdentifierType, PrefixType>): identifierValidatorsOrValidator is typeof GTINValidators {
+    return Array.isArray(identifierValidatorsOrValidator);
 }
 
 /**

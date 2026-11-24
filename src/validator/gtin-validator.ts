@@ -45,25 +45,19 @@ export const GTIN8_VALIDATOR: GTIN8Validator = new ConcreteGTINValidator(GTIN8_D
 export type GTINValidator = GTIN13Validator | GTIN12Validator | GTIN8Validator;
 
 /**
- * GTIN validator by prefix type.
- */
-export type GTINPrefixTypeValidator<TPrefixType extends PrefixType> =
-    TPrefixType extends typeof PrefixTypes.GS1CompanyPrefix ?
-        GTIN13Validator :
-        TPrefixType extends typeof PrefixTypes.UPCCompanyPrefix ?
-            GTIN12Validator :
-            TPrefixType extends typeof PrefixTypes.GS18Prefix ?
-                GTIN8Validator :
-                never;
-
-/**
- * GTIN validators indexed by GTIN length.
+ * GTIN validators indexed by prefix type.
  */
 export const GTINValidators = {
     [PrefixTypes.GS1CompanyPrefix]: GTIN13_VALIDATOR,
     [PrefixTypes.UPCCompanyPrefix]: GTIN12_VALIDATOR,
     [PrefixTypes.GS18Prefix]: GTIN8_VALIDATOR
 } as const;
+
+/**
+ * GTIN validator by prefix type.
+ */
+export type GTINPrefixTypeValidator<TPrefixType extends PrefixType> =
+    typeof GTINValidators[TPrefixType];
 
 const ZERO_SUPPRESSED_GTIN12_VALIDATION: Readonly<CharacterSetValidation> = {
     minimumLength: 8,

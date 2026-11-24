@@ -59,22 +59,16 @@ export const GTIN8_DESCRIPTOR: GTIN8Descriptor = {
 export type GTINDescriptor = GTIN13Descriptor | GTIN12Descriptor | GTIN8Descriptor;
 
 /**
- * GTIN descriptor by prefix type.
- */
-export type GTINPrefixTypeDescriptor<TPrefixType extends PrefixType> =
-    TPrefixType extends typeof PrefixTypes.GS1CompanyPrefix ?
-        GTIN13Descriptor :
-        TPrefixType extends typeof PrefixTypes.UPCCompanyPrefix ?
-            GTIN12Descriptor :
-            TPrefixType extends typeof PrefixTypes.GS18Prefix ?
-                GTIN8Descriptor :
-                never;
-
-/**
- * GTIN descriptors indexed by GTIN length.
+ * GTIN descriptors indexed by prefix type.
  */
 export const GTINDescriptors = {
     [PrefixTypes.GS1CompanyPrefix]: GTIN13_DESCRIPTOR,
     [PrefixTypes.UPCCompanyPrefix]: GTIN12_DESCRIPTOR,
     [PrefixTypes.GS18Prefix]: GTIN8_DESCRIPTOR
 } as const;
+
+/**
+ * GTIN descriptor by prefix type.
+ */
+export type GTINPrefixTypeDescriptor<TPrefixType extends PrefixType> =
+    typeof GTINDescriptors[TPrefixType];

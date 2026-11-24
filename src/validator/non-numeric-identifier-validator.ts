@@ -55,20 +55,6 @@ export const GMN_VALIDATOR: GMNValidator = new ConcreteNonNumericIdentifierValid
 export type NonNumericIdentifierValidator = GIAIValidator | GINCValidator | CPIDValidator | GMNValidator;
 
 /**
- * Non-numeric identifier validator by identifier type.
- */
-export type NonNumericIdentifierTypeValidator<TIdentifierType extends NonNumericIdentifierType> =
-    TIdentifierType extends typeof NonNumericIdentifierTypes.GIAI ?
-        GIAIValidator :
-        TIdentifierType extends typeof NonNumericIdentifierTypes.GINC ?
-            GINCValidator :
-            TIdentifierType extends typeof NonNumericIdentifierTypes.CPID ?
-                CPIDValidator :
-                TIdentifierType extends typeof NonNumericIdentifierTypes.GMN ?
-                    GMNValidator :
-                    never;
-
-/**
  * Non-numeric identifier validators indexed by identifier type.
  */
 export const NonNumericIdentifierValidators = {
@@ -77,3 +63,9 @@ export const NonNumericIdentifierValidators = {
     [NonNumericIdentifierTypes.CPID]: CPID_VALIDATOR,
     [NonNumericIdentifierTypes.GMN]: GMN_VALIDATOR
 } as const;
+
+/**
+ * Non-numeric identifier validator by identifier type.
+ */
+export type NonNumericIdentifierTypeValidator<TIdentifierType extends NonNumericIdentifierType> =
+    typeof NonNumericIdentifierValidators[TIdentifierType];

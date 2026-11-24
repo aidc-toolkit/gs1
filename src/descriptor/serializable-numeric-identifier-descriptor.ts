@@ -67,18 +67,6 @@ export const GCN_DESCRIPTOR: GCNDescriptor = {
 export type SerializableNumericIdentifierDescriptor = GRAIDescriptor | GDTIDescriptor | GCNDescriptor;
 
 /**
- * Serializable numeric identifier descriptor by identifier type.
- */
-export type SerializableNumericIdentifierTypeDescriptor<TIdentifierType extends SerializableNumericIdentifierType> =
-    TIdentifierType extends typeof SerializableNumericIdentifierTypes.GRAI ?
-        GRAIDescriptor :
-        TIdentifierType extends typeof SerializableNumericIdentifierTypes.GDTI ?
-            GDTIDescriptor :
-            TIdentifierType extends typeof SerializableNumericIdentifierTypes.GCN ?
-                GCNDescriptor :
-                never;
-
-/**
  * Serializable numeric identifier descriptors indexed by identifier type.
  */
 export const SerializableNumericIdentifierDescriptors = {
@@ -86,3 +74,9 @@ export const SerializableNumericIdentifierDescriptors = {
     [SerializableNumericIdentifierTypes.GDTI]: GDTI_DESCRIPTOR,
     [SerializableNumericIdentifierTypes.GCN]: GCN_DESCRIPTOR
 } as const;
+
+/**
+ * Serializable numeric identifier descriptor by identifier type.
+ */
+export type SerializableNumericIdentifierTypeDescriptor<TIdentifierType extends SerializableNumericIdentifierType> =
+    typeof SerializableNumericIdentifierDescriptors[TIdentifierType];

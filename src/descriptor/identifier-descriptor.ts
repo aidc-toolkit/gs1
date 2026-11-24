@@ -1,8 +1,6 @@
-import type { GTINType } from "../gtin-type.js";
+import { type GTINType, isGTINType } from "../gtin-type.js";
 import type { IdentifierType } from "../identifier-type.js";
-import type { NonNumericIdentifierType } from "../non-numeric-identifier-type.js";
-import type { NumericIdentifierType } from "../numeric-identifier-type.js";
-import type { PrefixType } from "../prefix-type.js";
+import { type PrefixType, PrefixTypes } from "../prefix-type.js";
 import type { GTINDescriptor, GTINDescriptors } from "./gtin-descriptor.js";
 import {
     isGTINExtension,
@@ -15,31 +13,16 @@ import {
 import type { NonGTINNumericIdentifierDescriptor } from "./non-gtin-numeric-identifier-descriptor.js";
 import {
     type NonNumericIdentifierDescriptor,
-    NonNumericIdentifierDescriptors,
-    type NonNumericIdentifierTypeDescriptor
+    NonNumericIdentifierDescriptors
 } from "./non-numeric-identifier-descriptor.js";
 import type { NonSerializableNumericIdentifierDescriptor } from "./non-serializable-numeric-identifier-descriptor.js";
-import {
-    type NumericIdentifierDescriptor,
-    NumericIdentifierDescriptors,
-    type NumericIdentifierTypeDescriptor
-} from "./numeric-identifier-descriptor.js";
+import { type NumericIdentifierDescriptor, NumericIdentifierDescriptors } from "./numeric-identifier-descriptor.js";
 import type { SerializableNumericIdentifierDescriptor } from "./serializable-numeric-identifier-descriptor.js";
 
 /**
  * Identifier descriptor. Instantiations of this type are used to parameterize validators and creators.
  */
 export type IdentifierDescriptor = NumericIdentifierDescriptor | NonNumericIdentifierDescriptor;
-
-/**
- * Identifier descriptor by identifier type.
- */
-export type IdentifierTypeDescriptor<TIdentifierType extends IdentifierType, TPrefixType extends TIdentifierType extends GTINType ? PrefixType : never = never> =
-    TIdentifierType extends NumericIdentifierType ?
-        NumericIdentifierTypeDescriptor<TIdentifierType, TPrefixType> :
-        TIdentifierType extends NonNumericIdentifierType ?
-            NonNumericIdentifierTypeDescriptor<TIdentifierType> :
-            never;
 
 /**
  * Identifier descriptors indexed by identifier type.
@@ -50,6 +33,22 @@ export const IdentifierDescriptors = {
 } as const;
 
 /**
+ * Identifier descriptor by identifier type and prefix type (GTIN identifier type only).
+ */
+export type IdentifierTypeDescriptor<
+    TIdentifierType extends IdentifierType,
+    TPrefixType extends TIdentifierType extends GTINType ?
+        PrefixType :
+        never = (
+            TIdentifierType extends GTINType ?
+                PrefixType :
+                never
+        )
+> = TIdentifierType extends GTINType ?
+    typeof IdentifierDescriptors[TIdentifierType][TPrefixType] :
+    typeof IdentifierDescriptors[Exclude<TIdentifierType, GTINType>];
+
+/**
  * Determine if identifier descriptors or descriptor is GTIN descriptors.
  *
  * @param identifierDescriptorsOrDescriptor
@@ -58,8 +57,8 @@ export const IdentifierDescriptors = {
  * @returns
  * True if identifier descriptors or descriptor is GTIN descriptors.
  */
-export function isGTINDescriptors(identifierDescriptorsOrDescriptor: typeof IdentifierDescriptors[IdentifierType]): identifierDescriptorsOrDescriptor is typeof GTINDescriptors {
-    return !("identifierType" in identifierDescriptorsOrDescriptor);
+export function isGTINDescriptors(identifierDescriptorsOrDescriptor: typeof GTINDescriptors | IdentifierTypeDescriptor<IdentifierType, PrefixType>): identifierDescriptorsOrDescriptor is typeof GTINDescriptors {
+    return Array.isArray(identifierDescriptorsOrDescriptor);
 }
 
 /**

@@ -57,20 +57,6 @@ export const GSIN_VALIDATOR: GSINValidator = new ConcreteNonSerializableNumericI
 export type NonSerializableNumericIdentifierValidator = GLNValidator | SSCCValidator | GSRNValidator | GSINValidator;
 
 /**
- * Non-serializable numeric identifier validator by identifier type.
- */
-export type NonSerializableNumericIdentifierTypeValidator<TIdentifierType extends NonSerializableNumericIdentifierType> =
-    TIdentifierType extends typeof NonSerializableNumericIdentifierTypes.GLN ?
-        GLNValidator :
-        TIdentifierType extends typeof NonSerializableNumericIdentifierTypes.SSCC ?
-            SSCCValidator :
-            TIdentifierType extends typeof NonSerializableNumericIdentifierTypes.GSRN ?
-                GSRNValidator :
-                TIdentifierType extends typeof NonSerializableNumericIdentifierTypes.GSIN ?
-                    GSINValidator :
-                    never;
-
-/**
  * Non-serializable numeric identifier validators indexed by identifier type.
  */
 export const NonSerializableNumericIdentifierValidators = {
@@ -79,3 +65,9 @@ export const NonSerializableNumericIdentifierValidators = {
     [NonSerializableNumericIdentifierTypes.GSRN]: GSRN_VALIDATOR,
     [NonSerializableNumericIdentifierTypes.GSIN]: GSIN_VALIDATOR
 } as const;
+
+/**
+ * Non-serializable numeric identifier validator by identifier type.
+ */
+export type NonSerializableNumericIdentifierTypeValidator<TIdentifierType extends NonSerializableNumericIdentifierType> =
+    typeof NonSerializableNumericIdentifierValidators[TIdentifierType];

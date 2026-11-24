@@ -51,18 +51,6 @@ export const GCN_VALIDATOR: GCNValidator = new ConcreteSerializableNumericIdenti
 export type SerializableNumericIdentifierValidator = GRAIValidator | GDTIValidator | GCNValidator;
 
 /**
- * Serializable numeric identifier validator by identifier type.
- */
-export type SerializableNumericIdentifierTypeValidator<TIdentifierType extends SerializableNumericIdentifierType> =
-    TIdentifierType extends typeof SerializableNumericIdentifierTypes.GRAI ?
-        GRAIValidator :
-        TIdentifierType extends typeof SerializableNumericIdentifierTypes.GDTI ?
-            GDTIValidator :
-            TIdentifierType extends typeof SerializableNumericIdentifierTypes.GCN ?
-                GCNValidator :
-                never;
-
-/**
  * Serializable numeric identifier validators indexed by identifier type.
  */
 export const SerializableNumericIdentifierValidators = {
@@ -70,3 +58,9 @@ export const SerializableNumericIdentifierValidators = {
     [SerializableNumericIdentifierTypes.GDTI]: GDTI_VALIDATOR,
     [SerializableNumericIdentifierTypes.GCN]: GCN_VALIDATOR
 } as const;
+
+/**
+ * Serializable numeric identifier validator by identifier type.
+ */
+export type SerializableNumericIdentifierTypeValidator<TIdentifierType extends SerializableNumericIdentifierType> =
+    typeof SerializableNumericIdentifierValidators[TIdentifierType];
