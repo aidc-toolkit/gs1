@@ -90,7 +90,7 @@ export function getIdentifierValidator<
  * True if identifier validators or validator is GTIN validators.
  */
 export function isGTINValidators(identifierValidatorsOrValidator: typeof GTINValidators | IdentifierTypeValidator<IdentifierType, PrefixType>): identifierValidatorsOrValidator is typeof GTINValidators {
-    return Array.isArray(identifierValidatorsOrValidator);
+    return !("identifierType" in identifierValidatorsOrValidator);
 }
 
 /**

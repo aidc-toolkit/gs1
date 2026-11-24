@@ -85,7 +85,7 @@ export function getIdentifierDescriptor<
  * True if identifier descriptors or descriptor is GTIN descriptors.
  */
 export function isGTINDescriptors(identifierDescriptorsOrDescriptor: typeof GTINDescriptors | IdentifierTypeDescriptor<IdentifierType, PrefixType>): identifierDescriptorsOrDescriptor is typeof GTINDescriptors {
-    return Array.isArray(identifierDescriptorsOrDescriptor);
+    return !("identifierType" in identifierDescriptorsOrDescriptor);
 }
 
 /**
