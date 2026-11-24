@@ -54,6 +54,33 @@ export type IdentifierTypeValidator<
     typeof IdentifierValidators[Exclude<TIdentifierType, GTINType>];
 
 /**
+ * Get the identifier validator for an identifier type and optional prefix type if identifier type is GTIN. If
+ * identifier type is GTIN and no prefix type is provided, the GTIN-13 validator is returned.
+ *
+ * @param identifierType
+ * Identifier type.
+ *
+ * @param prefixType
+ * Prefix type.
+ *
+ * @returns
+ * Identifier validator.
+ */
+export function getIdentifierValidator<
+    TIdentifierType extends IdentifierType,
+    TPrefixType extends TIdentifierType extends GTINType ?
+        PrefixType :
+        never = (
+            TIdentifierType extends GTINType ?
+                PrefixType :
+                never
+        )
+>(identifierType: TIdentifierType, prefixType?: TPrefixType): IdentifierTypeValidator<TIdentifierType, TPrefixType> & IdentifierValidator {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Types are known to match.
+    return (isGTINType(identifierType) ? IdentifierValidators[identifierType][prefixType ?? PrefixTypes.GS1CompanyPrefix] : IdentifierValidators[identifierType]) as IdentifierTypeValidator<TIdentifierType, TPrefixType>;
+}
+
+/**
  * Determine if identifier validators or validator is GTIN validators.
  *
  * @param identifierValidatorsOrValidator

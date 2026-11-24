@@ -1,7 +1,7 @@
 import { type CharacterSetValidation, mapIterable } from "@aidc-toolkit/utility";
 import { checkCharacterPair } from "../check.js";
 import {
-    IdentifierDescriptors,
+    getIdentifierDescriptor,
     type NonNumericIdentifierDescriptor,
     NonNumericIdentifierDescriptors
 } from "../descriptor/index.js";
@@ -39,7 +39,7 @@ export class ConcreteNonNumericIdentifierCreator<
      * Identifier type.
      */
     constructor(prefixProvider: PrefixProvider, identifierType: TIdentifierValidator["identifierType"]) {
-        super(prefixProvider, prefixProvider.gs1CompanyPrefix, 2 * Number(IdentifierDescriptors[identifierType].requiresCheckCharacterPair), NonNumericIdentifierDescriptors[identifierType]);
+        super(prefixProvider, prefixProvider.gs1CompanyPrefix, 2 * Number(getIdentifierDescriptor(identifierType).requiresCheckCharacterPair), NonNumericIdentifierDescriptors[identifierType]);
 
         this.#referenceValidation = {
             minimumLength: 1,

@@ -49,6 +49,33 @@ export type IdentifierTypeDescriptor<
     typeof IdentifierDescriptors[Exclude<TIdentifierType, GTINType>];
 
 /**
+ * Get the identifier descriptor for an identifier type and optional prefix type if identifier type is GTIN. If
+ * identifier type is GTIN and no prefix type is provided, the GTIN-13 descriptor is returned.
+ *
+ * @param identifierType
+ * Identifier type.
+ *
+ * @param prefixType
+ * Prefix type.
+ *
+ * @returns
+ * Identifier descriptor.
+ */
+export function getIdentifierDescriptor<
+    TIdentifierType extends IdentifierType,
+    TPrefixType extends TIdentifierType extends GTINType ?
+        PrefixType :
+        never = (
+            TIdentifierType extends GTINType ?
+                PrefixType :
+                never
+        )
+>(identifierType: TIdentifierType, prefixType?: TPrefixType): IdentifierTypeDescriptor<TIdentifierType, TPrefixType> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Types are known to match.
+    return (isGTINType(identifierType) ? IdentifierDescriptors[identifierType][prefixType ?? PrefixTypes.GS1CompanyPrefix] : IdentifierDescriptors[identifierType]) as IdentifierTypeDescriptor<TIdentifierType, TPrefixType>;
+}
+
+/**
  * Determine if identifier descriptors or descriptor is GTIN descriptors.
  *
  * @param identifierDescriptorsOrDescriptor

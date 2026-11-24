@@ -1,6 +1,6 @@
 import type { Hyperlink } from "@aidc-toolkit/core";
 import { type IdentifierType, IdentifierTypes } from "../identifier-type.js";
-import { GTINValidator, IdentifierValidators } from "../validator/index.js";
+import { getIdentifierValidator, GTINValidator } from "../validator/index.js";
 
 const VERIFIED_BY_GS1_REFERENCE_BASE = "https://www.gs1.org/services/verified-by-gs1/results?";
 
@@ -33,7 +33,7 @@ export function verifiedByGS1(identifierType: IdentifierType, identifier: string
 
         useKeyTypeParameter = true;
     } else {
-        const identifierValidator = IdentifierValidators[identifierType];
+        const identifierValidator = getIdentifierValidator(identifierType);
 
         identifierValidator.validate(identifier);
 

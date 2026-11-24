@@ -3,7 +3,7 @@ import { mapIterable } from "@aidc-toolkit/utility";
 import { type IdentifierType, IdentifierTypes } from "../identifier-type.js";
 import { LeaderTypes } from "../leader-type.js";
 import { i18nextGS1T } from "../locale/i18n.js";
-import { GTINValidator, IdentifierValidators, isNumericIdentifierValidator } from "../validator/index.js";
+import { getIdentifierValidator, GTINValidator, isNumericIdentifierValidator } from "../validator/index.js";
 import type { GCPLengthCache } from "./gcp-length-cache.js";
 import { type GCPLengthData, isGCPLengthData } from "./gcp-length-data.js";
 import { type Branch, type InterimBranch, isLeaf, type Node, type Root } from "./gcp-length-tree.js";
@@ -452,7 +452,7 @@ export class GCPLength {
                 // Convert the GTIN to GTIN-14 and extract the identifier prefix at the first character.
                 identifierPrefix = GTINValidator.convertToGTIN14("", identifier).substring(1);
             } else {
-                const identifierValidator = IdentifierValidators[identifierType];
+                const identifierValidator = getIdentifierValidator(identifierType);
 
                 identifierValidator.validate(identifier);
 
