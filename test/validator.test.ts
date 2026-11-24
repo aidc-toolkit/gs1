@@ -2,11 +2,10 @@ import { describe, expect, test } from "vitest";
 import {
     ContentCharacterSets,
     GTINLengths,
-    type GTINValidator,
-    IdentifierValidators,
     type IdentifierType,
     IdentifierTypes,
     type IdentifierValidator,
+    IdentifierValidators,
     isGTINValidator,
     isGTINValidators,
     isNonGTINNumericIdentifierValidator,
@@ -15,7 +14,6 @@ import {
     isNumericIdentifierValidator,
     isSerializableNumericIdentifierValidator,
     LeaderTypes,
-    type PrefixType,
     PrefixTypes,
     PrefixTypeValues
 } from "../src/index.js";
@@ -25,7 +23,7 @@ import { validateNonSerializableNumericIdentifierValidator } from "./non-seriali
 import { validateSerializableNumericIdentifierValidator } from "./serializable-numeric-identifier-validator.js";
 
 describe("Validators", () => {
-    function validateMapping(identifierType: IdentifierType, expectedValidatorsOrValidator: Readonly<Record<PrefixType, GTINValidator>> | IdentifierValidator, ...isIdentifierValidatorTypes: Array<(validator: IdentifierValidator) => boolean>): void {
+    function validateMapping<TIdentifierType extends IdentifierType>(identifierType: TIdentifierType, expectedValidatorsOrValidator: typeof IdentifierValidators[TIdentifierType], ...isIdentifierValidatorTypes: Array<(validator: IdentifierValidator) => boolean>): void {
         test(identifierType, () => {
             const validatorsOrValidator = IdentifierValidators[identifierType];
 
