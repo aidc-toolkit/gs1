@@ -86,7 +86,7 @@ In general:
 - If you are based outside North America and you are selling product in the North American marketplace, you may have a *separate* U.P.C. Company Prefix for that purpose. This is not necessarily true for newer companies or product lines as the North American marketplace now fully supports 13-digit GTINs.
 - If you are based inside North America, you most likely have a U.P.C. Company Prefix.
 
-Another way to tell is to look at your existing barcodes. If the text beneath the barcode is 13 digits long, you have a GS1 Company Prefix. If the text beneath the barcode is 12 digits long, you have a U.P.C. Company Prefix.
+Another way to tell is to look at your existing consumer trade item barcodes. If the text beneath the barcode is 13 digits long, you have a GS1 Company Prefix. If the text beneath the barcode is 12 digits long, you have a U.P.C. Company Prefix.
 
 If you're unsure, contact your local [GS1 Member Organization](https://www.gs1.org/contact/overview).
 
@@ -96,32 +96,32 @@ All identifier types are supported. Constants are defined in [`IdentifierTypes`]
 
 Internally, identifier types are broken down into categories. Each category builds on the one above by adding new properties, defined in a descriptor type:
 
-- [Base identifier descriptor](https://aidc-toolkit.com/v2.0/api/GS1/interfaces/IdentifierDescriptor.html)
-  - [Numeric identifier descriptor](https://aidc-toolkit.com/v2.0/api/GS1/interfaces/NumericIdentifierDescriptor.html)
-    - [GTIN descriptor](https://aidc-toolkit.com/v2.0/api/GS1/interfaces/GTINDescriptor.html) - Global Trade Item Number
-      - *GTIN-13*
-      - *GTIN-12*
-      - *GTIN-8*
-    - [Non-GTIN numeric identifier descriptor](https://aidc-toolkit.com/v2.0/api/GS1/interfaces/NonGTINNumericIdentifierDescriptor.html)
-      - [Non-serializable numeric identifier descriptor](https://aidc-toolkit.com/v2.0/api/GS1/interfaces/NonSerializableNumericIdentifierDescriptor.html)
-        - *GLN* - Global Location Number
-        - *SSCC* - Serial Shipping Container Code
-        - *GSRN* - Global Service Relation Number
-        - *GSIN* - Global Shipment Identification Number
-      - [Serializable numeric identifier descriptor](https://aidc-toolkit.com/v2.0/api/GS1/interfaces/SerializableNumericIdentifierDescriptor.html)
-        - *GRAI* - Global Returnable Asset Identifier
-        - *GDTI* - Global Document Type Identifier
-        - *GCN* - Global Coupon Number
-  - [Non-numeric identifier descriptor](https://aidc-toolkit.com/v2.0/api/GS1/interfaces/NonNumericIdentifierDescriptor.html)
-    - *GIAI* - Global Individual Asset Identifier
-    - *GINC* - Global Identification Number for Consignment
-    - *CPID* - Component/Part Identifier
-    - *GMN* - Global Model Number
+- [Identifier descriptor](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/IdentifierDescriptor.html)
+  - [Numeric identifier descriptor](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/NumericIdentifierDescriptor.html)
+    - [*GTIN* descriptor](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/GTINDescriptor.html) - Global Trade Item Number
+      - [*GTIN-13* descriptor](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/GTIN13Descriptor.html) - 13-digit GTIN based on a GS1 Company Prefix
+      - [*GTIN-12* descriptor](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/GTIN12Descriptor.html) - 12-digit GTIN based on a U.P.C. Company Prefix
+      - [*GTIN-8* descriptor](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/GTIN8Descriptor.html) - 8-digit GTIN based on a GS1-8 Prefix
+    - [Non-GTIN numeric identifier descriptor](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/NonGTINNumericIdentifierDescriptor.html)
+      - [Non-serializable numeric identifier descriptor](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/NonSerializableNumericIdentifierDescriptor.html)
+        - [*GLN* descriptor](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/GLNDescriptor.html) - Global Location Number
+        - [*SSCC* descriptor](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/SSCCDescriptor.html) - Serial Shipping Container Code
+        - [*GSRN* descriptor](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/GSRNDescriptor.html) - Global Service Relation Number
+        - [*GSIN* descriptor](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/GSINDescriptor.html) - Global Shipment Identification Number
+      - [Serializable numeric identifier descriptor](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/SerializableNumericIdentifierDescriptor.html)
+        - [*GRAI* descriptor](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/GRAIDescriptor.html) - Global Returnable Asset Identifier
+        - [*GDTI* descriptor](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/GDTIDescriptor.html) - Global Document Type Identifier
+        - [*GCN* descriptor](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/GCNDescriptor.html) - Global Coupon Number
+  - [Non-numeric identifier descriptor](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/NonNumericIdentifierDescriptor.html)
+    - [*GIAI* descriptor](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/GIAIDescriptor.html) - Global Individual Asset Identifier
+    - [*GINC* descriptor](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/GINCDescriptor.html) - Global Identification Number for Consignment
+    - [*CPID* descriptor](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/CPIDDescriptor.html) - Component/Part Identifier
+    - [*GMN* descriptor](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/GMNDescriptor.html) - Global Model Number
 
-The identifier descriptors are stored in a [record object](https://aidc-toolkit.com/v2.0/api/GS1/variables/IdentifierDescriptors.html), keyed on identifier type. The GTIN entry is an array (GTIN-13, GTIN-12, and GTIN-8); all others are singletons. To deal with an unknown identifier descriptor, there are typeguards available, aligned with the categories above:
+The identifier descriptors are stored in an [object](https://aidc-toolkit.com/v2.0/api/GS1/variables/IdentifierDescriptors.html), keyed on identifier type. The GTIN entry is a [GTIN descriptors object](https://aidc-toolkit.com/v2.0/api/GS1/variables/GTINDescriptors.html), keyed on prefix type; all others are singletons. To deal with an unknown identifier descriptor, there are typeguards available, aligned with the categories above:
 
 - [`isGTINDescriptors()`](https://aidc-toolkit.com/v2.0/api/GS1/functions/isGTINDescriptors.html)
-  - Special case to identify the GTIN descriptors array entry. 
+  - Special case to identify the GTIN descriptors entry. 
 - [`isNumericIdentifierDescriptor()`](https://aidc-toolkit.com/v2.0/api/GS1/functions/isNumericIdentifierDescriptor.html)
   - [`isGTINDescriptor()`](https://aidc-toolkit.com/v2.0/api/GS1/functions/isGTINDescriptor.html)
   - [`isNonGTINNumericIdentifierDescriptor()`](https://aidc-toolkit.com/v2.0/api/GS1/functions/isNonGTINNumericIdentifierDescriptor.html)
@@ -131,21 +131,21 @@ The identifier descriptors are stored in a [record object](https://aidc-toolkit.
 
 ### Identifier Validation
 
-Every identifier descriptor interface has a corresponding identifier validator class, which implements the interface and adds validation logic. The core method is [`validate()`](https://aidc-toolkit.com/v2.0/api/GS1/classes/IdentifierValidator.html#validate), which takes an identifier string and either returns if valid or throws a [`RangeError`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError) if not.
+Every identifier descriptor interface has an extending identifier validator interface that adds validation logic. The core method is [`validate()`](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/IdentifierValidator.html#validate), which takes an identifier string and either returns if valid or throws a [`RangeError`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError) if not.
 
 Validation is based on the string validation functions defined in the Utility package. As such, the `validate()` method can take additional validation parameters, depending on the identifier type.
 
-- [Base identifier validator](https://aidc-toolkit.com/v2.0/api/GS1/classes/IdentifierValidator.html)
-  - [Numeric identifier validator](https://aidc-toolkit.com/v2.0/api/GS1/classes/NumericIdentifierValidator.html)
+- [Identifier validator](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/IdentifierValidator.html)
+  - [Numeric identifier validator](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/NumericIdentifierValidator.html)
     - Validation can include a position offset, but this is managed internally by derived classes.
-    - [GTIN validator](https://aidc-toolkit.com/v2.0/api/GS1/classes/GTINValidator.html)
-    - [Non-GTIN numeric identifier validator](https://aidc-toolkit.com/v2.0/api/GS1/classes/NonGTINNumericIdentifierValidator.html)
-      - [Non-serializable numeric identifier validator](https://aidc-toolkit.com/v2.0/api/GS1/classes/NonSerializableNumericIdentifierValidator.html)
-      - [Serializable numeric identifier validator](https://aidc-toolkit.com/v2.0/api/GS1/classes/SerializableNumericIdentifierValidator.html)
-  - [Non-numeric identifier validator](https://aidc-toolkit.com/v2.0/api/GS1/classes/NonNumericIdentifierValidator.html)
-    - Validation can include exclusion of all-numeric references. The check character pair, if applicable, is not included in the all-numeric check (e.g., GMNs `9528888123423` and `952999912343X` both fail exclude all-numeric validation even though the latter has a non-numeric check character pair).
+    - [GTIN validator](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/GTINValidator.html)
+    - [Non-GTIN numeric identifier validator](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/NonGTINNumericIdentifierValidator.html)
+      - [Non-serializable numeric identifier validator](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/NonSerializableNumericIdentifierValidator.html)
+      - [Serializable numeric identifier validator](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/SerializableNumericIdentifierValidator.html)
+  - [Non-numeric identifier validator](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/NonNumericIdentifierValidator.html)
+    - Validation can include exclusion of all-numeric references. The check character pair, if applicable, is not included in the all-numeric check (e.g., GMNs `9528888123423` and `952999912343X` both fail the exclude all-numeric validation even though the latter has a non-numeric check character pair).
 
-The identifier validators are stored in a [record object](https://aidc-toolkit.com/v2.0/api/GS1/variables/IdentifierValidators.html), keyed on identifier type. The GTIN entry is an array (GTIN-13, GTIN-12, and GTIN-8); all others are singletons. To deal with an unknown identifier validator, there are typeguards available, aligned with the categories above:
+The identifier validators are stored in an [object](https://aidc-toolkit.com/v2.0/api/GS1/variables/IdentifierValidators.html), keyed on identifier type. The GTIN entry is [GTIN validators object](https://aidc-toolkit.com/v2.0/api/GS1/variables/GTINValidators.html); all others are singletons. To deal with an unknown identifier validator, there are typeguards available, aligned with the categories above:
 
 - [`isGTINValidators()`](https://aidc-toolkit.com/v2.0/api/GS1/functions/isGTINValidators.html)
   - Special case to identify the GTIN validators array entry.
@@ -158,38 +158,38 @@ The identifier validators are stored in a [record object](https://aidc-toolkit.c
 
 #### GTIN Validation
 
-GTIN validation is special in that there are multiple lengths of GTINs and variations in use cases that limit what GTINs may be used for what purpose. To support this, there are static functions defined in the [`GTINValidator`](https://aidc-toolkit.com/v2.0/api/GS1/classes/GTINValidator.html) class:
+GTIN validation is special in that there are multiple lengths of GTINs and variations in use cases that limit what GTINs may be used for what purpose. To support this, there are static functions defined in the [`GTINValidator`](https://aidc-toolkit.com/v2.0/api/GS1/variables/GTINValidator.html) object:
 
-- [`zeroSuppress()`](https://aidc-toolkit.com/v2.0/api/GS1/classes/GTINValidator.html#zerosuppress) - Applies a special compression algorithm to certain GTIN-12s to suppress zeros and reduce the length to 8 digits for encoding in a UPC-E barcode.
-- [`zeroExpand()`](https://aidc-toolkit.com/v2.0/api/GS1/classes/GTINValidator.html#zeroexpand) - Expands a zero-suppressed GTIN-12 to its original form.
-- [`convertToGTIN14()`](https://aidc-toolkit.com/v2.0/api/GS1/classes/GTINValidator.html#converttogtin14) - Converts any GTIN to GTIN-14 form with an indicator digit. If the indicator digit is not provided, the default is "0", unless the input is already a GTIN-14, in which case the indicator digit is preserved.
-- [`normalize()`](https://aidc-toolkit.com/v2.0/api/GS1/classes/GTINValidator.html#normalize) - Normalizes a GTIN to the shortest form possible.
-- [`validateAny()`](https://aidc-toolkit.com/v2.0/api/GS1/classes/GTINValidator.html#validateany) - Validates a GTIN of any length and optionally against the [level at which it is used](https://aidc-toolkit.com/v2.0/api/GS1/variables/GTINLevels.html).
-- [`validateGTIN14()`](https://aidc-toolkit.com/v2.0/api/GS1/classes/GTINValidator.html#validategtin14) - The GTIN-14 doesn't have its own instance of `GTINValidator` as it is subordinate to the other lengths, so this method specifically validates a GTIN-14.
+- [`zeroSuppress()`](https://aidc-toolkit.com/v2.0/api/GS1/variables/GTINValidator.html#zerosuppress) - Applies a special compression algorithm to certain GTIN-12s to suppress zeros and reduce the length to 8 digits for encoding in a UPC-E barcode.
+- [`zeroExpand()`](https://aidc-toolkit.com/v2.0/api/GS1/variables/GTINValidator.html#zeroexpand) - Expands a zero-suppressed GTIN-12 to its original form.
+- [`convertToGTIN14()`](https://aidc-toolkit.com/v2.0/api/GS1/variables/GTINValidator.html#converttogtin14) - Converts any GTIN to GTIN-14 form with an indicator digit. If the indicator digit is not provided, the default is "0", unless the input is already a GTIN-14, in which case the indicator digit is preserved.
+- [`normalize()`](https://aidc-toolkit.com/v2.0/api/GS1/variables/GTINValidator.html#normalize) - Normalizes a GTIN to the shortest form possible.
+- [`validateAny()`](https://aidc-toolkit.com/v2.0/api/GS1/variables/GTINValidator.html#validateany) - Validates a GTIN of any length and optionally against the [level at which it is used](https://aidc-toolkit.com/v2.0/api/GS1/variables/GTINLevels.html).
+- [`validateGTIN14()`](https://aidc-toolkit.com/v2.0/api/GS1/variables/GTINValidator.html#validategtin14) - The GTIN-14 doesn't have its own instance of `GTINValidator` as it is subordinate to the other lengths, so this method specifically validates a GTIN-14.
 
 ### Identifier Creation
 
-Every identifier validator class has an extending identifier creator class which adds creation logic. To create an identifier, **you must have a properly licensed GS1 Company Prefix or U.P.C. Company Prefix**. To acquire a licence, contact your local [GS1 Member Organization](https://www.gs1.org/contact/overview).
+Every identifier validator interface has an extending identifier creator interface that adds creation logic. To create an identifier, **you must have a properly licensed GS1 Company Prefix or U.P.C. Company Prefix**. To acquire a licence, contact your local [GS1 Member Organization](https://www.gs1.org/contact/overview).
 
-Creation is based on the string creation functions defined in the Utility package, with additional rules for prefixes and check digits and check character pairs. The constructor for every class takes a [`PrefixProvider`](https://aidc-toolkit.com/v2.0/api/GS1/interfaces/PrefixProvider.html) object, which defines the prefix type and the prefix itself. Every class has one or more `create*()` methods whose parameters depend on the identifier type.
+Creation is based on the string creation functions defined in the Utility package, with additional rules for prefixes, check digits, and check character pairs. The constructor for every class takes a [`PrefixProvider`](https://aidc-toolkit.com/v2.0/api/GS1/interfaces/PrefixProvider.html) object, which defines the prefix type and the prefix itself. Every class has one or more `create*()` methods whose parameters depend on the identifier type.
 
 Architecturally, base functionality is defined via interfaces, with only concrete classes exposed.
 
-- [Base identifier creator](https://aidc-toolkit.com/v2.0/api/GS1/interfaces/IdentifierCreator.html)
-  - [Numeric identifier creator](https://aidc-toolkit.com/v2.0/api/GS1/interfaces/NumericIdentifierCreator.html)
-    - [`create()`](https://aidc-toolkit.com/v2.0/api/GS1/interfaces/NumericIdentifierCreator.html#create) - Create a single numeric identifier or a sequence of numeric identifiers.
-    - [`createAll()`](https://aidc-toolkit.com/v2.0/api/GS1/interfaces/NumericIdentifierCreator.html#createall) - Create all numeric identifiers for a prefix.
-    - [GTIN creator](https://aidc-toolkit.com/v2.0/api/GS1/classes/GTINCreator.html)
-      - [`createGTIN14()`](https://aidc-toolkit.com/v2.0/api/GS1/classes/GTINCreator.html#creategtin14) - Create a single GTIN-14 or a sequence of GTIN-14s.
-    - [Non-GTIN numeric identifier creator](https://aidc-toolkit.com/v2.0/api/GS1/interfaces/NonGTINNumericIdentifierCreator.html)
-      - [Non-serializable numeric identifier creator](https://aidc-toolkit.com/v2.0/api/GS1/classes/NonSerializableNumericIdentifierCreator.html)
-      - [Serializable numeric identifier creator](https://aidc-toolkit.com/v2.0/api/GS1/classes/SerializableNumericIdentifierCreator.html)
-        - [`createSerialized()`](https://aidc-toolkit.com/v2.0/api/GS1/classes/SerializableNumericIdentifierCreator.html#createserialized) - Create a single serialized numeric identifier or a sequence of serialized numeric identifiers.
-        - [`concatenate()`](https://aidc-toolkit.com/v2.0/api/GS1/classes/SerializableNumericIdentifierCreator.html#concatenate) - Concatenate a base (non-serialized) with a single serialized component or a sequence of serialized components.
-  - [Non-numeric identifier creator](https://aidc-toolkit.com/v2.0/api/GS1/classes/NonNumericIdentifierCreator.html)
-    - [`create()`](https://aidc-toolkit.com/v2.0/api/GS1/classes/NonNumericIdentifierCreator.html#create) - Create a single non-numeric identifier or a sequence of non-numeric i[numeric-identifier-creator.ts](src/numeric-identifier-creator.ts)dentifiers.
+- [Base identifier creator](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/IdentifierCreator.html)
+  - [Numeric identifier creator](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/NumericIdentifierCreator.html)
+    - [`create()`](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/NumericIdentifierCreator.html#create) - Create a single numeric identifier or a sequence of numeric identifiers.
+    - [`createAll()`](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/NumericIdentifierCreator.html#createall) - Create all numeric identifiers for a prefix.
+    - [GTIN creator](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/GTINCreator.html)
+      - [`createGTIN14()`](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/GTINCreator.html#creategtin14) - Create a single GTIN-14 or a sequence of GTIN-14s.
+    - [Non-GTIN numeric identifier creator](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/NonGTINNumericIdentifierCreator.html)
+      - [Non-serializable numeric identifier creator](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/NonSerializableNumericIdentifierCreator.html)
+      - [Serializable numeric identifier creator](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/SerializableNumericIdentifierCreator.html)
+        - [`createSerialized()`](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/SerializableNumericIdentifierCreator.html#createserialized) - Create a single serialized numeric identifier or a sequence of serialized numeric identifiers.
+        - [`concatenate()`](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/SerializableNumericIdentifierCreator.html#concatenate) - Concatenate a base (non-serialized) with a single serialized component or a sequence of serialized components.
+  - [Non-numeric identifier creator](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/NonNumericIdentifierCreator.html)
+    - [`create()`](https://aidc-toolkit.com/v2.0/api/GS1/type-aliases/NonNumericIdentifierCreator.html#create) - Create a single non-numeric identifier or a sequence of non-numeric i[base-numeric-identifier-creator.ts](src/creator/base-numeric-identifier-creator.ts)dentifiers.
 
-Because identifier creators depend on a prefix, there are no instantiations of them. To deal with an unknown identifier creator, there are typeguards available, aligned with the categories above:
+To deal with an unknown identifier creator, there are typeguards available, aligned with the categories above:
 
 - [`isNumericIdentifierCreator()`](https://aidc-toolkit.com/v2.0/api/GS1/functions/isNumericIdentifierCreator.html)
   - [`isGTINCreator()`](https://aidc-toolkit.com/v2.0/api/GS1/functions/isGTINCreator.html)
@@ -197,6 +197,8 @@ Because identifier creators depend on a prefix, there are no instantiations of t
     - [`isNonSerializableNumericIdentifierCreator()`](https://aidc-toolkit.com/v2.0/api/GS1/functions/isNonSerializableNumericIdentifierCreator.html)
     - [`isSerializableNumericIdentifierCreator()`](https://aidc-toolkit.com/v2.0/api/GS1/functions/isSerializableNumericIdentifierCreator.html)
 - [`isNonNumericIdentifierCreator()`](https://aidc-toolkit.com/v2.0/api/GS1/functions/isNonNumericIdentifierCreator.html)
+
+Because identifier creators depend on a prefix, there are no default instantiations of them. Instead, they are constructed via the [`IdentifierCreatorManager`](https://aidc-toolkit.com/v2.0/api/GS1/classes/IdentifierCreatorManager.html) class, which takes a [`PrefixProvider`](https://aidc-toolkit.com/v2.0/api/GS1/interfaces/PrefixProvider.html) object. The recommended approach is to use a [prefix manager](#prefix-manager), documented below.
 
 #### Sparse Creation
 
